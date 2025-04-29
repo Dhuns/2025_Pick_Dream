@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- 예시로 RecyclerView만 넣는다면 -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFavoriteRooms"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"/>
+
+    <!-- 혹은 개별 CardView(찜한 강의실 아이템)를 위한 레이아웃은 별도로 작성 -->
+</LinearLayout>
