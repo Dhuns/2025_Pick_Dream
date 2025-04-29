@@ -25,7 +25,6 @@ class FavoriteRoomsFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // fragment_favorite_rooms.xml 파일을 inflate 합니다.
         return inflater.inflate(R.layout.fragment_favorite_rooms, container, false)
     }
 
