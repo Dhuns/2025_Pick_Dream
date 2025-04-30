@@ -14,10 +14,10 @@ class FavoriteRoomsAdapter(private val rooms: List<Room>) :
     RecyclerView.Adapter<FavoriteRoomsAdapter.RoomViewHolder>() {
 
     class RoomViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val image: ImageView = view.findViewById(R.id.roomImage)
-        val name: TextView = view.findViewById(R.id.roomName)
-        val number: TextView = view.findViewById(R.id.roomNumber)
-        val features: TextView = view.findViewById(R.id.roomFeatures)
+        val image: ImageView = view.findViewById(R.id.imgRoom)
+        val name: TextView = view.findViewById(R.id.tvBuilding)
+        val number: TextView = view.findViewById(R.id.tvRoomNumber)
+        val features: TextView = view.findViewById(R.id.tvFacilities)
         val reserveBtn: Button = view.findViewById(R.id.btnReserve)
         val detailBtn: Button = view.findViewById(R.id.btnDetails)
     }

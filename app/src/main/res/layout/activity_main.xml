@@ -8,17 +8,20 @@
     tools:context=".MainActivity">
 
     <!-- 상단 툴바 -->
+
+    <!-- Fragment를 담을 호스트 -->
+
     <com.google.android.material.appbar.MaterialToolbar
         android:id="@+id/main_toolbar"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="90dp"
         android:background="@color/blue_500"
-        app:titleTextColor="@android:color/white"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:titleTextColor="@android:color/white" />
 
-    <!-- Fragment를 담을 호스트 -->
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment_activity_main"
         android:name="androidx.navigation.fragment.NavHostFragment"
