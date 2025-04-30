@@ -13,10 +13,12 @@
         android:orientation="vertical"
         android:padding="16dp">
 
-        <!-- 상단 콘텐츠 -->
-        <RelativeLayout
+        <!-- 상단 영역: 이미지, 텍스트, 하트 아이콘 -->
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="top">
 
             <!-- 강의실 이미지 -->
             <ImageView
@@ -26,29 +28,23 @@
                 android:scaleType="centerCrop"
                 android:src="@drawable/sample_room"
                 android:background="@drawable/image_rounded_background"
-                android:clipToOutline="true"
-                android:layout_alignParentStart="true" />
+                android:clipToOutline="true" />
 
             <!-- 텍스트 정보 -->
             <LinearLayout
-                android:id="@+id/textContainer"
-                android:orientation="vertical"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:layout_toEndOf="@id/imgRoom"
-                android:layout_alignTop="@id/imgRoom"
-                android:layout_marginStart="12dp"
-                android:layout_alignParentEnd="true"
-                android:layout_toStartOf="@id/btnFavorite"
-                android:layout_marginEnd="48dp">
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:layout_marginStart="12dp">
 
                 <TextView
                     android:id="@+id/tvBuilding"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="덕문관 (5강의동)"
-                    android:textStyle="bold"
                     android:textSize="16sp"
+                    android:textStyle="bold"
                     android:textColor="@android:color/black" />
 
                 <TextView
@@ -57,8 +53,7 @@
                     android:layout_height="wrap_content"
                     android:text="5022 강의실"
                     android:textSize="14sp"
-                    android:textColor="@android:color/black"
-                    android:layout_marginTop="2dp" />
+                    android:textColor="@android:color/black" />
 
                 <TextView
                     android:id="@+id/tvFacilities"
@@ -66,33 +61,28 @@
                     android:layout_height="wrap_content"
                     android:text="빔프로젝터, 마이크, 콘센트, 스크린"
                     android:textSize="12sp"
-                    android:textColor="@android:color/darker_gray"
-                    android:layout_marginTop="2dp" />
+                    android:textColor="@android:color/darker_gray" />
             </LinearLayout>
 
-            <!-- 찜 하트 버튼 -->
+            <!-- 찜 버튼 -->
             <ImageButton
                 android:id="@+id/btnFavorite"
-                android:layout_width="36dp"
-                android:layout_height="36dp"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentTop="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:background="?attr/selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_heart_selector"
                 android:contentDescription="찜 버튼"
-                android:padding="6dp"
-                android:scaleType="centerInside" />
-        </RelativeLayout>
+                android:padding="8dp" />
+        </LinearLayout>
 
-        <!-- 하단 버튼 -->
+        <!-- 버튼 영역 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:orientation="horizontal"
-            android:gravity="center"
             android:weightSum="2"
-            android:layout_marginHorizontal="4dp">
+            android:gravity="center">
 
             <Button
                 android:id="@+id/btnReserve"
@@ -102,8 +92,8 @@
                 android:text="예약하기"
                 android:textColor="@android:color/white"
                 android:backgroundTint="@color/blue_500"
-                android:layout_marginEnd="8dp"
-                style="@style/Widget.MaterialComponents.Button" />
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_marginEnd="8dp" />
 
             <Button
                 android:id="@+id/btnDetails"
@@ -114,8 +104,8 @@
                 android:textColor="@color/blue_500"
                 style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                 app:strokeColor="@color/blue_500"
-                app:strokeWidth="1dp" />
+                app:strokeWidth="1dp"
+                android:layout_marginStart="8dp" />
         </LinearLayout>
-
     </LinearLayout>
 </com.google.android.material.card.MaterialCardView>
