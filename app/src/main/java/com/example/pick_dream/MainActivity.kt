@@ -1,42 +1,56 @@
 package com.example.pick_dream
 
-import android.os.Bundle
-import com.google.android.material.bottomnavigation.BottomNavigationView
+import android.graphics.Paint
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.AppBarConfiguration
-import androidx.navigation.ui.setupActionBarWithNavController
-import androidx.navigation.ui.setupWithNavController
-import com.example.pick_dream.databinding.ActivityMainBinding
-import com.google.firebase.database.ktx.database
-import com.google.firebase.ktx.Firebase
+import android.os.Bundle
+import android.widget.TextView
+import android.content.Intent
+import androidx.cardview.widget.CardView
+import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var binding: ActivityMainBinding
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_main)
 
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        //상단바
+        setupToolbar()
 
-        val navView: BottomNavigationView = binding.navView
+        // 작성한 후기 버튼 연결
+        val reviewButton = findViewById<CardView>(R.id.reviewButtonCard)
+        reviewButton.setOnClickListener {
+            val intent = Intent(this, ReviewActivity::class.java)
+            startActivity(intent)
+        }
+        //문의처 버튼 연결
+        val inquiryCard = findViewById<CardView>(R.id.contactButtonCard)  // 문의처 카드 id로!
+        inquiryCard.setOnClickListener {
+            val intent = Intent(this, InquiryActivity::class.java)
+            startActivity(intent)
+        }
+        //설정 버튼 연결
+        val settingCard = findViewById<CardView>(R.id.settingButtonCard)
+        settingCard.setOnClickListener {
+            val intent = Intent(this, SettingActivity::class.java)
+            startActivity(intent)
+        }
+    }
 
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(
-            setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications
-            )
-        )
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+    private fun setupToolbar() {
+        val toolbar = findViewById<androidx.appcompat.widget.Toolbar>(R.id.toolbar)
+        setSupportActionBar(toolbar)
 
-        //firebase realtime database Test
-        val database = Firebase.database
-        val myRef = database.getReference("message")
-        myRef.setValue("Test message from Android app")
+        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayShowTitleEnabled(false)
+
+        toolbar.navigationIcon = ContextCompat.getDrawable(this, R.drawable.ic_baseline_arrow_back_24)
+
+        toolbar.setNavigationOnClickListener {
+            finish()
+        }
+
+        val logoutTextView = findViewById<TextView>(R.id.logoutTextView)
+        logoutTextView.paintFlags = logoutTextView.paintFlags or Paint.UNDERLINE_TEXT_FLAG
     }
 }
+
