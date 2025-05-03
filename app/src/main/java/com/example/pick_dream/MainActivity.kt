@@ -1,6 +1,8 @@
 package com.example.pick_dream
 
 import android.os.Bundle
+import android.view.LayoutInflater
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pick_dream.databinding.ActivityMainBinding
 import com.example.pick_dream.ui.FavoriteRoomsFragment
@@ -37,13 +39,18 @@ class MainActivity : AppCompatActivity() {
                         .replace(R.id.nav_host_fragment_activity_main, HomeFragment())
                         .commit()
                     supportActionBar?.title = "홈"
+                    // 커스텀 타이틀 제거
+                    binding.mainToolbar.removeAllViews()
                     true
                 }
                 R.id.navigation_favorites -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment_activity_main, FavoriteRoomsFragment())
                         .commit()
-                    supportActionBar?.title = "찜한 강의실"
+                    // 커스텀 타이틀 중앙에 표시
+                    binding.mainToolbar.removeAllViews()
+                    val customTitle = LayoutInflater.from(this).inflate(R.layout.toolbar_title, binding.mainToolbar, false)
+                    binding.mainToolbar.addView(customTitle)
                     true
                 }
                 R.id.navigation_profile -> {
@@ -51,6 +58,8 @@ class MainActivity : AppCompatActivity() {
                         .replace(R.id.nav_host_fragment_activity_main, ProfileFragment())
                         .commit()
                     supportActionBar?.title = "마이페이지"
+                    // 커스텀 타이틀 제거
+                    binding.mainToolbar.removeAllViews()
                     true
                 }
                 else -> false

@@ -125,7 +125,7 @@
                 android:layout_weight="1"
                 android:text="예약하기"
                 android:textColor="@android:color/white"
-                android:backgroundTint="@color/blue_500" />
+                android:backgroundTint="@color/primary_400" />
 
             <Button
                 android:id="@+id/btnDetails"
@@ -135,9 +135,10 @@
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
                 android:text="상세정보"
-                android:textColor="@color/blue_500"
-                app:strokeColor="@color/blue_500"
-                app:strokeWidth="1dp" />
+                android:textColor="@color/primary_400"
+                app:strokeColor="@color/primary_400"
+                app:strokeWidth="1dp"
+                android:backgroundTint="@color/primary_050" />
         </LinearLayout>
     </LinearLayout>
 

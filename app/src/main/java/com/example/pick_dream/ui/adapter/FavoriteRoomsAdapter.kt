@@ -1,5 +1,7 @@
 package com.example.pick_dream.ui.adapter
 
+import android.content.Intent
+import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,6 +11,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
 import com.example.pick_dream.data.model.Room
+import com.example.pick_dream.ui.TempActivity
 
 class FavoriteRoomsAdapter(private val rooms: List<Room>) :
     RecyclerView.Adapter<FavoriteRoomsAdapter.RoomViewHolder>() {
@@ -20,6 +23,7 @@ class FavoriteRoomsAdapter(private val rooms: List<Room>) :
         val features: TextView = view.findViewById(R.id.tvFacilities)
         val reserveBtn: Button = view.findViewById(R.id.btnReserve)
         val detailBtn: Button = view.findViewById(R.id.btnDetails)
+        val btnFavorite: View = view.findViewById(R.id.btnFavorite)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomViewHolder {
@@ -34,7 +38,23 @@ class FavoriteRoomsAdapter(private val rooms: List<Room>) :
         holder.name.text = room.name
         holder.number.text = room.number
         holder.features.text = room.features
-        // 버튼 클릭 이벤트 추가 가능
+        holder.btnFavorite.isSelected = true
+        // 클릭 시 하트 토글
+        holder.btnFavorite.setOnClickListener {
+            holder.btnFavorite.isSelected = !holder.btnFavorite.isSelected
+        }
+        // 예약하기 버튼 클릭 시 임시 Activity로 이동
+        holder.reserveBtn.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, TempActivity::class.java)
+            context.startActivity(intent)
+        }
+        // 상세정보 버튼 클릭 시 임시 Activity로 이동
+        holder.detailBtn.setOnClickListener {
+            val context = holder.itemView.context
+            val intent = Intent(context, TempActivity::class.java)
+            context.startActivity(intent)
+        }
     }
 
     override fun getItemCount() = rooms.size
