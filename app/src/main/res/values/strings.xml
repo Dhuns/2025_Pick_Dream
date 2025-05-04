@@ -3,4 +3,14 @@
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
-</resources>
+    <string name="toolbar_title">마이페이지</string>
+    <string name="user_name">사용자</string>
+    <string name="user_email">example@mail.com</string>
+    <string name="user_major">AI 컴퓨터공학부 컴퓨터공학전공</string>
+    <string name="user_id">2024123123</string>
+    <string name="written_reviews">작성한 후기</string>
+    <string name="contact">문의처</string>
+    <string name="setting">설정</string>
+    <string name="desc_settings_icon">설정 아이콘</string>
+    <string name="logout">로그아웃</string>
+    </resources>

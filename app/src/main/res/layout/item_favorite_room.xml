@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_margin="12dp"
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingTop="20dp"
+        android:paddingRight="20dp"
+        android:paddingBottom="16dp">
+
+        <!-- 상단: 이미지 + 텍스트/하트/기자재 설명 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <!-- 사진 -->
+            <ImageView
+                android:id="@+id/imgRoom"
+                android:layout_width="0dp"
+                android:layout_height="110dp"
+                android:layout_weight="1"
+                android:scaleType="centerCrop"
+                android:src="@drawable/sample_room"
+                android:background="@drawable/image_rounded_background"
+                android:clipToOutline="true" />
+
+            <!-- 텍스트/하트/기자재 설명 (수직) -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="0dp"
+                android:layout_weight="1.2"
+                android:paddingTop="2dp"
+                android:orientation="vertical">
+
+                <!-- 텍스트+하트 (ConstraintLayout) -->
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <LinearLayout
+                        android:id="@+id/textContainer"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintBottom_toBottomOf="parent">
+
+                        <TextView
+                            android:id="@+id/tvBuilding"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="덕문관 (5강의동)"
+                            android:textColor="@android:color/black"
+                            android:textSize="16sp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvRoomNumber"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="2dp"
+                            android:text="5022 강의실"
+                            android:textColor="@android:color/black"
+                            android:textSize="14sp" />
+                    </LinearLayout>
+
+                    <ImageButton
+                        android:id="@+id/btnFavorite"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="찜 버튼"
+                        android:padding="0dp"
+                        android:src="@drawable/ic_heart_selector" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <!-- 넓은 여백 -->
+
+                <!-- 기자재 설명 -->
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="25dp"
+                    android:background="@android:color/transparent" />
+
+                <TextView
+                    android:id="@+id/tvFacilities"
+                    android:layout_width="match_parent"
+                    android:layout_height="33dp"
+                    android:maxLines="2"
+                    android:text="빔프로젝터, 마이크, 콘센트, 스크린"
+                    android:textColor="@android:color/darker_gray"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 넓은 여백 -->
+
+        <!-- 하단 버튼 2개 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+
+            <Button
+                android:id="@+id/btnReserve"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="8dp"
+                android:layout_weight="1"
+                android:text="예약하기"
+                android:textColor="@android:color/white"
+                android:backgroundTint="@color/primary_400" />
+
+            <Button
+                android:id="@+id/btnDetails"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_weight="1"
+                android:text="상세정보"
+                android:textColor="@color/primary_400"
+                app:strokeColor="@color/primary_400"
+                app:strokeWidth="1dp"
+                android:backgroundTint="@color/primary_050" />
+        </LinearLayout>
+    </LinearLayout>
+
+    <!-- 카드 하단 여백을 아주 조금만 남기고 싶으면 -->
+</com.google.android.material.card.MaterialCardView>
