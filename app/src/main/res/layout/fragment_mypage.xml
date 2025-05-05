@@ -7,13 +7,28 @@
     android:layout_height="match_parent"
     android:background="#F8F9FE">
 
-    <!-- 툴바 -->
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/custom_toolbar" />
+    <!-- 상단 타이틀 영역 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:paddingHorizontal="16dp"
+        android:background="#3C5ABD"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="18dp"
+            android:text="마이페이지"
+            android:textSize="28sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+    </RelativeLayout>
 
     <!-- 콘텐츠: 스크롤 가능 -->
     <ScrollView
+        android:id="@+id/scrollView2"
         android:layout_width="match_parent"
         android:layout_height="800dp"
         android:layout_marginBottom="72dp"
