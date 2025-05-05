@@ -11,18 +11,19 @@
     <!-- 상단 타이틀 영역 -->
     <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="64dp"
+        android:layout_height="100dp"
         android:paddingHorizontal="16dp"
         android:background="#3C5ABD"
         android:paddingTop="8dp">
 
         <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="PickDream"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="18dp"
+            android:text="홈"
             android:textSize="28sp"
             android:textColor="@android:color/white"
-            android:layout_centerInParent="true"
             android:textStyle="bold" />
 
     </RelativeLayout>

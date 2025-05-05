@@ -5,6 +5,25 @@
     android:orientation="vertical"
     android:background="@color/primary_050">
 
+    <!-- 상단 타이틀 영역 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:paddingHorizontal="16dp"
+        android:background="#3C5ABD"
+        android:paddingTop="8dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:layout_marginTop="18dp"
+            android:text="찜한 강의실"
+            android:textSize="28sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+    </RelativeLayout>
+
     <!-- RecyclerView만 남긴다 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFavoriteRooms"
