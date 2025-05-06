@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pick_dream.R
 import com.example.pick_dream.databinding.FragmentNoticeBinding
 import com.example.pick_dream.databinding.ItemNoticeBinding
 
@@ -18,6 +21,17 @@ data class Notice(
     val date: String,
     val content: String
 )
+
+// DiffUtil
+class NoticeDiffCallback : DiffUtil.ItemCallback<Notice>() {
+    override fun areItemsTheSame(oldItem: Notice, newItem: Notice): Boolean {
+        return oldItem.id == newItem.id
+    }
+
+    override fun areContentsTheSame(oldItem: Notice, newItem: Notice): Boolean {
+        return oldItem == newItem
+    }
+}
 
 // 어댑터
 class NoticeAdapter(
@@ -42,17 +56,6 @@ class NoticeAdapter(
     }
 }
 
-// DiffUtil
-class NoticeDiffCallback : DiffUtil.ItemCallback<Notice>() {
-    override fun areItemsTheSame(oldItem: Notice, newItem: Notice): Boolean {
-        return oldItem.id == newItem.id
-    }
-
-    override fun areContentsTheSame(oldItem: Notice, newItem: Notice): Boolean {
-        return oldItem == newItem
-    }
-}
-
 // 프래그먼트
 class NoticeFragment : Fragment() {
 
@@ -71,6 +74,11 @@ class NoticeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        // 뒤로가기 버튼 클릭 시 HomeFragment로 이동
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
 
         adapter = NoticeAdapter { notice ->
             // TODO: 상세화면 이동 구현

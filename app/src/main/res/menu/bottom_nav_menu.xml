@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-        android:id="@+id/navigation_home"
+        android:id="@+id/homeFragment"
         android:icon="@drawable/ic_home"
         android:title="홈" />
 
     <item
-        android:id="@+id/navigation_favorite"
+        android:id="@+id/favoriteFragment"
         android:icon="@drawable/ic_favorite"
         android:title="찜한 강의실" />
 
     <item
-        android:id="@+id/navigation_mypage"
+        android:id="@+id/mypageFragment"
         android:icon="@drawable/ic_mypage"
         android:title="마이페이지" />
 
