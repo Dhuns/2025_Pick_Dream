@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android" xmlns:app="http://schemas.android.com/apk/res-auto" android:id="@+id/nav_graph" app:startDestination="@id/noticeFragment">
+    <fragment android:id="@+id/noticeFragment" android:name="com.example.pick_dream.ui.home.notice.NoticeFragment" android:label="공지사항 목록">
+        <action android:id="@+id/action_noticeFragment_to_noticeDetailFragment" app:destination="@id/noticeDetailFragment" />
+    </fragment>
+    <fragment android:id="@+id/noticeDetailFragment" android:name="com.example.pickdream.ui.home.notice.NoticeDetailFragment" android:label="공지사항 상세">
+        <argument android:name="title" app:argType="string" />
+        <argument android:name="date" app:argType="string" />
+        <argument android:name="content" app:argType="string" />
+    </fragment>
+</navigation>
