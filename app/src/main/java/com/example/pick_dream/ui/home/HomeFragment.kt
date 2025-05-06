@@ -9,8 +9,10 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import com.example.pick_dream.R
 import com.example.pick_dream.databinding.FragmentHomeBinding
+import com.example.pick_dream.ui.home.reservation.ReservationFragment
 
 class HomeFragment : Fragment() {
 
@@ -68,7 +70,10 @@ class HomeFragment : Fragment() {
                 // 검색 기능 실행
             }
             R.id.btn_inquiry -> {
-                // 조회 기능 실행
+                requireActivity().supportFragmentManager.beginTransaction()
+                    .replace(R.id.nav_host_fragment_activity_main, ReservationFragment())
+                    .addToBackStack(null)
+                    .commit()
             }
             R.id.btn_map -> {
                 // 지도 기능 실행
