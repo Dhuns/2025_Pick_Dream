@@ -21,7 +21,7 @@
             android:layout_height="match_parent"
             android:gravity="center"
             android:layout_marginTop="18dp"
-            android:text="홈"
+            android:text="PickDream"
             android:textSize="28sp"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
@@ -40,7 +40,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="vertical"
+            android:gravity="top">
 
             <!-- 공지사항 영역 -->
             <LinearLayout
@@ -83,6 +84,12 @@
                     app:backgroundTint="#CBE1FD"
                     android:layout_marginStart="5dp"/>
             </LinearLayout>
+
+            <!-- Spacer: 위에 빈 공간 추가 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="35dp"
+                android:layout_weight="1" />
 
             <!-- 현재 예약 정보 -->
             <LinearLayout
@@ -190,6 +197,11 @@
 
             </LinearLayout>
 
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:layout_weight="1" />
+
             <!-- 기능 버튼들: 2x2 GridLayout -->
             <GridLayout
                 android:layout_width="match_parent"
@@ -217,8 +229,8 @@
                     android:focusable="true">
 
                     <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="80dp"
+                        android:layout_height="90dp"
                         android:src="@drawable/ic_llm"
                         android:layout_marginBottom="8dp" />
 
@@ -255,8 +267,8 @@
                     android:focusable="true">
 
                     <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="80dp"
+                        android:layout_height="90dp"
                         android:src="@drawable/ic_search"
                         android:layout_marginBottom="8dp" />
 
@@ -293,8 +305,8 @@
                     android:focusable="true">
 
                     <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="80dp"
+                        android:layout_height="90dp"
                         android:src="@drawable/ic_check"
                         android:layout_marginBottom="8dp" />
 
@@ -331,8 +343,8 @@
                     android:focusable="true">
 
                     <ImageView
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
+                        android:layout_width="80dp"
+                        android:layout_height="90dp"
                         android:src="@drawable/ic_map"
                         android:layout_marginBottom="8dp" />
 

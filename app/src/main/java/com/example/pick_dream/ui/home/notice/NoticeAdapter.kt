@@ -2,7 +2,7 @@ package com.example.pickdream.ui.home.notice
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.recyclerview.widget.RecyclerView   // ← 이 줄 추가!
+import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.databinding.ItemNoticeBinding
 
 class NoticeAdapter(
@@ -31,7 +31,6 @@ class NoticeAdapter(
 
     override fun getItemCount() = items.size
 
-    // 데이터 갱신 함수
     fun updateItems(newItems: List<Notice>) {
         items = newItems
         notifyDataSetChanged()

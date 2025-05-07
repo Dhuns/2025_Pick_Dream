@@ -1,16 +1,10 @@
 package com.example.pick_dream
 
-
 import android.os.Bundle
-import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
-import com.example.pick_dream.R
+import androidx.navigation.findNavController
+import androidx.navigation.ui.setupWithNavController
 import com.example.pick_dream.databinding.ActivityMainBinding
-import com.example.pick_dream.ui.mypage.MypageFragment
-import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.example.pickdream.ui.home.HomeFragment
-import com.example.pick_dream.ui.FavoriteFragment
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,6 +15,9 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        // Navigation Component와 BottomNavigationView 연결
+        //val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        //binding.navView.setupWithNavController(navController)
         // 툴바를 앱 전체의 기본 ActionBar로 설정
         // setSupportActionBar(binding.mainToolbar)
 
@@ -72,5 +69,3 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-    }
-}

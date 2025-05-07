@@ -50,12 +50,9 @@ class HomeFragment : Fragment() {
                 onButtonClick(it)
             }
         }
-        // 공지사항 전체보기 버튼 클릭 시 NoticeFragment로 이동
+        // 공지사항 전체보기 버튼 클릭 시 NoticeFragment로 이동 (Navigation Component 사용)
         binding.btnNotice.setOnClickListener {
-            parentFragmentManager.beginTransaction()
-                .replace(R.id.nav_host_fragment_activity_main, NoticeFragment())
-                .addToBackStack(null)
-                .commit()
+            findNavController().navigate(R.id.noticeFragment)
         }
     }
 
