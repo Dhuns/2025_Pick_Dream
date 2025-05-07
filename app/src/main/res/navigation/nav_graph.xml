@@ -32,4 +32,8 @@
         android:id="@+id/homeFragment"
         android:name="com.example.pickdream.ui.home.HomeFragment"
         android:label="홈" />
+
+        <action
+            android:id="@+id/action_homeFragment_to_noticeFragment"
+            app:destination="@id/noticeFragment" />
 </navigation>

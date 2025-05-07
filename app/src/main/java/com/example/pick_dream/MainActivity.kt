@@ -5,6 +5,10 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.findNavController
 import androidx.navigation.ui.setupWithNavController
 import com.example.pick_dream.databinding.ActivityMainBinding
+import com.example.pick_dream.ui.FavoriteFragment
+import com.example.pick_dream.ui.mypage.MypageFragment
+import com.example.pickdream.ui.home.HomeFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,6 +19,7 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         // Navigation Component와 BottomNavigationView 연결
         //val navController = findNavController(R.id.nav_host_fragment_activity_main)
         //binding.navView.setupWithNavController(navController)
@@ -22,13 +27,13 @@ class MainActivity : AppCompatActivity() {
         // setSupportActionBar(binding.mainToolbar)
 
         // 기본 Fragment 설정
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.nav_host_fragment_activity_main, HomeFragment())
-            .commit()
+//        supportFragmentManager.beginTransaction()
+//            .replace(R.id.nav_host_fragment_activity_main, HomeFragment())
+//            .commit()
         // supportActionBar?.title = "홈"
 
         val navView: BottomNavigationView = binding.navView
-        
+
         // 초기 아이콘 설정
         navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home_filled)
         navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite)
@@ -46,16 +51,19 @@ class MainActivity : AppCompatActivity() {
                     navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage)
                     true
                 }
+
                 R.id.navigation_favorite -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment_activity_main, FavoriteFragment())
                         .commit()
                     // 아이콘 변경
                     navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home)
-                    navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite_filled)
+                    navView.menu.findItem(R.id.navigation_favorite)
+                        .setIcon(R.drawable.ic_favorite_filled)
                     navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage)
                     true
                 }
+
                 R.id.navigation_mypage -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment_activity_main, MypageFragment())
@@ -63,9 +71,13 @@ class MainActivity : AppCompatActivity() {
                     // 아이콘 변경
                     navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home)
                     navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite)
-                    navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage_filled)
+                    navView.menu.findItem(R.id.navigation_mypage)
+                        .setIcon(R.drawable.ic_mypage_filled)
                     true
                 }
+
                 else -> false
             }
         }
+    }
+}
