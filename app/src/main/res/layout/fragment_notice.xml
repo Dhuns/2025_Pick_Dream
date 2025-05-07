@@ -6,7 +6,6 @@
     android:layout_height="match_parent"
     android:background="#F5F8FF">
 
-    <!-- 상단 바 -->
     <View
         android:id="@+id/topBar"
         android:layout_width="0dp"
@@ -16,7 +15,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- 뒤로가기 -->
     <ImageButton
         android:id="@+id/btnBack"
         android:layout_width="40dp"
@@ -28,7 +26,6 @@
         app:layout_constraintBottom_toBottomOf="@id/topBar"
         android:layout_marginStart="8dp"/>
 
-    <!-- 타이틀 -->
     <TextView
         android:id="@+id/tvTitle"
         android:layout_width="wrap_content"
@@ -43,11 +40,10 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginTop="40dp"/>
 
-    <!-- 검색창 -->
     <androidx.cardview.widget.CardView
         android:id="@+id/cardSearch"
         android:layout_width="0dp"
-        android:layout_height="48dp"
+        android:layout_height="60dp"
         app:cardCornerRadius="16dp"
         app:cardElevation="2dp"
         android:layout_marginTop="16dp"
@@ -79,11 +75,22 @@
                 android:textColor="#222222"
                 android:textColorHint="#B0B0B0"
                 android:paddingStart="8dp"
-                android:textSize="15sp"/>
+                android:textSize="15sp"
+                android:inputType="text"/>
+
+            <Button
+                android:id="@+id/btnSearch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="검색"
+                android:background="?attr/selectableItemBackground"
+                android:textColor="#3C5ABD"
+                android:textSize="15sp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="0dp"/>
         </LinearLayout>
     </androidx.cardview.widget.CardView>
 
-    <!-- 공지사항 리스트 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvNotice"
         android:layout_width="0dp"
@@ -95,7 +102,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/paginationLayout"/>
 
-    <!-- 페이지네이션 -->
     <LinearLayout
         android:id="@+id/paginationLayout"
         android:layout_width="wrap_content"

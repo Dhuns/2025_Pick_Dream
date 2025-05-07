@@ -24,9 +24,16 @@ class NoticeDetailFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding.tvNoticeTitle.text = args.title
         binding.tvNoticeDate.text = args.date
         binding.tvNoticeContent.text = args.content  // content도 함께 넘길 경우
+
+        // 닫기 버튼 클릭 시 이전 화면(공지사항 목록)으로 이동
+        binding.btnClose.setOnClickListener {
+            requireActivity().onBackPressedDispatcher.onBackPressed()
+            // 또는 findNavController().popBackStack() 도 사용 가능
+        }
     }
 
     override fun onDestroyView() {
