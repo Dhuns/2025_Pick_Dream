@@ -20,16 +20,16 @@ class LoginActivity : AppCompatActivity() {
 
         auth = FirebaseAuth.getInstance()
 
-        val emailEditText = findViewById<EditText>(R.id.et_email)
-        val passwordEditText = findViewById<EditText>(R.id.et_password)
-        val loginButton = findViewById<Button>(R.id.btn_login)
+        val emailEditText = findViewById<EditText>(R.id.editTextId)
+        val passwordEditText = findViewById<EditText>(R.id.editTextPassword)
+        val loginButton = findViewById<Button>(R.id.buttonLogin)
 
         loginButton.setOnClickListener {
             val id = emailEditText.text.toString().trim()
             val password = passwordEditText.text.toString().trim()
 
             if (id.isEmpty() || password.isEmpty()) {
-                Toast.makeText(this, "아이디와 비밀번호를 입력하세요", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "학번과 비밀번호를 입력하세요", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
 

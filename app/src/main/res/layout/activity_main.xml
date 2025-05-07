@@ -26,9 +26,20 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
+        android:minHeight="70dp"
+        android:elevation="8dp"
+        android:paddingStart="18dp"
+        android:paddingEnd="18dp"
+        app:itemHorizontalTranslationEnabled="false"
         app:menu="@menu/bottom_nav_menu"
+        app:itemIconTint="@color/selector_bottom_nav"
+        app:itemTextColor="@color/selector_bottom_nav"
+        app:itemTextAppearanceActive="@style/BottomNavText"
+        app:itemTextAppearanceInactive="@style/BottomNavText"
+        app:itemIconSize="28dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:itemBackground="@drawable/bottom_nav_item_background" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

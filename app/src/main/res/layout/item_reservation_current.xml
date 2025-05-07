@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:background="@android:color/white"
+    android:padding="16dp"
+    android:layout_marginBottom="24dp"
+    android:elevation="2dp"
+    android:clipToOutline="true"
+    android:backgroundTint="#FFFFFF"
+    android:layout_gravity="center">
+
+    <!-- 강의실 이미지 -->
+    <ImageView
+        android:id="@+id/imgRoom"
+        android:layout_width="match_parent"
+        android:layout_height="120dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/sample_room"
+        android:background="@drawable/bg_image_rounded"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- 강의실명, 정보 -->
+    <TextView
+        android:id="@+id/tvRoomName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="덕문관 (5강의동)\n5022 강의실"
+        android:textColor="#222222"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="4dp"/>
+
+    <TextView
+        android:id="@+id/tvDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="2025년 4월 22일 (월)"
+        android:textColor="#666666"
+        android:textSize="13sp"/>
+
+    <TextView
+        android:id="@+id/tvTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="오후 3:00 - 오후 5:00"
+        android:textColor="#666666"
+        android:textSize="13sp"
+        android:layout_marginBottom="12dp"/>
+
+    <!-- 버튼 영역 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center">
+
+        <Button
+            android:id="@+id/btnCancel"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="예약취소"
+            android:backgroundTint="#5D5FEF"
+            android:textColor="@android:color/white"
+            android:layout_marginEnd="8dp"/>
+
+        <Button
+            android:id="@+id/btnConfirm"
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:text="예약확인"
+            android:backgroundTint="#E3E6F3"
+            android:textColor="#5D5FEF"/>
+    </LinearLayout>
+</LinearLayout> 
