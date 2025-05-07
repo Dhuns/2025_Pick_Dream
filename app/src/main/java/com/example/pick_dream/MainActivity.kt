@@ -16,7 +16,7 @@ class MainActivity : AppCompatActivity() {
         setContentView(binding.root)
 
         // Navigation Component와 BottomNavigationView 연결
-        val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        binding.navView.setupWithNavController(navController)
+        //val navController = findNavController(R.id.nav_host_fragment_activity_main)
+        //binding.navView.setupWithNavController(navController)
     }
 }
