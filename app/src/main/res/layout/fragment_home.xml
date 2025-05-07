@@ -59,12 +59,29 @@
                     android:layout_marginEnd="8dp" />
 
                 <TextView
-                    android:layout_width="wrap_content"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
+                    android:layout_weight="1"
                     android:text="[공지사항] 덕문관 5001 강의실 대여 불가 안내"
                     android:textSize="14sp"
                     android:textColor="#666666" />
 
+                <!-- 공지사항 전체보기 버튼 -->
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnNotice"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="3dp"
+                    android:paddingRight="3dp"
+                    android:paddingTop="1dp"
+                    android:paddingBottom="1dp"
+                    android:minWidth="1dp"
+                    android:minHeight="1dp"
+                    android:text="전체보기"
+                    android:textSize="10sp"
+                    android:textColor="#4267B2"
+                    app:backgroundTint="#CBE1FD"
+                    android:layout_marginStart="5dp"/>
             </LinearLayout>
 
             <!-- 현재 예약 정보 -->
@@ -101,8 +118,7 @@
                 android:layout_marginHorizontal="16dp"
                 android:layout_marginBottom="16dp"
                 android:background="@drawable/rounded_button_3"
-                android:padding="16dp"
-                android:radius="12dp">
+                android:padding="16dp">
 
                 <!-- 방 이미지 with 퍼센트 -->
                 <FrameLayout
@@ -174,31 +190,35 @@
 
             </LinearLayout>
 
-            <!-- 기능 버튼들 -->
-            <LinearLayout
+            <!-- 기능 버튼들: 2x2 GridLayout -->
+            <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="16dp">
+                android:layout_marginBottom="32dp"
+                android:rowCount="2"
+                android:columnCount="2"
+                android:alignmentMode="alignMargins"
+                android:useDefaultMargins="true">
 
                 <!-- LLM 버튼 -->
                 <LinearLayout
                     android:id="@+id/btn_llm"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_row="0"
+                    android:layout_column="0"
+                    android:layout_columnWeight="1"
                     android:orientation="vertical"
                     android:gravity="center"
                     android:padding="16dp"
-                    android:layout_marginEnd="8dp"
                     android:background="@drawable/rounded_button"
                     android:clickable="true"
                     android:focusable="true">
 
                     <ImageView
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:src="@drawable/ic_llm"
                         android:layout_marginBottom="8dp" />
 
@@ -224,7 +244,9 @@
                     android:id="@+id/btn_search"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_row="0"
+                    android:layout_column="1"
+                    android:layout_columnWeight="1"
                     android:orientation="vertical"
                     android:gravity="center"
                     android:padding="16dp"
@@ -233,8 +255,8 @@
                     android:focusable="true">
 
                     <ImageView
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:src="@drawable/ic_search"
                         android:layout_marginBottom="8dp" />
 
@@ -255,32 +277,24 @@
 
                 </LinearLayout>
 
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginHorizontal="16dp"
-                android:layout_marginBottom="80dp">
-
                 <!-- 조회 버튼 -->
                 <LinearLayout
                     android:id="@+id/btn_inquiry"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_row="1"
+                    android:layout_column="0"
+                    android:layout_columnWeight="1"
                     android:orientation="vertical"
                     android:gravity="center"
                     android:padding="16dp"
-                    android:layout_marginEnd="8dp"
                     android:background="@drawable/rounded_button_2"
                     android:clickable="true"
                     android:focusable="true">
 
                     <ImageView
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:src="@drawable/ic_check"
                         android:layout_marginBottom="8dp" />
 
@@ -306,7 +320,9 @@
                     android:id="@+id/btn_map"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
+                    android:layout_row="1"
+                    android:layout_column="1"
+                    android:layout_columnWeight="1"
                     android:orientation="vertical"
                     android:gravity="center"
                     android:padding="16dp"
@@ -315,8 +331,8 @@
                     android:focusable="true">
 
                     <ImageView
-                        android:layout_width="72dp"
-                        android:layout_height="72dp"
+                        android:layout_width="48dp"
+                        android:layout_height="48dp"
                         android:src="@drawable/ic_map"
                         android:layout_marginBottom="8dp" />
 
@@ -337,10 +353,11 @@
 
                 </LinearLayout>
 
-            </LinearLayout>
+            </GridLayout>
 
         </LinearLayout>
-
     </ScrollView>
 
 </LinearLayout>
+
+

@@ -3,28 +3,43 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:padding="32dp"
     android:gravity="center"
-    android:padding="24dp">
+    android:background="#FFFFFF">
 
+    <!-- 로고 입력 -->
+    <ImageView
+        android:id="@+id/imageLogo"
+        android:layout_width="120dp"
+        android:layout_height="120dp"
+        android:src="@drawable/logo_main" /> <!-- 이미지 이름 -->
+
+
+    <!-- 아이디 입력 -->
     <EditText
-        android:id="@+id/et_email"
+        android:id="@+id/editTextId"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="이메일"
-        android:inputType="textEmailAddress"
-        android:layout_marginBottom="16dp" />
+        android:hint="학번"
+        android:inputType="text" />
 
+    <!-- 비밀번호 입력 -->
     <EditText
-        android:id="@+id/et_password"
+        android:id="@+id/editTextPassword"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="비밀번호"
         android:inputType="textPassword"
-        android:layout_marginBottom="24dp" />
+        android:layout_marginTop="16dp" />
 
+    <!-- 로그인 버튼 -->
     <Button
-        android:id="@+id/btn_login"
+        android:id="@+id/buttonLogin"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="로그인" />
+        android:text="로그인"
+        android:layout_marginTop="24dp"
+        android:backgroundTint="#6391ED"
+        android:textColor="#FFFFFF" />
+
 </LinearLayout>
