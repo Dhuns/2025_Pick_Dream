@@ -6,9 +6,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import com.example.pick_dream.databinding.FragmentMypageBinding
+import androidx.fragment.app.viewModels
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+
+import android.util.Log
+
+
 
 
 
@@ -16,11 +22,31 @@ class MypageFragment : Fragment() {
 
     private var _binding: FragmentMypageBinding? = null
     private val binding get() = _binding!!
+    private val viewModel: MyPageViewModel by viewModels()
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        // 🔄 ViewModel의 사용자 데이터 관찰
+        viewModel.userData.observe(viewLifecycleOwner) { user ->
+            binding.userName.text = user.name
+            binding.userEmail.text = user.email
+            binding.userMajor.text = user.major
+            binding.userId.text = user.studentId
+            // phone도 있다면 추가
+        }
+
+        // 🔄 사용자 데이터 불러오기
+        viewModel.loadUserData()
+
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
+
     ): View {
         _binding = FragmentMypageBinding.inflate(inflater, container, false)
         val view = binding.root
@@ -56,8 +82,6 @@ class MypageFragment : Fragment() {
             val intent = Intent(requireContext(), com.example.pick_dream.ui.mypage.setting.SettingActivity::class.java)
             startActivity(intent)
         }
-
-
         return view
     }
 
