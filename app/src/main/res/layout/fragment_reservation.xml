@@ -76,22 +76,23 @@
                 android:textSize="14sp"
                 android:layout_marginBottom="12dp" />
 
-            <!-- 이용 완료 리스트 -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvHistory"
+            <!-- 이용 완료 리스트 (리니어레이아웃으로 동적 추가) -->
+            <LinearLayout
+                android:id="@+id/layoutHistoryList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:overScrollMode="never"
+                android:orientation="vertical"
                 android:layout_marginBottom="16dp" />
 
-            <!-- 페이지네이션(임시) -->
+            <!-- 페이지네이션(목차) -->
             <LinearLayout
                 android:id="@+id/layoutPagination"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
                 android:gravity="center"
-                android:layout_marginTop="8dp">
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="16dp">
                 <!-- 페이지 번호는 동적으로 추가 -->
             </LinearLayout>
         </LinearLayout>

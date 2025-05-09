@@ -17,6 +17,7 @@ import com.example.pick_dream.R
 import com.example.pick_dream.databinding.FragmentReservationBinding
 import com.example.pick_dream.databinding.ItemReservationCurrentBinding
 import com.example.pick_dream.databinding.ItemReservationHistoryBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class ReservationFragment : Fragment() {
     private var _binding: FragmentReservationBinding? = null
@@ -48,15 +49,11 @@ class ReservationFragment : Fragment() {
             requireActivity().onBackPressed()
         }
         setupCurrentReservationCard()
-        setupHistoryRecyclerView()
+        setupHistoryList()
         setupPagination()
     }
 
     private fun setupCurrentReservationCard() {
-        // include로 삽입된 현재 예약 카드의 뷰를 찾아 바인딩
-        val parent = binding.root.findViewById<ViewGroup>(android.R.id.content) ?: binding.root
-        val card = parent.findViewById<View>(R.id.imgRoom)?.rootView ?: binding.root
-        // 혹은 ViewBinding 사용 시 binding.root.findViewById로 직접 접근
         val imgRoom = binding.root.findViewById<ImageView>(R.id.imgRoom)
         val tvRoomName = binding.root.findViewById<TextView>(R.id.tvRoomName)
         val tvDate = binding.root.findViewById<TextView>(R.id.tvDate)
@@ -73,29 +70,53 @@ class ReservationFragment : Fragment() {
             Toast.makeText(requireContext(), "예약취소 클릭", Toast.LENGTH_SHORT).show()
         }
         btnConfirm?.setOnClickListener {
-            Toast.makeText(requireContext(), "예약확인 클릭", Toast.LENGTH_SHORT).show()
+            val bottomSheet = ReservationDetailBottomSheet.newInstance(
+                room = currentReservation.roomName,
+                date = currentReservation.date,
+                time = currentReservation.time,
+                people = "6",
+                facilities = "전자칠판, 콘센트, 와이파이",
+                reserver = "김예시 (2024123123)"
+            )
+            bottomSheet.show(childFragmentManager, "ReservationDetailBottomSheet")
         }
     }
 
-    private fun setupHistoryRecyclerView() {
-        binding.rvHistory.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = HistoryAdapter(historyList)
+    private fun setupHistoryList() {
+        val container = binding.root.findViewById<LinearLayout>(R.id.layoutHistoryList)
+        container?.removeAllViews()
+        for (item in historyList) {
+            val itemView = LayoutInflater.from(context).inflate(R.layout.item_reservation_history, container, false)
+            itemView.findViewById<ImageView>(R.id.imgRoom).setImageResource(item.imageRes)
+            itemView.findViewById<TextView>(R.id.tvRoomName).text = item.roomName
+            itemView.findViewById<TextView>(R.id.tvDate).text = item.date
+            itemView.findViewById<TextView>(R.id.tvTime).text = item.time
+            container?.addView(itemView)
         }
     }
 
     private fun setupPagination() {
         val pageCount = 5
-        val layout = binding.layoutPagination
-        layout.removeAllViews()
+        val layout = binding.root.findViewById<LinearLayout>(R.id.layoutPagination)
+        layout?.removeAllViews()
         for (i in 1..pageCount) {
             val tv = TextView(requireContext())
             tv.text = i.toString()
             tv.textSize = 16f
             tv.setPadding(16, 8, 16, 8)
             tv.setTextColor(if (i == 1) 0xFF222222.toInt() else 0xFFB0B0B0.toInt())
-            layout.addView(tv)
+            layout?.addView(tv)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        activity?.findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.GONE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        activity?.findViewById<BottomNavigationView>(R.id.nav_view)?.visibility = View.VISIBLE
     }
 
     override fun onDestroyView() {
