@@ -1,17 +1,372 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#F8F9FE">
 
-    <TextView
-        android:id="@+id/tvReviewTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="작성한 후기"
-        android:textSize="24sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="32dp"/>
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <!-- 상단 타이틀 -->
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:background="#3C5ABD"
+        android:paddingTop="8dp"
+        android:paddingHorizontal="16dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginTop="16dp"
+            android:gravity="center"
+            android:text="작성한 후기"
+            android:textSize="28sp"
+            android:textColor="@android:color/white"
+            android:textStyle="bold" />
+
+        <!-- 뒤로가기 -->
+        <ImageButton
+            android:id="@+id/backButton"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginTop="30dp"
+            android:padding="12dp"
+            android:src="@drawable/ic_arrow_back"
+            android:background="@android:color/transparent"
+            android:contentDescription="뒤로가기" />
+
+    </RelativeLayout>
+
+
+    <!-- 스크롤 가능한 콘텐츠 -->
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="100dp"
+        android:fillViewport="true">
+
+        <!-- 이 LinearLayout 안에 모든 콘텐츠를 넣음 -->
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- sortOption 텍스트 -->
+            <TextView
+                android:id="@+id/sortOption"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:text="최신순"
+                android:textSize="16sp"
+                android:textColor="#222222"
+                android:drawableEnd="@drawable/ic_arrow_drop_down"
+                android:drawablePadding="4dp"
+                android:paddingVertical="8dp"
+                android:paddingHorizontal="4dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop ="8dp"
+                android:clickable="true"
+                android:focusable="true"
+                android:background="?attr/selectableItemBackgroundBorderless" />
+
+            <!-- 카드 뷰 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="20dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp"
+                android:background="#FFFFFF">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="덕문관 (5강의동) 5022 강의실"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="#222222"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2025년 4월 14일 (월) / 오후 3:00 ~ 오후 5:00"
+                        android:textSize="12sp"
+                        android:textColor="#555555"
+                        android:layout_marginTop="4dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@drawable/rounded_box"
+                        android:layout_marginTop="12dp"
+                        android:padding="12dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_edit"
+                            app:tint="#5A5ACF"
+                            android:layout_gravity="top"/>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="발표 리허설 / 전자칠판, 마이크"
+                                android:textSize="13sp"
+                                android:textColor="#555555"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="발표 준비하기에 좋았어요."
+                                android:textSize="15sp"
+                                android:textColor="#000000"
+                                android:textStyle="bold"
+                                android:layout_marginTop="6dp"/>
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp">
+
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_border"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="4.0/5.0"
+                                    android:textSize="14sp"
+                                    android:textColor="#8E8E8E"
+                                    android:layout_marginStart="6dp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 두 번째 카드 뷰 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="20dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp"
+                android:background="#FFFFFF">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="진리관 (1강의동) 104호"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="#222222"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="2025년 4월 10일 (목) / 오전 9:00 ~ 오전 11:00"
+                        android:textSize="12sp"
+                        android:textColor="#555555"
+                        android:layout_marginTop="4dp"/>
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@drawable/rounded_box"
+                        android:layout_marginTop="12dp"
+                        android:padding="12dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_edit"
+                            app:tint="#5A5ACF"
+                            android:layout_gravity="top"/>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="토론 준비 / 빔프로젝터"
+                                android:textSize="13sp"
+                                android:textColor="#555555"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="토론하기에 아주 좋은 분위기였어요."
+                                android:textSize="15sp"
+                                android:textColor="#000000"
+                                android:textStyle="bold"
+                                android:layout_marginTop="6dp"/>
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp">
+
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_border"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_border"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="3.0/5.0"
+                                    android:textSize="14sp"
+                                    android:textColor="#8E8E8E"
+                                    android:layout_marginStart="6dp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+            <!-- 세 번째 카드 뷰 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="12dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginTop="20dp"
+                app:cardElevation="4dp"
+                app:cardCornerRadius="8dp"
+                android:background="#FFFFFF">
+
+                <LinearLayout
+                    android:orientation="vertical"
+                    android:padding="20dp"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="육영관(8강의동) 203호"
+                        android:textStyle="bold"
+                        android:textSize="18sp"
+                        android:textColor="#222222"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="2025년 4월 7일 (월) / 오후 1:00 ~ 오후 2:30"
+                        android:textColor="#555555"
+                        android:textSize="12sp" />
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal"
+                        android:background="@drawable/rounded_box"
+                        android:layout_marginTop="12dp"
+                        android:padding="12dp"
+                        android:layout_marginBottom="4dp"
+                        android:layout_marginLeft="2dp"
+                        android:layout_marginRight="2dp">
+
+                        <ImageView
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:src="@drawable/ic_edit"
+                            app:tint="#5A5ACF"
+                            android:layout_gravity="top"/>
+
+                        <LinearLayout
+                            android:orientation="vertical"
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:layout_marginStart="8dp">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="스터디 / 화이트보드, 조용함"
+                                android:textSize="13sp"
+                                android:textColor="#555555"/>
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="조용해서 집중 잘 됐어요."
+                                android:textSize="15sp"
+                                android:textColor="#000000"
+                                android:textStyle="bold"
+                                android:layout_marginTop="6dp"/>
+
+                            <LinearLayout
+                                android:orientation="horizontal"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="8dp">
+
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <ImageView android:layout_width="18dp" android:layout_height="18dp" android:src="@drawable/ic_star_full"/>
+                                <TextView
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:text="5.0/5.0"
+                                    android:textSize="14sp"
+                                    android:textColor="#8E8E8E"
+                                    android:layout_marginStart="6dp"/>
+                            </LinearLayout>
+                        </LinearLayout>
+                    </LinearLayout>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -44,7 +44,7 @@
         android:layout_width="100dp"
         android:layout_height="100dp"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="125dp"
+        android:layout_marginTop="173dp"
         android:src="@drawable/ic_people"
         android:scaleType="centerCrop" />
 
@@ -53,16 +53,16 @@
         android:id="@+id/userInfoCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="240dp"
+        android:layout_marginTop="314dp"
         android:layout_marginStart="48dp"
         android:layout_marginEnd="48dp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
+        app:cardElevation="4dp"
         android:backgroundTint="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="145dp"
+            android:layout_height="wrap_content"
             android:orientation="vertical"
             android:padding="24dp"
             android:gravity="center_horizontal">
@@ -113,16 +113,16 @@
         android:id="@+id/reviewButtonCard"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="395dp"
+        android:layout_marginTop="473dp"
         android:layout_marginStart="48dp"
         android:layout_marginEnd="48dp"
         app:cardCornerRadius="12dp"
-        app:cardElevation="8dp"
+        app:cardElevation="4dp"
         android:backgroundTint="@android:color/white">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="125dp"
+            android:layout_height="wrap_content"
             android:gravity="center"
             android:orientation="vertical"
             android:padding="24dp">
@@ -151,7 +151,7 @@
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:gravity="center"
-        android:layout_marginTop="525dp"
+        android:layout_marginTop="607dp"
         android:layout_marginStart="41dp"
         android:layout_marginEnd="41dp"
         android:weightSum="2">
@@ -163,14 +163,14 @@
             android:layout_weight="1"
             android:layout_margin="6dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="8dp"
+            app:cardElevation="4dp"
             android:backgroundTint="@android:color/white">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
                 android:gravity="center"
+                android:orientation="vertical"
                 android:padding="16dp">
 
                 <ImageView
@@ -181,11 +181,11 @@
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
                     android:text="@string/contact"
-                    android:textSize="14sp"
                     android:textColor="#000000"
-                    android:textStyle="bold"
-                    android:layout_marginTop="8dp" />
+                    android:textSize="16sp"
+                    android:textStyle="bold" />
             </LinearLayout>
         </androidx.cardview.widget.CardView>
 
@@ -196,7 +196,7 @@
             android:layout_weight="1"
             android:layout_margin="6dp"
             app:cardCornerRadius="12dp"
-            app:cardElevation="8dp"
+            app:cardElevation="4dp"
             android:backgroundTint="@android:color/white">
 
             <LinearLayout
@@ -216,7 +216,7 @@
                     android:layout_height="wrap_content"
                     android:text="@string/setting"
                     android:textColor="#000000"
-                    android:textSize="14sp"
+                    android:textSize="16sp"
                     android:textStyle="bold"
                     android:layout_marginTop="8dp" />
             </LinearLayout>
@@ -232,7 +232,7 @@
         android:textColor="#8E8E8E"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_marginTop="630dp"
+        android:layout_marginTop="710dp"
         android:layout_gravity="center" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
