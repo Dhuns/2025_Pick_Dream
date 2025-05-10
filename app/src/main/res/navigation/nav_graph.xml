@@ -36,4 +36,31 @@
         <action
             android:id="@+id/action_homeFragment_to_noticeFragment"
             app:destination="@id/noticeFragment" />
+
+    <!-- 리뷰 작성 프래그먼트 -->
+    <fragment
+        android:id="@+id/reviewpageFragment"
+        android:name="com.example.pick_dream.ui.reviewpage.ReviewpageFragment"
+        android:label="리뷰 작성">
+        <action
+            android:id="@+id/action_reviewpageFragment_to_reviewCompleteFragment"
+            app:destination="@id/reviewCompleteFragment" />
+        <action
+            android:id="@+id/action_reviewpageFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+
+    <!-- 리뷰 완료 프래그먼트 -->
+    <fragment
+        android:id="@+id/reviewCompleteFragment"
+        android:name="com.example.pick_dream.ui.reviewpage.ReviewpageCompleteFragment"
+        android:label="리뷰 완료">
+        <action
+            android:id="@+id/action_reviewCompleteFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
 </navigation>

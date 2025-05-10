@@ -2,10 +2,9 @@ package com.example.pick_dream
 
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
-import androidx.navigation.findNavController
-import androidx.navigation.ui.setupWithNavController
 import com.example.pick_dream.databinding.ActivityMainBinding
 import com.example.pick_dream.ui.FavoriteFragment
+import androidx.navigation.fragment.NavHostFragment
 import com.example.pick_dream.ui.mypage.MypageFragment
 import com.example.pickdream.ui.home.HomeFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
@@ -19,18 +18,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
-        // Navigation Component와 BottomNavigationView 연결
-        //val navController = findNavController(R.id.nav_host_fragment_activity_main)
-        //binding.navView.setupWithNavController(navController)
-        // 툴바를 앱 전체의 기본 ActionBar로 설정
-        // setSupportActionBar(binding.mainToolbar)
-
-        // 기본 Fragment 설정
-//        supportFragmentManager.beginTransaction()
-//            .replace(R.id.nav_host_fragment_activity_main, HomeFragment())
-//            .commit()
-        // supportActionBar?.title = "홈"
+        // 강의실 사용 시간이 끝났는지 확인
+        checkClassroomUsageTime()
 
         val navView: BottomNavigationView = binding.navView
 
@@ -39,13 +28,13 @@ class MainActivity : AppCompatActivity() {
         navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite)
         navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage)
 
+        //기존코드
         navView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment_activity_main, HomeFragment())
                         .commit()
-                    // 아이콘 변경
                     navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home_filled)
                     navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite)
                     navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage)
@@ -56,7 +45,6 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment_activity_main, FavoriteFragment())
                         .commit()
-                    // 아이콘 변경
                     navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home)
                     navView.menu.findItem(R.id.navigation_favorite)
                         .setIcon(R.drawable.ic_favorite_filled)
@@ -68,7 +56,6 @@ class MainActivity : AppCompatActivity() {
                     supportFragmentManager.beginTransaction()
                         .replace(R.id.nav_host_fragment_activity_main, MypageFragment())
                         .commit()
-                    // 아이콘 변경
                     navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home)
                     navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite)
                     navView.menu.findItem(R.id.navigation_mypage)
@@ -78,6 +65,26 @@ class MainActivity : AppCompatActivity() {
 
                 else -> false
             }
+        }
+    }
+
+    private fun checkClassroomUsageTime() {
+        val sharedPrefs = getSharedPreferences("ClassroomPrefs", MODE_PRIVATE)
+        val lastEndTime = sharedPrefs.getLong("last_end_time", 0)
+        val hasShownReview = sharedPrefs.getBoolean("has_shown_review", false)
+
+        val currentTime = System.currentTimeMillis()
+
+        // 마지막 종료 시간이 있고, 아직 후기를 보여주지 않았다면
+        if (lastEndTime > 0 && !hasShownReview && currentTime > lastEndTime) {
+            // 후기 페이지로 이동
+            val navHostFragment = supportFragmentManager
+                .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+            val navController = navHostFragment.navController
+            navController.navigate(R.id.reviewpageFragment)
+
+            // 후기 표시 여부 저장
+            sharedPrefs.edit().putBoolean("has_shown_review", true).apply()
         }
     }
 }

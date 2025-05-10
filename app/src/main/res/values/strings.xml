@@ -13,4 +13,9 @@
     <string name="setting">설정</string>
     <string name="desc_settings_icon">설정 아이콘</string>
     <string name="logout">로그아웃</string>
-    </resources>
+    <string name="star1">1점</string>
+    <string name="star2">2점</string>
+    <string name="star3">3점</string>
+    <string name="star4">4점</string>
+    <string name="star5">5점</string>
+</resources>
