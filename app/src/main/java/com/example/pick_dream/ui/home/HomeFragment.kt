@@ -14,6 +14,7 @@ import com.example.pick_dream.R
 import com.example.pick_dream.databinding.FragmentHomeBinding
 import com.example.pick_dream.ui.home.reservation.ReservationFragment
 import com.example.pick_dream.ui.home.notice.NoticeFragment
+import android.content.Context
 
 class HomeFragment : Fragment() {
 
@@ -89,7 +90,7 @@ class HomeFragment : Fragment() {
             }
         }
     }
-
+    //시간 카운트 및 마지막 종료 시간 저장 후 후기 표시 여부 초기화
     private fun startTimeCountdown() {
         handler = Handler()
         timeUpdateRunnable = object : Runnable {
@@ -100,6 +101,13 @@ class HomeFragment : Fragment() {
                     handler.postDelayed(this, 1000)
                 } else {
                     binding.tvRemainingTime.text = "대여 시간 종료"
+                    // 시간이 종료되면 마지막 종료 시간 저장
+                    val sharedPrefs = requireActivity().getSharedPreferences("ClassroomPrefs", Context.MODE_PRIVATE)
+                    sharedPrefs.edit().apply {
+                        putLong("last_end_time", System.currentTimeMillis())
+                        putBoolean("has_shown_review", false)  // 후기 표시 여부 초기화
+                        apply()
+                    }
                 }
             }
         }
