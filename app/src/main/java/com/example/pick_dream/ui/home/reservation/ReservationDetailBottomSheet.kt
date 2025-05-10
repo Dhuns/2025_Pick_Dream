@@ -7,8 +7,11 @@ import android.view.ViewGroup
 import android.widget.TextView
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.example.pick_dream.R
+import android.app.Dialog
+import androidx.core.content.ContextCompat
+import com.google.android.material.bottomsheet.BottomSheetDialog
 
-class ReservationDetailBottomSheet : BottomSheetDialogFragment() {
+class ReservationDetailBottomSheet : BottomSheetDialogFragment(R.style.CustomBottomSheetDialog) {
     private lateinit var tvRoom: TextView
     private lateinit var tvDate: TextView
     private lateinit var tvTime: TextView
@@ -42,6 +45,21 @@ class ReservationDetailBottomSheet : BottomSheetDialogFragment() {
             tvFacilities.text = "주요 시설 : ${bundle.getString(KEY_FACILITIES)}"
             tvReserver.text = "예약자 : ${bundle.getString(KEY_RESERVER)}"
         }
+    }
+
+    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
+        val dialog = super.onCreateDialog(savedInstanceState)
+        dialog.setOnShowListener {
+            val bottomSheet = (dialog as BottomSheetDialog).findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
+            bottomSheet?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_bottom_sheet_rounded)
+            dialog.window?.setDimAmount(0f)
+        }
+        return dialog
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        parentFragmentManager.setFragmentResult("close_bottom_sheet", Bundle())
     }
 
     companion object {

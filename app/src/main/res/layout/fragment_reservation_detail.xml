@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="@android:color/white"
+    android:background="@drawable/bg_bottom_sheet_rounded"
     android:padding="20dp">
-
     <!-- 예약 정보 타이틀 -->
     <TextView
         android:layout_width="wrap_content"
@@ -15,54 +15,58 @@
         android:textSize="18sp"
         android:textColor="#222222"
         android:layout_marginBottom="12dp"/>
-
     <!-- 예약 정보 내용 -->
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
+        style="@style/ShapeAppearanceOverlay.CardView.TopRounded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/bg_image_rounded"
-        android:padding="16dp"
+        app:strokeColor="@color/primary_400"
+        app:strokeWidth="1dp"
+        app:cardBackgroundColor="@color/primary_050"
         android:layout_marginBottom="20dp">
-
-        <TextView 
-            android:id="@+id/tv_room"
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textColor="#222222" 
-            android:textSize="15sp"/>
-        <TextView 
-            android:id="@+id/tv_date"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#222222" 
-            android:textSize="15sp"/>
-        <TextView 
-            android:id="@+id/tv_time"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#222222" 
-            android:textSize="15sp"/>
-        <TextView 
-            android:id="@+id/tv_people"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#222222" 
-            android:textSize="15sp"/>
-        <TextView 
-            android:id="@+id/tv_facilities"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#222222" 
-            android:textSize="15sp"/>
-        <TextView 
-            android:id="@+id/tv_reserver"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="#222222" 
-            android:textSize="15sp"/>
-    </LinearLayout>
-
+            android:orientation="vertical"
+            android:padding="16dp">
+            <TextView 
+                android:id="@+id/tv_room"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#222222" 
+                android:textSize="15sp"/>
+            <TextView 
+                android:id="@+id/tv_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#222222" 
+                android:textSize="15sp"/>
+            <TextView 
+                android:id="@+id/tv_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#222222" 
+                android:textSize="15sp"/>
+            <TextView 
+                android:id="@+id/tv_people"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#222222" 
+                android:textSize="15sp"/>
+            <TextView 
+                android:id="@+id/tv_facilities"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#222222" 
+                android:textSize="15sp"/>
+            <TextView 
+                android:id="@+id/tv_reserver"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#222222" 
+                android:textSize="15sp"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
     <!-- 유의사항 타이틀 -->
     <TextView
         android:layout_width="wrap_content"
@@ -72,44 +76,49 @@
         android:textSize="16sp"
         android:textColor="#222222"
         android:layout_marginBottom="8dp"/>
-
     <!-- 유의사항 내용 -->
-    <LinearLayout
+    <com.google.android.material.card.MaterialCardView
+        style="@style/ShapeAppearanceOverlay.CardView.TopRounded"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@drawable/bg_image_rounded"
-        android:padding="12dp">
-        <TextView 
-            android:layout_width="wrap_content"
+        app:strokeColor="@color/primary_400"
+        app:strokeWidth="1dp"
+        app:cardBackgroundColor="@color/primary_100">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="✔ 예약 시간 외에는 자동으로 강의실 문이 잠깁니다." 
-            android:textColor="#3C5ABD" 
-            android:textSize="14sp"/>
-        <TextView 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="✔ 음식물 반입은 금지되어 있습니다." 
-            android:textColor="#3C5ABD" 
-            android:textSize="14sp"/>
-        <TextView 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="✔ 사용 후 자리 정리 및 전자기기 전원 OFF 부탁드립니다." 
-            android:textColor="#3C5ABD" 
-            android:textSize="14sp"/>
-        <TextView 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="✔ 예약 시간 종료 후에는 즉시 퇴실해 주세요." 
-            android:textColor="#3C5ABD" 
-            android:textSize="14sp"/>
-        <TextView 
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="✔ 퇴실 전 자리 정돈 및 쓰레기 정리 부탁드립니다." 
-            android:textColor="#3C5ABD" 
-            android:textSize="14sp"/>
-    </LinearLayout>
-
+            android:orientation="vertical"
+            android:padding="12dp">
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✔ 예약 시간 외에는 자동으로 강의실 문이 잠깁니다." 
+                android:textColor="@color/primary_500" 
+                android:textSize="14sp"/>
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✔ 음식물 반입은 금지되어 있습니다." 
+                android:textColor="@color/primary_500" 
+                android:textSize="14sp"/>
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✔ 사용 후 자리 정리 및 전자기기 전원 OFF 부탁드립니다." 
+                android:textColor="@color/primary_500" 
+                android:textSize="14sp"/>
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✔ 예약 시간 종료 후에는 즉시 퇴실해 주세요." 
+                android:textColor="@color/primary_500" 
+                android:textSize="14sp"/>
+            <TextView 
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="✔ 퇴실 전 자리 정돈 및 쓰레기 정리 부탁드립니다." 
+                android:textColor="@color/primary_500" 
+                android:textSize="14sp"/>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 </LinearLayout> 

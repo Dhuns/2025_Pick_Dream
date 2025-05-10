@@ -1,100 +1,150 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:background="#F8F9FE">
+    android:layout_height="match_parent">
 
-    <!-- 상단 타이틀 영역 -->
-    <RelativeLayout
+    <!-- 기존 전체 화면 컨텐츠 (상단 타이틀 영역 포함) -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="100dp"
-        android:paddingHorizontal="16dp"
-        android:background="#3C5ABD"
-        android:paddingTop="8dp">
-
-        <!-- 뒤로가기 버튼 -->
-        <ImageButton
-            android:id="@+id/btnBack"
-            android:layout_width="40dp"
-            android:layout_height="40dp"
-            android:layout_alignParentStart="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginStart="0dp"
-            android:layout_marginTop="36dp"
-            android:background="@android:color/transparent"
-            android:src="@drawable/ic_arrow_back"
-            android:contentDescription="뒤로가기" />
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_marginTop="18dp"
-            android:text="예약 내역 조회"
-            android:textSize="28sp"
-            android:textColor="@android:color/white"
-            android:textStyle="bold" />
-    </RelativeLayout>
-
-    <ScrollView
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
         android:background="#F8F9FE">
 
-        <LinearLayout
+        <!-- 상단 타이틀 영역 -->
+        <RelativeLayout
             android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:paddingHorizontal="16dp"
+            android:background="#3C5ABD"
+            android:paddingTop="8dp">
+
+            <!-- 뒤로가기 버튼 -->
+            <ImageButton
+                android:id="@+id/btnBack"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:layout_alignParentStart="true"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginStart="0dp"
+                android:layout_marginTop="36dp"
+                android:background="@android:color/transparent"
+                android:src="@drawable/ic_arrow_back"
+                android:contentDescription="뒤로가기" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_marginTop="18dp"
+                android:text="예약 내역 조회"
+                android:textSize="28sp"
+                android:textColor="@android:color/white"
+                android:textStyle="bold" />
+        </RelativeLayout>
+
+        <!-- 현재 예약 정보 타이틀 -->
+
+        <!-- 현재 예약 정보 카드 -->
+
+        <TextView
+            android:id="@+id/tvCurrentReservationTitle"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_marginTop="16dp"
+            android:layout_marginBottom="12dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginLeft="20dp"
+            android:text="현재 예약 정보"
+            android:textColor="#222222"
+            android:textSize="16sp"
+            android:textStyle="bold" />
 
-            <!-- 현재 예약 정보 카드 -->
-            <include layout="@layout/item_reservation_current" />
+        <include layout="@layout/item_reservation_current" />
 
-            <!-- 이용 완료 타이틀 -->
-            <TextView
-                android:id="@+id/tvHistoryTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="이용 완료"
-                android:textColor="#222222"
-                android:textSize="16sp"
-                android:textStyle="bold"
-                android:layout_marginTop="32dp"
-                android:layout_marginBottom="8dp" />
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:background="#F8F9FE">
 
-            <!-- 최신순 드롭다운(임시 텍스트) -->
-            <TextView
-                android:id="@+id/tvSort"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="최신순 ▼"
-                android:textColor="#222222"
-                android:textSize="14sp"
-                android:layout_marginBottom="12dp" />
-
-            <!-- 이용 완료 리스트 (리니어레이아웃으로 동적 추가) -->
             <LinearLayout
-                android:id="@+id/layoutHistoryList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:layout_marginBottom="16dp" />
+                android:padding="20dp">
 
-            <!-- 페이지네이션(목차) -->
-            <LinearLayout
-                android:id="@+id/layoutPagination"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:gravity="center"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="16dp">
-                <!-- 페이지 번호는 동적으로 추가 -->
+                <!-- 이용 완료 타이틀 -->
+                <TextView
+                    android:id="@+id/tvHistoryTitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="이용 완료"
+                    android:textColor="#222222"
+                    android:textSize="16sp"
+                    android:textStyle="bold"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="8dp" />
+
+                <!-- 최신순 드롭다운(임시 텍스트) -->
+                <TextView
+                    android:id="@+id/tvSort"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="최신순 ▼"
+                    android:textColor="#222222"
+                    android:textSize="14sp"
+                    android:layout_marginBottom="12dp" />
+
+                <!-- 이용 완료 리스트 (리니어레이아웃으로 동적 추가) -->
+                <LinearLayout
+                    android:id="@+id/layoutHistoryList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:layout_marginBottom="16dp" />
+
+                <!-- 페이지네이션(목차) -->
+                <LinearLayout
+                    android:id="@+id/layoutPagination"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="16dp">
+                    <!-- 페이지 번호는 동적으로 추가 -->
+                </LinearLayout>
             </LinearLayout>
-        </LinearLayout>
-    </ScrollView>
-</LinearLayout> 
+        </ScrollView>
+    </LinearLayout>
+
+    <!-- 오버레이: 강의실 사진 + 뒤로가기 버튼 (진단용, 항상 보이게) -->
+    <FrameLayout
+        android:id="@+id/overlayRoomPhoto"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@android:color/transparent"
+        android:visibility="gone">
+
+        <ImageView
+            android:id="@+id/imgRoomPhoto"
+            android:layout_width="match_parent"
+            android:layout_height="480dp"
+            android:layout_gravity="top"
+            android:scaleType="centerCrop"
+            android:src="@drawable/sample_room" />
+
+        <ImageButton
+            android:id="@+id/btnOverlayBack"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="44dp"
+            android:background="@android:color/transparent"
+            android:src="@drawable/ic_arrow_back"
+            android:contentDescription="뒤로가기" />
+    </FrameLayout>
+</FrameLayout> 

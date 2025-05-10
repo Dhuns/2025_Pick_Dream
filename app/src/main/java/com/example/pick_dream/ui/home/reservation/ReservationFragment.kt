@@ -51,6 +51,24 @@ class ReservationFragment : Fragment() {
         setupCurrentReservationCard()
         setupHistoryList()
         setupPagination()
+
+        // 오버레이 관련 뷰 바인딩
+        val overlayRoomPhoto = view.findViewById<android.widget.FrameLayout>(R.id.overlayRoomPhoto)
+        val btnOverlayBack = view.findViewById<ImageButton>(R.id.btnOverlayBack)
+
+        // 오버레이 뒤로가기 버튼 클릭 시 바텀시트 닫기
+        btnOverlayBack?.setOnClickListener {
+            val fragment = childFragmentManager.findFragmentByTag("ReservationDetailBottomSheet")
+            if (fragment is ReservationDetailBottomSheet) {
+                fragment.dismiss()
+            }
+            overlayRoomPhoto?.visibility = View.GONE
+        }
+
+        // 바텀시트 닫힐 때 오버레이도 GONE 처리
+        childFragmentManager.setFragmentResultListener("close_bottom_sheet", viewLifecycleOwner) { _, _ ->
+            overlayRoomPhoto?.visibility = View.GONE
+        }
     }
 
     private fun setupCurrentReservationCard() {
@@ -70,6 +88,17 @@ class ReservationFragment : Fragment() {
             Toast.makeText(requireContext(), "예약취소 클릭", Toast.LENGTH_SHORT).show()
         }
         btnConfirm?.setOnClickListener {
+            // 오버레이 페이드 인
+            val overlayRoomPhoto = requireView().findViewById<android.widget.FrameLayout>(R.id.overlayRoomPhoto)
+            overlayRoomPhoto?.setBackgroundColor(android.graphics.Color.TRANSPARENT)
+            overlayRoomPhoto?.alpha = 0f
+            overlayRoomPhoto?.visibility = View.VISIBLE
+            overlayRoomPhoto?.animate()
+                ?.alpha(1f)
+                ?.setDuration(300)
+                ?.start()
+
+            // 바텀시트 띄우기
             val bottomSheet = ReservationDetailBottomSheet.newInstance(
                 room = currentReservation.roomName,
                 date = currentReservation.date,
