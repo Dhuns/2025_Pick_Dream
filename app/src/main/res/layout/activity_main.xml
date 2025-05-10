@@ -6,7 +6,9 @@
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".MainActivity">
+
 
     <!-- 네비게이션 호스트 프래그먼트 -->
     <androidx.fragment.app.FragmentContainerView
