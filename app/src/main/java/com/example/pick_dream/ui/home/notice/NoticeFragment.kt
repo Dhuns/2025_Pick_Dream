@@ -1,11 +1,9 @@
 package com.example.pick_dream.ui.home.notice
 
-import android.widget.Button
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.DiffUtil
@@ -14,10 +12,14 @@ import androidx.recyclerview.widget.RecyclerView
 import android.graphics.Color
 import android.graphics.Typeface
 import android.widget.TextView
-import com.example.pick_dream.R
 import com.example.pick_dream.databinding.FragmentNoticeBinding
 import com.example.pick_dream.databinding.ItemNoticeBinding
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
+import java.text.SimpleDateFormat
+import java.util.Locale
+
 
 data class Notice(
     val id: String,
@@ -85,6 +87,7 @@ class NoticeFragment : Fragment() {
         return binding.root
     }
 
+
     private fun showPage(page: Int) {
         val fromIndex = (page - 1) * pageSize
         val toIndex = minOf(fromIndex + pageSize, allNotices.size)
@@ -115,21 +118,44 @@ class NoticeFragment : Fragment() {
         binding.rvNotice.layoutManager = LinearLayoutManager(requireContext())
         binding.rvNotice.adapter = adapter
 
-        // 예시 데이터
-        sampleList = listOf(
-            Notice("1", "📢", "[공지사항] 덕문관 5001 강의실 대여 불가 안내", "25.04.07", "내용1"),
-            Notice("2", "🎉", "[이벤트] 강의실 사용 후기 이벤트 안내", "25.04.02", "내용2"),
-            Notice("3", "📢", "[공지사항] 종합강의동 202 강의실 대여 불가 안내", "25.03.029", "내용3"),
-            Notice("4", "📢", "[공지사항] 호연관 9301 강의실 대여 불가 안내", "25.03.27", "내용4"),
-            Notice("5", "🎉", "[이벤트] 시험기간 픽드림에서 치킨 쏜다~!", "25.03.20", "내용5"),
-            Notice("6", "📢", "[공지사항] 제2공학관 304 강의실 대여 불가 안내", "25.03.20", "내용6"),
-            Notice("7", "📢", "[공지사항] 덕문관 5406 강의실 대여 불가 안내", "25.03.18", "내용7"),
-            Notice("8", "🎉", "[이벤트] 개강 맞이 픽드림 이용 후기 이벤트 안내", "25.03.14", "내용8")
-        )
-        allNotices = sampleList
-        totalPages = (allNotices.size + pageSize - 1) / pageSize
-        showPage(currentPage)
-        setupPagination()
+        // 데이터 불러오기
+        val db = Firebase.firestore
+        val formatter = SimpleDateFormat("yy.MM.dd", Locale.getDefault())
+
+        db.collection("Notices")
+            .get()
+            .addOnSuccessListener { result ->
+                allNotices = result.map { doc ->
+                    val timestamp = doc.getTimestamp("createdAt")
+                    val formattedDate = timestamp?.toDate()?.let { formatter.format(it) } ?: ""
+
+                    Notice(
+                        id = doc.id,
+                        iconEmoji = "📢",
+                        title = doc.getString("title") ?: "",
+                        date = formattedDate,
+                        content = doc.getString("content") ?: ""
+                    )
+                }
+                totalPages = (allNotices.size + pageSize - 1) / pageSize
+                currentPage = 1
+                showPage(currentPage)
+                setupPagination()
+            }
+
+//        sampleList = listOf(
+//            Notice("1", "📢", "[공지사항] 덕문관 5001 강의실 대여 불가 안내", "25.04.07", "내용1"),
+//            Notice("2", "🎉", "[이벤트] 강의실 사용 후기 이벤트 안내", "25.04.02", "내용2"),
+//            Notice("3", "📢", "[공지사항] 종합강의동 202 강의실 대여 불가 안내", "25.03.029", "내용3"),
+//            Notice("4", "📢", "[공지사항] 호연관 9301 강의실 대여 불가 안내", "25.03.27", "내용4"),
+//            Notice("5", "🎉", "[이벤트] 시험기간 픽드림에서 치킨 쏜다~!", "25.03.20", "내용5"),
+//            Notice("6", "📢", "[공지사항] 제2공학관 304 강의실 대여 불가 안내", "25.03.20", "내용6"),
+//            Notice("7", "📢", "[공지사항] 덕문관 5406 강의실 대여 불가 안내", "25.03.18", "내용7"),
+//            Notice("8", "🎉", "[이벤트] 개강 맞이 픽드림 이용 후기 이벤트 안내", "25.03.14", "내용8")
+//        allNotices = sampleList
+//        totalPages = (allNotices.size + pageSize - 1) / pageSize
+//        showPage(currentPage)
+//        setupPagination()
 
         binding.btnSearch.setOnClickListener {
             val query = binding.etSearch.text.toString().trim()
