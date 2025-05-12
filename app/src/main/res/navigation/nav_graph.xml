@@ -17,7 +17,17 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="false" />
+
     </fragment>
+    <fragment
+        android:id="@+id/favoriteFragment"
+        android:name="com.example.pick_dream.ui.FavoriteFragment"
+        android:label="즐겨찾기" />
+
+    <fragment
+        android:id="@+id/mypageFragment"
+        android:name="com.example.pick_dream.ui.mypage.MypageFragment"
+        android:label="마이페이지" />
 
     <fragment
         android:id="@+id/noticeDetailFragment"

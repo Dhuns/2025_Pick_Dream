@@ -56,9 +56,9 @@ class HomeFragment : Fragment() {
             }
         }
         // 공지사항 전체보기 버튼 클릭 시 NoticeFragment로 이동 (Navigation Component 사용)
-        binding.btnNotice.setOnClickListener {
-            findNavController().navigate(R.id.noticeFragment)
-        }
+//        binding.btnNotice.setOnClickListener {
+//            findNavController().navigate(R.id.noticeFragment)
+//        }
     }
 
     private fun onButtonClick(view: View) {

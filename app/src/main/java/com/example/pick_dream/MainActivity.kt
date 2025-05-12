@@ -29,43 +29,28 @@ class MainActivity : AppCompatActivity() {
         navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage)
 
         //기존코드
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
+        val navController = navHostFragment.navController
+
         navView.setOnItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.navigation_home -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment_activity_main, HomeFragment())
-                        .commit()
-                    navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home_filled)
-                    navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite)
-                    navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage)
+                    navController.navigate(R.id.homeFragment)
                     true
                 }
-
                 R.id.navigation_favorite -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment_activity_main, FavoriteFragment())
-                        .commit()
-                    navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home)
-                    navView.menu.findItem(R.id.navigation_favorite)
-                        .setIcon(R.drawable.ic_favorite_filled)
-                    navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage)
+                    navController.navigate(R.id.favoriteFragment)
                     true
                 }
-
                 R.id.navigation_mypage -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.nav_host_fragment_activity_main, MypageFragment())
-                        .commit()
-                    navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home)
-                    navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite)
-                    navView.menu.findItem(R.id.navigation_mypage)
-                        .setIcon(R.drawable.ic_mypage_filled)
+                    navController.navigate(R.id.mypageFragment)
                     true
                 }
-
                 else -> false
             }
         }
+
     }
 
     private fun checkClassroomUsageTime() {
