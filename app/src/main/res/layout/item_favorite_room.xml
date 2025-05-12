@@ -74,6 +74,20 @@
                             android:text="5022 강의실"
                             android:textColor="@android:color/black"
                             android:textSize="14sp" />
+                        <TextView
+                            android:id="@+id/tvCapacity"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="정원: 0명"
+                            android:textColor="@android:color/black"
+                            android:textSize="13sp"
+                            android:layout_marginTop="2dp" />
+
+                        <View
+                            android:layout_width="match_parent"
+                            android:layout_height="18dp"
+                            android:background="@android:color/transparent" />
+
                     </LinearLayout>
 
                     <ImageButton
@@ -91,10 +105,6 @@
                 <!-- 넓은 여백 -->
 
                 <!-- 기자재 설명 -->
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="25dp"
-                    android:background="@android:color/transparent" />
 
                 <TextView
                     android:id="@+id/tvFacilities"
