@@ -51,10 +51,6 @@ class MypageFragment : Fragment() {
         _binding = FragmentMypageBinding.inflate(inflater, container, false)
         val view = binding.root
 
-        // 뒤로가기 버튼 동작 설정
-        binding.backButton.setOnClickListener {
-            requireActivity().onBackPressedDispatcher.onBackPressed()
-        }
 
         //로그아웃 밑줄
         binding.logoutTextView.paintFlags = binding.logoutTextView.paintFlags or Paint.UNDERLINE_TEXT_FLAG

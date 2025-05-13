@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:background="#F8F9FE">
 
-    <!-- 상단 타이틀  -->
+    <!-- 상단 타이틀 -->
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="100dp"
@@ -35,247 +35,260 @@
             android:background="@android:color/transparent"
             android:contentDescription="뒤로가기" />
 
-
     </RelativeLayout>
 
-    <!-- 1번 카드 -->
-    <androidx.cardview.widget.CardView
+    <!-- 문의 카드 리스트 (스크롤 가능) -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="130dp"
-        android:layout_marginBottom="8dp"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="0dp"
-        android:backgroundTint="#DCEBFE">
+        android:layout_height="match_parent"
+        android:layout_marginTop="110dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:paddingTop="14dp"
+            android:paddingBottom="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0001"
-                android:textSize="12sp"
-                android:textColor="#000000"
+            <!-- 1번 카드 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:textStyle="bold"/>
+                android:layout_marginTop="0dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="0dp"
+                android:backgroundTint="#DCEBFE">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="학생지원팀"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="031 - 249 - 8786"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                android:textStyle="bold"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0001"
+                        android:textSize="12sp"
+                        android:textColor="#000000"
+                        android:layout_marginEnd="16dp"
+                        android:textStyle="bold"/>
 
-    <!-- 2번 카드 -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="194dp"
-        android:layout_marginBottom="8dp"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="0dp"
-        android:backgroundTint="#DCEBFE">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="학생지원팀"
+                        android:textSize="14sp"
+                        android:textColor="#000000"
+                        android:textStyle="bold"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="031 - 249 - 8786"
+                        android:textSize="14sp"
+                        android:textColor="#000000"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0002"
-                android:textSize="12sp"
-                android:textColor="#000000"
+            <!-- 2번 카드 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:textStyle="bold"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="0dp"
+                android:backgroundTint="#DCEBFE">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="학생지원팀"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="031 - 249 - 8789"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                android:textStyle="bold"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0002"
+                        android:textSize="12sp"
+                        android:textColor="#000000"
+                        android:layout_marginEnd="16dp"
+                        android:textStyle="bold"/>
 
-    <!-- 3번 카드 -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="258dp"
-        android:layout_marginBottom="8dp"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="0dp"
-        android:backgroundTint="#DCEBFE">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="학생지원팀"
+                        android:textSize="14sp"
+                        android:textColor="#000000"
+                        android:textStyle="bold"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="031 - 249 - 8789"
+                        android:textSize="14sp"
+                        android:textColor="#000000"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0003"
-                android:textSize="12sp"
-                android:textColor="#000000"
+            <!-- 3번 카드 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:textStyle="bold"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="0dp"
+                android:backgroundTint="#DCEBFE">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="중앙도서관 관리실"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="031 - 249 - 8858"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                android:textStyle="bold"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0003"
+                        android:textSize="12sp"
+                        android:textColor="#000000"
+                        android:layout_marginEnd="16dp"
+                        android:textStyle="bold"/>
 
-    <!-- 4번 카드 -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="322dp"
-        android:layout_marginBottom="8dp"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="0dp"
-        android:backgroundTint="#DCEBFE">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="중앙도서관 관리실"
+                        android:textSize="14sp"
+                        android:textColor="#000000"
+                        android:textStyle="bold"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="031 - 249 - 8858"
+                        android:textSize="14sp"
+                        android:textColor="#000000"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0004"
-                android:textSize="12sp"
-                android:textColor="#000000"
+            <!-- 4번 카드 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:textStyle="bold"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="0dp"
+                android:backgroundTint="#DCEBFE">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="중앙도서관 관리실"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="031 - 249 - 8859"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                android:textStyle="bold"/>
-        </LinearLayout>
-    </androidx.cardview.widget.CardView>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0004"
+                        android:textSize="12sp"
+                        android:textColor="#000000"
+                        android:layout_marginEnd="16dp"
+                        android:textStyle="bold"/>
 
-    <!-- 5번 카드 -->
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="386dp"
-        android:layout_marginBottom="8dp"
-        app:cardCornerRadius="4dp"
-        app:cardElevation="0dp"
-        android:backgroundTint="#DCEBFE">
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="중앙도서관 관리실"
+                        android:textSize="14sp"
+                        android:textColor="#000000"
+                        android:textStyle="bold"/>
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="031 - 249 - 8859"
+                        android:textSize="14sp"
+                        android:textColor="#000000"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="0005"
-                android:textSize="12sp"
-                android:textColor="#000000"
+            <!-- 5번 카드 -->
+            <androidx.cardview.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="50dp"
+                android:layout_marginStart="16dp"
                 android:layout_marginEnd="16dp"
-                android:textStyle="bold"/>
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                app:cardCornerRadius="4dp"
+                app:cardElevation="0dp"
+                android:backgroundTint="#DCEBFE">
 
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="시설관리팀"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                android:textStyle="bold"/>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="031 - 249 - 8833"
-                android:textSize="14sp"
-                android:textColor="#000000"
-                android:textStyle="bold"/>
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="0005"
+                        android:textSize="12sp"
+                        android:textColor="#000000"
+                        android:layout_marginEnd="16dp"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="시설관리팀"
+                        android:textSize="14sp"
+                        android:textColor="#000000"
+                        android:textStyle="bold"/>
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="031 - 249 - 8833"
+                        android:textSize="14sp"
+                        android:textColor="#000000"
+                        android:textStyle="bold"/>
+                </LinearLayout>
+            </androidx.cardview.widget.CardView>
         </LinearLayout>
-    </androidx.cardview.widget.CardView>
-
+    </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

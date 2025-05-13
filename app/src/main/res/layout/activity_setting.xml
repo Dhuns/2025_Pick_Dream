@@ -36,210 +36,215 @@
             android:contentDescription="뒤로가기" />
     </RelativeLayout>
 
-    <!-- 본문 내용 -->
-    <LinearLayout
+    <!-- 본문 내용 (ScrollView로 감싸서 스크롤 가능) -->
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:background="@android:color/white"
+        android:layout_height="match_parent"
         android:layout_marginTop="100dp"
-        android:paddingHorizontal="0dp"
-        android:paddingBottom="0dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        android:fillViewport="true">
 
-        <!-- 알림 섹션 -->
-        <TextView
-            android:layout_width="wrap_content"
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="알림"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginTop="24dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="12dp"/>
+            android:orientation="vertical"
+            android:background="@android:color/white"
+            android:paddingHorizontal="0dp"
+            android:paddingBottom="0dp">
 
-        <!-- 알림 항목 1 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="20dp">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="강의실 예약 완료 알림"
-                android:textColor="#000000"
-                android:textSize="20sp"/>
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switch1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <!-- 알림 항목 2 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="20dp">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="강의실 예약 취소 알림"
-                android:textColor="#000000"
-                android:textSize="20sp"/>
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switch2"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <!-- 알림 항목 3 -->
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingHorizontal="20dp">
-            <TextView
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="강의실 이용 시간 알림"
-                android:textColor="#000000"
-                android:textSize="20sp"/>
-            <androidx.appcompat.widget.SwitchCompat
-                android:id="@+id/switch3"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <!-- 구분선 -->
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="16dp"
-            android:background="#F0F0F0"
-            android:layout_marginTop="20dp"
-            android:layout_marginBottom="12dp"/>
-
-        <!-- 언어 섹션 -->
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="언어"
-            android:textColor="#000000"
-            android:textSize="24sp"
-            android:textStyle="bold"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="12dp"/>
-
-        <!-- 한국어 -->
-        <LinearLayout
-            android:id="@+id/langKorean"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingHorizontal="20dp">
+            <!-- 알림 섹션 -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="한국어  🇰🇷"
+                android:text="알림"
                 android:textColor="#000000"
-                android:textSize="20sp"/>
-            <ImageView
-                android:id="@+id/checkKorean"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="245dp"
-                android:src="@drawable/ic_lang_check"
-                android:visibility="gone"/> <!-- ✅ 수정된 부분 -->
-        </LinearLayout>
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="12dp"/>
 
-        <!-- 영어 -->
-        <LinearLayout
-            android:id="@+id/langEnglish"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingHorizontal="20dp">
+            <!-- 알림 항목 1 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="강의실 예약 완료 알림"
+                    android:textColor="#000000"
+                    android:textSize="20sp"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!-- 알림 항목 2 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="강의실 예약 취소 알림"
+                    android:textColor="#000000"
+                    android:textSize="20sp"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch2"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!-- 알림 항목 3 -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingHorizontal="20dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="강의실 이용 시간 알림"
+                    android:textColor="#000000"
+                    android:textSize="20sp"/>
+                <androidx.appcompat.widget.SwitchCompat
+                    android:id="@+id/switch3"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"/>
+            </LinearLayout>
+
+            <!-- 구분선 -->
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:background="#F0F0F0"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp"/>
+
+            <!-- 언어 섹션 -->
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="English  🇺🇸"
+                android:text="언어"
                 android:textColor="#000000"
-                android:textSize="20sp"/>
-            <ImageView
-                android:id="@+id/checkEnglish"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="235dp"
-                android:src="@drawable/ic_lang_check"
-                android:visibility="gone"/>
-        </LinearLayout>
+                android:textSize="24sp"
+                android:textStyle="bold"
+                android:layout_marginStart="20dp"
+                android:layout_marginBottom="12dp"/>
 
-        <!-- 일본어 -->
-        <LinearLayout
-            android:id="@+id/langJapanese"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingHorizontal="20dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="日本語  🇯🇵"
-                android:textColor="#000000"
-                android:textSize="20sp"/>
-            <ImageView
-                android:id="@+id/checkJapanese"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="240dp"
-                android:src="@drawable/ic_lang_check"
-                android:visibility="gone"/>
-        </LinearLayout>
+            <!-- 한국어 -->
+            <LinearLayout
+                android:id="@+id/langKorean"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="20dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="한국어  🇰🇷"
+                    android:textColor="#000000"
+                    android:textSize="20sp"/>
+                <ImageView
+                    android:id="@+id/checkKorean"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_lang_check"
+                    android:visibility="gone"/>
+            </LinearLayout>
 
-        <!-- 중국어 -->
-        <LinearLayout
-            android:id="@+id/langChinese"
-            android:layout_width="match_parent"
-            android:layout_height="48dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:clickable="true"
-            android:focusable="true"
-            android:paddingHorizontal="20dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="中國語  🇨🇳"
-                android:textColor="#000000"
-                android:textSize="20sp"/>
-            <ImageView
-                android:id="@+id/checkChinese"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginStart="240dp"
-                android:src="@drawable/ic_lang_check"
-                android:visibility="gone"/>
+            <!-- 영어 -->
+            <LinearLayout
+                android:id="@+id/langEnglish"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="20dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="English  🇺🇸"
+                    android:textColor="#000000"
+                    android:textSize="20sp"/>
+                <ImageView
+                    android:id="@+id/checkEnglish"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_lang_check"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+            <!-- 일본어 -->
+            <LinearLayout
+                android:id="@+id/langJapanese"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="20dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="日本語  🇯🇵"
+                    android:textColor="#000000"
+                    android:textSize="20sp"/>
+                <ImageView
+                    android:id="@+id/checkJapanese"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_lang_check"
+                    android:visibility="gone"/>
+            </LinearLayout>
+
+            <!-- 중국어 -->
+            <LinearLayout
+                android:id="@+id/langChinese"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingHorizontal="20dp">
+                <TextView
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:text="中國語  🇨🇳"
+                    android:textColor="#000000"
+                    android:textSize="20sp"/>
+                <ImageView
+                    android:id="@+id/checkChinese"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_gravity="center_vertical"
+                    android:src="@drawable/ic_lang_check"
+                    android:visibility="gone"/>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
