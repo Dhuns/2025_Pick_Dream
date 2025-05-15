@@ -26,6 +26,7 @@
     <color name="colorActive">#3C5ABD</color>
     <color name="button_normal">#FFFFFF</color> <!-- 흰색 배경 -->
     <color name="button_clicked">#D6E4FF</color> <!-- 클릭 시 배경 -->
-
-
+    <color name="primary_blue">#4756DF</color>
+    <color name="gray_bg">#F2F2F2</color>
+    <color name="gray_hint">#B0B0B0</color>
 </resources>

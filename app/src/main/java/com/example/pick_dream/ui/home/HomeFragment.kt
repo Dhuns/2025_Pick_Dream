@@ -1,4 +1,4 @@
-package com.example.pickdream.ui.home
+package com.example.pick_dream.ui.home
 
 import android.os.Bundle
 import android.os.Handler
@@ -10,11 +10,13 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.NavOptions
 import com.example.pick_dream.R
 import com.example.pick_dream.databinding.FragmentHomeBinding
 import com.example.pick_dream.ui.home.reservation.ReservationFragment
 import com.example.pick_dream.ui.home.notice.NoticeFragment
 import android.content.Context
+import com.example.pick_dream.ui.home.llm.LlmFragment
 
 class HomeFragment : Fragment() {
 
@@ -74,16 +76,14 @@ class HomeFragment : Fragment() {
 
         when (view.id) {
             R.id.btn_llm -> {
-                // LLM 기능 실행
+                // LLM Fragment로 이동
+                findNavController().navigate(R.id.action_homeFragment_to_llmFragment)
             }
             R.id.btn_search -> {
                 // 검색 기능 실행
             }
             R.id.btn_inquiry -> {
-                requireActivity().supportFragmentManager.beginTransaction()
-                    .replace(R.id.nav_host_fragment_activity_main, ReservationFragment())
-                    .addToBackStack(null)
-                    .commit()
+                findNavController().navigate(R.id.action_homeFragment_to_reservationFragment)
             }
             R.id.btn_map -> {
                 // 지도 기능 실행

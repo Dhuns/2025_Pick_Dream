@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/layoutRoot"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:gravity="start"
+    android:paddingTop="2dp"
+    android:paddingBottom="2dp"
+    android:paddingStart="16dp"
+    android:paddingEnd="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginBottom="8dp">
+
+    <ImageView
+        android:id="@+id/imageBotIcon"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:src="@drawable/ic_llm_bot"
+        android:layout_gravity="bottom"
+        android:layout_marginEnd="6dp"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/textMessage"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:maxWidth="260dp"
+        android:background="@drawable/bg_bot_bubble"
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        android:padding="14dp"
+        android:layout_gravity="bottom"/>
+</LinearLayout>

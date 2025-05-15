@@ -3,10 +3,8 @@ package com.example.pick_dream
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pick_dream.databinding.ActivityMainBinding
-import com.example.pick_dream.ui.FavoriteFragment
 import androidx.navigation.fragment.NavHostFragment
-import com.example.pick_dream.ui.mypage.MypageFragment
-import com.example.pickdream.ui.home.HomeFragment
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -28,29 +26,13 @@ class MainActivity : AppCompatActivity() {
         navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite)
         navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage)
 
-        //기존코드
+        // 네비게이션 컨트롤러 설정
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHostFragment.navController
 
-        navView.setOnItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.navigation_home -> {
-                    navController.navigate(R.id.homeFragment)
-                    true
-                }
-                R.id.navigation_favorite -> {
-                    navController.navigate(R.id.favoriteFragment)
-                    true
-                }
-                R.id.navigation_mypage -> {
-                    navController.navigate(R.id.mypageFragment)
-                    true
-                }
-                else -> false
-            }
-        }
-
+        // 하단 네비게이션 뷰와 네비게이션 컨트롤러 연결
+        navView.setupWithNavController(navController)
     }
 
     private fun checkClassroomUsageTime() {
