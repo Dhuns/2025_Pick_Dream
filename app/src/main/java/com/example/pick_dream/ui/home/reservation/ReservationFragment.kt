@@ -126,15 +126,16 @@ class ReservationFragment : Fragment() {
 
     private fun setupPagination() {
         val pageCount = 5
-        val layout = binding.root.findViewById<LinearLayout>(R.id.layoutPagination)
-        layout?.removeAllViews()
+        // 전체 레이아웃에서 layoutPageNumbers만 찾아서 페이지 번호만 동적으로 추가
+        val layoutPageNumbers = binding.root.findViewById<LinearLayout>(R.id.layoutPageNumbers)
+        layoutPageNumbers?.removeAllViews()
         for (i in 1..pageCount) {
             val tv = TextView(requireContext())
             tv.text = i.toString()
             tv.textSize = 16f
             tv.setPadding(16, 8, 16, 8)
             tv.setTextColor(if (i == 1) 0xFF222222.toInt() else 0xFFB0B0B0.toInt())
-            layout?.addView(tv)
+            layoutPageNumbers?.addView(tv)
         }
     }
 
