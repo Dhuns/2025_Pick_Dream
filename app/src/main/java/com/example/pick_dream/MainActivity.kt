@@ -22,17 +22,45 @@ class MainActivity : AppCompatActivity() {
         val navView: BottomNavigationView = binding.navView
 
         // 초기 아이콘 설정
-        navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home_filled)
+        navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home)
         navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite)
         navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage)
 
-        // 네비게이션 컨트롤러 설정
+        // 앱 시작 시 홈이 선택되어 있으면 filled로 변경
+        if (navView.selectedItemId == R.id.navigation_home) {
+            navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home_filled)
+        }
+
+        //기존코드
         val navHostFragment = supportFragmentManager
             .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
         val navController = navHostFragment.navController
 
-        // 하단 네비게이션 뷰와 네비게이션 컨트롤러 연결
-        navView.setupWithNavController(navController)
+        navView.setOnItemSelectedListener { item ->
+            // 모든 아이콘을 unfilled로 초기화
+            navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home)
+            navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite)
+            navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage)
+
+            when (item.itemId) {
+                R.id.navigation_home -> {
+                    navView.menu.findItem(R.id.navigation_home).setIcon(R.drawable.ic_home_filled)
+                    navController.navigate(R.id.homeFragment)
+                    true
+                }
+                R.id.navigation_favorite -> {
+                    navView.menu.findItem(R.id.navigation_favorite).setIcon(R.drawable.ic_favorite_filled)
+                    navController.navigate(R.id.favoriteFragment)
+                    true
+                }
+                R.id.navigation_mypage -> {
+                    navView.menu.findItem(R.id.navigation_mypage).setIcon(R.drawable.ic_mypage_filled)
+                    navController.navigate(R.id.mypageFragment)
+                    true
+                }
+                else -> false
+            }
+        }
     }
 
     private fun checkClassroomUsageTime() {
