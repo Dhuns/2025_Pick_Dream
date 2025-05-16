@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -85,7 +86,55 @@ class ReservationFragment : Fragment() {
         tvTime?.text = currentReservation.time
 
         btnCancel?.setOnClickListener {
-            Toast.makeText(requireContext(), "예약취소 클릭", Toast.LENGTH_SHORT).show()
+            val dialogView = layoutInflater.inflate(R.layout.dialog_reservation_cancel, null)
+            val dialog = AlertDialog.Builder(requireContext(), R.style.CustomDialog)
+                .setView(dialogView)
+                .create()
+
+            // 배경을 미리 선언
+            val background = android.graphics.drawable.GradientDrawable()
+            background.setColor(android.graphics.Color.WHITE)
+            val radius = resources.displayMetrics.density * 16 // 16dp
+            background.cornerRadius = radius
+
+            dialog.setOnShowListener {
+                dialog.window?.setBackgroundDrawable(background)
+            }
+
+            dialogView.findViewById<TextView>(R.id.btnDialogYes).setOnClickListener {
+                dialog.dismiss()
+                // 예약 취소 완료 다이얼로그 표시
+                val doneView = layoutInflater.inflate(R.layout.dialog_reservation_cancel_done, null)
+                val doneDialog = AlertDialog.Builder(requireContext(), R.style.CustomDialog)
+                    .setView(doneView)
+                    .create()
+
+                val backgroundDone = android.graphics.drawable.GradientDrawable()
+                backgroundDone.setColor(android.graphics.Color.WHITE)
+                val radiusDone = resources.displayMetrics.density * 16 // 16dp
+                backgroundDone.cornerRadius = radiusDone
+                doneDialog.setOnShowListener {
+                    doneDialog.window?.setBackgroundDrawable(backgroundDone)
+                }
+                doneView.findViewById<TextView>(R.id.btnDialogOk).setOnClickListener {
+                    doneDialog.dismiss()
+                }
+                doneDialog.show()
+                doneDialog.window?.setLayout(
+                    ViewGroup.LayoutParams.WRAP_CONTENT,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+            dialogView.findViewById<TextView>(R.id.btnDialogNo).setOnClickListener {
+                dialog.dismiss()
+            }
+
+            dialog.show()
+            // width를 wrap_content로 강제
+            dialog.window?.setLayout(
+                ViewGroup.LayoutParams.WRAP_CONTENT,
+                ViewGroup.LayoutParams.WRAP_CONTENT
+            )
         }
         btnConfirm?.setOnClickListener {
             // 오버레이 페이드 인
