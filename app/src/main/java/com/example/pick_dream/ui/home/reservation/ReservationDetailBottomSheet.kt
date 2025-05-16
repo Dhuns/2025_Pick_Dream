@@ -10,14 +10,13 @@ import com.example.pick_dream.R
 import android.app.Dialog
 import androidx.core.content.ContextCompat
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import android.text.SpannableString
+import android.text.Spanned
+import android.text.style.StyleSpan
+import android.graphics.Typeface
 
 class ReservationDetailBottomSheet : BottomSheetDialogFragment(R.style.CustomBottomSheetDialog) {
-    private lateinit var tvRoom: TextView
-    private lateinit var tvDate: TextView
-    private lateinit var tvTime: TextView
-    private lateinit var tvPeople: TextView
-    private lateinit var tvFacilities: TextView
-    private lateinit var tvReserver: TextView
+    private lateinit var tvInfoAll: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -29,21 +28,39 @@ class ReservationDetailBottomSheet : BottomSheetDialogFragment(R.style.CustomBot
         super.onViewCreated(view, savedInstanceState)
         
         // View 초기화
-        tvRoom = view.findViewById(R.id.tv_room)
-        tvDate = view.findViewById(R.id.tv_date)
-        tvTime = view.findViewById(R.id.tv_time)
-        tvPeople = view.findViewById(R.id.tv_people)
-        tvFacilities = view.findViewById(R.id.tv_facilities)
-        tvReserver = view.findViewById(R.id.tv_reserver)
+        tvInfoAll = view.findViewById(R.id.tv_info_all)
 
         // 전달받은 데이터 표시
         arguments?.let { bundle ->
-            tvRoom.text = "강의실 : ${bundle.getString(KEY_ROOM)}"
-            tvDate.text = "예약일 : ${bundle.getString(KEY_DATE)}"
-            tvTime.text = "시간 : ${bundle.getString(KEY_TIME)}"
-            tvPeople.text = "인원 : 총 ${bundle.getString(KEY_PEOPLE)}명"
-            tvFacilities.text = "주요 시설 : ${bundle.getString(KEY_FACILITIES)}"
-            tvReserver.text = "예약자 : ${bundle.getString(KEY_RESERVER)}"
+            val infoList = listOf(
+                "강의실" to (bundle.getString(KEY_ROOM) ?: ""),
+                "예약일" to (bundle.getString(KEY_DATE) ?: ""),
+                "시간" to (bundle.getString(KEY_TIME) ?: ""),
+                "인원" to ("총 ${bundle.getString(KEY_PEOPLE)}명"),
+                "주요 시설" to (bundle.getString(KEY_FACILITIES) ?: ""),
+                "예약자" to (bundle.getString(KEY_RESERVER) ?: "")
+            )
+            val builder = StringBuilder()
+            infoList.forEach { (title, content) ->
+                builder.append("$title : $content\n")
+            }
+            val fullText = builder.toString().trimEnd()
+            val spannable = SpannableString(fullText)
+            val lines = fullText.lines()
+            var start = 0
+            for (line in lines) {
+                val colonIdx = line.indexOf(':')
+                if (colonIdx > 0) {
+                    spannable.setSpan(
+                        StyleSpan(Typeface.BOLD),
+                        start,
+                        start + colonIdx,
+                        Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+                    )
+                }
+                start += line.length + 1 // +1 for '\n'
+            }
+            tvInfoAll.text = spannable
         }
     }
 

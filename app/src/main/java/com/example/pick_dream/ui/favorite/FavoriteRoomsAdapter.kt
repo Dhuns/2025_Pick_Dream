@@ -10,8 +10,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
 import com.example.pick_dream.model.Room
 
-class FavoriteRoomsAdapter(private var rooms: List<Room>) :
-    RecyclerView.Adapter<FavoriteRoomsAdapter.RoomViewHolder>() {
+class FavoriteRoomsAdapter(
+    private var rooms: List<Room>,
+    private val onFavoriteClick: (Room) -> Unit
+) : RecyclerView.Adapter<FavoriteRoomsAdapter.RoomViewHolder>() {
 
     class RoomViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val image: ImageView = view.findViewById(R.id.imgRoom)
@@ -38,14 +40,25 @@ class FavoriteRoomsAdapter(private var rooms: List<Room>) :
         holder.features.text = room.equiment.joinToString(", ")
         holder.capacityView.text = "정원: ${room.capacity}명"
         holder.btnFavorite.isSelected = true
+        
         holder.btnFavorite.setOnClickListener {
-            holder.btnFavorite.isSelected = !holder.btnFavorite.isSelected
+            onFavoriteClick(room)
         }
     }
 
     fun updateRooms(newRooms: List<Room>) {
         rooms = newRooms
         notifyDataSetChanged()
+    }
+
+    fun removeRoom(room: Room) {
+        val newList = rooms.toMutableList()
+        val position = newList.indexOf(room)
+        if (position != -1) {
+            newList.removeAt(position)
+            rooms = newList
+            notifyItemRemoved(position)
+        }
     }
 
     override fun getItemCount() = rooms.size
