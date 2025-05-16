@@ -1,13 +1,39 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/nav_graph"
-    app:startDestination="@id/homeFragment">
+    app:startDestination="@+id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.pick_dream.ui.home.HomeFragment"
+        android:label="Home"
+        tools:layout="@layout/fragment_home">
+        <action
+            android:id="@+id/action_homeFragment_to_llmFragment"
+            app:destination="@id/llmFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="false" />
+        <action
+            android:id="@+id/action_homeFragment_to_noticeFragment"
+            app:destination="@id/noticeFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_reservationFragment"
+            app:destination="@id/reservationFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/llmFragment"
+        android:name="com.example.pick_dream.ui.home.llm.LlmFragment"
+        android:label="AI 예약"
+        tools:layout="@layout/fragment_llm" />
 
     <fragment
         android:id="@+id/noticeFragment"
         android:name="com.example.pick_dream.ui.home.notice.NoticeFragment"
-        android:label="공지사항 목록">
+        android:label="공지사항"
+        tools:layout="@layout/fragment_notice">
         <action
             android:id="@+id/action_noticeFragment_to_noticeDetailFragment"
             app:destination="@id/noticeDetailFragment" />
@@ -17,8 +43,14 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="false" />
-
     </fragment>
+
+    <fragment
+        android:id="@+id/reservationFragment"
+        android:name="com.example.pick_dream.ui.home.reservation.ReservationFragment"
+        android:label="예약"
+        tools:layout="@layout/fragment_reservation" />
+
     <fragment
         android:id="@+id/favoriteFragment"
         android:name="com.example.pick_dream.ui.FavoriteFragment"
@@ -37,15 +69,6 @@
         <argument android:name="date" app:argType="string" />
         <argument android:name="content" app:argType="string" />
     </fragment>
-
-    <fragment
-        android:id="@+id/homeFragment"
-        android:name="com.example.pickdream.ui.home.HomeFragment"
-        android:label="홈" />
-
-        <action
-            android:id="@+id/action_homeFragment_to_noticeFragment"
-            app:destination="@id/noticeFragment" />
 
     <!-- 리뷰 작성 프래그먼트 -->
     <fragment
