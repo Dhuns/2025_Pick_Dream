@@ -3,10 +3,8 @@ package com.example.pick_dream
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pick_dream.databinding.ActivityMainBinding
-import com.example.pick_dream.ui.FavoriteFragment
 import androidx.navigation.fragment.NavHostFragment
-import com.example.pick_dream.ui.mypage.MypageFragment
-import com.example.pickdream.ui.home.HomeFragment
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -63,7 +61,6 @@ class MainActivity : AppCompatActivity() {
                 else -> false
             }
         }
-
     }
 
     private fun checkClassroomUsageTime() {

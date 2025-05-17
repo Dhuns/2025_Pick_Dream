@@ -14,9 +14,6 @@
 .cxx
 local.properties
 
-# Firebase config
-.json
-
 # Python bytecode
 __pycache__/
 

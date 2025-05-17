@@ -225,6 +225,7 @@
                     android:gravity="center"
                     android:padding="16dp"
                     android:background="@drawable/rounded_button"
+                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true">
 
@@ -263,6 +264,7 @@
                     android:gravity="center"
                     android:padding="16dp"
                     android:background="@drawable/rounded_button_2"
+                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true">
 
@@ -301,6 +303,7 @@
                     android:gravity="center"
                     android:padding="16dp"
                     android:background="@drawable/rounded_button_2"
+                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true">
 
@@ -339,6 +342,7 @@
                     android:gravity="center"
                     android:padding="16dp"
                     android:background="@drawable/rounded_button_2"
+                    android:foreground="?attr/selectableItemBackground"
                     android:clickable="true"
                     android:focusable="true">
 
