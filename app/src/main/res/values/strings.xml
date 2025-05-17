@@ -18,4 +18,9 @@
     <string name="star3">3점</string>
     <string name="star4">4점</string>
     <string name="star5">5점</string>
+    <string name="search_icon">검색 아이콘</string>
+    <string name="search_term">장소 검색</string>
+    <string name="map">지도</string>
+    <string name="go_back">뒤로 가기</string>
+    <string name="place_image">장소 이미지</string>
 </resources>
