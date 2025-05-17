@@ -86,6 +86,7 @@ class HomeFragment : Fragment() {
                 findNavController().navigate(R.id.action_homeFragment_to_reservationFragment)
             }
             R.id.btn_map -> {
+                findNavController().navigate(R.id.action_homeFragment_to_mapsFragment)
                 // 지도 기능 실행
             }
         }
