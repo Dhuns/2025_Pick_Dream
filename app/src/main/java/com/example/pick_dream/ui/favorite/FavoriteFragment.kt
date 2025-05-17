@@ -115,5 +115,6 @@ class FavoriteFragment : Fragment() {
                 emptyView.visibility = View.VISIBLE
                 recyclerView.visibility = View.GONE
             }
+
     }
 }

@@ -32,6 +32,15 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <!-- Firebase, map, chaGPT api key  -->
+        <meta-data
+            android:name="com.google.android.geo.API_KEY"
+            android:value="${GOOGLE_MAPS_API_KEY}" />
+
+        <meta-data
+            android:name="com.openai.API_KEY"
+            android:value="${OPENAI_API_KEY}" />
+
         <activity android:name=".MainActivity" />
         <activity android:name=".ui.mypage.review.ReviewActivity" />
         <activity android:name=".ui.mypage.inquiry.InquiryActivity" />
