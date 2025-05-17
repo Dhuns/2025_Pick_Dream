@@ -23,10 +23,6 @@
             android:name=".ui.home.map.ImagePreview"
             android:exported="false" />
 
-        <meta-data
-            android:name="com.google.android.geo.API_KEY"
-            android:value="AIzaSyCJnZ4gVcdKNpiKLvudqMHx3t2nbMfOGLM" />
-
         <activity
             android:name=".ui.login.LoginActivity"
             android:exported="true">
