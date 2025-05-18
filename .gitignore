@@ -14,7 +14,6 @@
 .cxx
 local.properties
 
-
 # Python bytecode
 __pycache__/
 
@@ -22,3 +21,8 @@ __pycache__/
 venv/
 *.local
 .env
+
+test.html
+firestore-debug.log
+app/*.json
+functions/*.json
