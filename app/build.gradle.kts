@@ -13,7 +13,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.google.gms.google.services)
-    id("com.google.android.libraries.mapsplatform.secrets-gradle-plugin")
+    alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
     id("androidx.navigation.safeargs.kotlin") version "2.7.7"
 }
 
@@ -51,12 +51,6 @@ android {
     }
     buildFeatures {
         viewBinding = true
-    }
-    lint {
-        abortOnError = false
-        checkReleaseBuilds = false
-        disable += setOf("ResourceType")
-        quiet = true
     }
 }
 
