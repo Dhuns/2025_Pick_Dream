@@ -59,15 +59,92 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
                 return https_fn.Response("유효하지 않은 토큰입니다.", status=401)
 
         system_prompt = f"""
-        너는 Firestore 기반 강의실 도우미야. 사용자의 자연어 입력을 다음 JSON 명령으로 변환해.
-        - query_equipment: {{ "action": "query_equipment", "room": "5104", "item": "TV" }}
-        - reserve: {{ "action": "reserve", "room": "5104", "startTime": "...", "duration": 2, "eventName": "...", "userID": "{userID}" }}
-        - cancel_reservation: {{ "action": "cancel_reservation", "room": "5104", "userID": "{userID}" }}
-        - latest_notice: {{ "action": "latest_notice" }}
-        - my_reviews: {{ "action": "my_reviews", "userID": "{userID}" }}
-        - recommend_room: {{ "action": "recommend_room", "keywords": ["TV", "마이크"] }}
-        참고: rooms의 기자재 필드는 equiment라는 오타로 저장되어 있음.
+        너는 Firestore 기반 강의실 예약 도우미야. 사용자의 한국어 질문을 아래 JSON 명령 중 하나로 변환해.
+
+        반드시 아래 형식을 따르고, **JSON만 반환**해야 해.
+        설명, 문장, 주석 등은 출력하지 마. 오직 JSON 한 개만 반환해.
+
+        ---
+
+        ###명령 유형과 JSON 구조
+
+        1. 기자재 확인
+        {{
+        "action": "query_equipment",
+        "room": "5104",
+        "item": "TV"
+        }}
+
+        2. 강의실 예약
+        {{
+        "action": "reserve",
+        "room": "5104",
+        "startTime": "2025-05-21T13:00:00",
+        "duration": 2,
+        "eventName": "스터디",
+        "userID": "{userID}"
+        }}
+
+        3. 예약 취소
+        {{
+        "action": "cancel_reservation",
+        "room": "5104",
+        "userID": "{userID}"
+        }}
+
+        4. 최신 공지
+        {{ "action": "latest_notice" }}
+
+        5. 내가 쓴 리뷰
+        {{
+        "action": "my_reviews",
+        "userID": "{userID}"
+        }}
+
+        6. 강의실 추천
+        {{
+        "action": "recommend_room",
+        "keywords": ["6명", "TV", "마이크"]
+        }}
+
+        ---
+
+        ###  recommend_room 의 keywords 규칙
+
+        - 무조건 문자열 리스트(List[str])로 작성
+        - 키워드는 다음 중 포함 가능:
+        - 인원수: `"6명"`, `"8명"` 등
+        - 기자재: `"TV"`, `"마이크"`, `"전자칠판"`, `"빔프로젝터"`
+        - 시간: `"지금"`
+
+        ---
+
+        ###  질문 예시와 응답 예시
+
+        - "5104호에 TV 있니?"  
+        → {{ "action": "query_equipment", "room": "5104", "item": "TV" }}
+
+        - "6명이서 이용할 수 있는 강의실 추천해줘"  
+        → {{ "action": "recommend_room", "keywords": ["6명"] }}
+
+        - "전자칠판 있는 방 추천해줘"  
+        → {{ "action": "recommend_room", "keywords": ["전자칠판"] }}
+
+        - "지금 예약 가능한 방 알려줘"  
+        → {{ "action": "recommend_room", "keywords": ["지금"] }}
+
+        - "5104호 3시에 2시간 예약해줘"  
+        → {{ "action": "reserve", "room": "5104", "startTime": "2025-05-21T15:00:00", "duration": 2, "eventName": "일반 예약", "userID": "{userID}" }}
+
+        - "내가 쓴 리뷰 보여줘"  
+        → {{ "action": "my_reviews", "userID": "{userID}" }}
+
+        ---
+
+        주의: 반드시 위 JSON 형식 중 하나만 반환해야 하며, 그 외의 자연어 설명은 출력하지 마.
         """.strip()
+
+
 
         gpt = client.chat.completions.create(
             model="gpt-4",
@@ -163,14 +240,26 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
             return https_fn.Response(reply, status=200)
 
         elif action == "recommend_room":
-            keywords = query.get("keywords", [])
+            keywords = query.get("keywords") or []
             matched = []
+
+            # 🔎 인원 키워드에서 숫자 추출
+            person_count = next(
+                (int(k.replace("명", "")) for k in keywords if k.endswith("명") and k[:-1].isdigit()), 
+                None
+            )
+
             docs = db.collection("rooms").stream()
             for doc in docs:
                 data = doc.to_dict()
-                eq = data.get("equiment", [])
+                eq = data.get("equiment") or []  # ✅ None 방지
+                cap = data.get("capacity", 0)
+
+                if person_count is not None and cap < person_count:
+                    continue
+
                 score = sum(1 for k in keywords if k in eq)
-                if score > 0:
+                if score > 0 or person_count is not None:
                     matched.append((score, doc.id, data))
 
             if not matched:
@@ -182,6 +271,8 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
                 f"{matched[0][1]}호 추천: 위치 {best['location']}, 수용 {best['capacity']}명, 기자재: {', '.join(best['equiment'])}",
                 status=200
             )
+
+
 
         return https_fn.Response("요청을 이해할 수 없습니다.", status=400)
 
