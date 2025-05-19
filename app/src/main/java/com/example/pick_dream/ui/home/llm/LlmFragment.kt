@@ -12,6 +12,9 @@ import com.example.pick_dream.R
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.NavOptions
 import androidx.activity.OnBackPressedCallback
+import com.google.firebase.auth.FirebaseAuth
+import android.util.Log
+
 
 class LlmFragment : Fragment() {
     private var _binding: FragmentLlmBinding? = null
@@ -39,7 +42,7 @@ class LlmFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
+
         // 하단 네비게이션 바 숨기기
         val bottomNav = requireActivity().findViewById<View>(R.id.nav_view)
         bottomNav?.visibility = View.GONE
@@ -108,27 +111,51 @@ class LlmFragment : Fragment() {
     private fun sendMessage() {
         val text = binding.editTextMessage.text.toString().trim()
         if (text.isNotEmpty()) {
-            // 내 메시지 추가
+            // 1. 내 메시지 RecyclerView에 추가 (UI 스레드니까 문제 없음)
             messages.add(LlmMessage(text, true))
             adapter.notifyItemInserted(messages.size - 1)
             binding.recyclerView.scrollToPosition(messages.size - 1)
             binding.editTextMessage.text.clear()
 
-            // 추천질문 숨기기 (첫 메시지 보낼 때만)
+            // 추천 질문 숨기기
             if (!isFirstMessageSent) {
                 hideSuggestions()
                 isFirstMessageSent = true
             }
 
-            // LLM 답변(더미) 추가
-            binding.recyclerView.postDelayed({
-                val dummyReply = "$text"
-                messages.add(LlmMessage(dummyReply, false))
+            // 2. Firebase 사용자 토큰 가져오기
+            val user = FirebaseAuth.getInstance().currentUser
+            user?.getIdToken(true)?.addOnSuccessListener { result ->
+                val idToken = result.token ?: ""
+
+                // 3. Function 호출
+                FirebaseFunctionService.sendMessageToFunction(
+                    message = text,
+                    idToken = idToken,
+                    onSuccess = { reply ->
+                        // UI 스레드에서 실행
+                        requireActivity().runOnUiThread {
+                            messages.add(LlmMessage(reply, false))
+                            adapter.notifyItemInserted(messages.size - 1)
+                            binding.recyclerView.scrollToPosition(messages.size - 1)
+                        }
+                    },
+                    onFailure = { e ->
+                        requireActivity().runOnUiThread {
+                            messages.add(LlmMessage("오류 발생: ${e.localizedMessage}", false))
+                            adapter.notifyItemInserted(messages.size - 1)
+                        }
+                    }
+                )
+            } ?: run {
+                // 비로그인 상태 처리
+                messages.add(LlmMessage("로그인이 필요합니다.", false))
                 adapter.notifyItemInserted(messages.size - 1)
-                binding.recyclerView.scrollToPosition(messages.size - 1)
-            }, 800)
+            }
         }
     }
+
+
 
     override fun onDestroyView() {
         super.onDestroyView()

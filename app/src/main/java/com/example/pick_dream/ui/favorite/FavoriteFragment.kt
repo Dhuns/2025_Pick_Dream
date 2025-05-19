@@ -28,26 +28,25 @@ class FavoriteFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        recyclerView = view.findViewById(R.id.rvFavoriteRooms)
-        emptyView = view.findViewById(R.id.tvEmpty)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        fun refreshFavorites() {
-            val favoriteRooms = LectureRoomRepository.getFavorites()
-            if (favoriteRooms.isEmpty()) {
-                emptyView.visibility = View.VISIBLE
-                recyclerView.visibility = View.GONE
-            } else {
-                emptyView.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
-            }
-            adapter = LectureRoomAdapter(
-                favoriteRooms.map { SectionedItem.Room(it) },
-                onItemClick = { /* 상세 이동 등 필요시 구현 */ },
-                onFavoriteChanged = { refreshFavorites() }
-            )
-            recyclerView.adapter = adapter
+    super.onViewCreated(view, savedInstanceState)
+    recyclerView = view.findViewById(R.id.rvFavoriteRooms)
+    emptyView = view.findViewById(R.id.tvEmpty)
+    recyclerView.layoutManager = LinearLayoutManager(requireContext())
+    fun refreshFavorites() {
+        val favoriteRooms = LectureRoomRepository.getFavorites()
+        if (favoriteRooms.isEmpty()) {
+            emptyView.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+        } else {
+            emptyView.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
         }
-        refreshFavorites()
+        adapter = LectureRoomAdapter(
+            favoriteRooms.map { SectionedItem.Room(it) },
+            onItemClick = { /* 상세 이동 등 필요시 구현 */ },
+            onFavoriteChanged = { refreshFavorites() }
+        )
+        recyclerView.adapter = adapter
     }
+    refreshFavorites()
 }
