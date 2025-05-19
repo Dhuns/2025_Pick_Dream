@@ -80,7 +80,8 @@ class HomeFragment : Fragment() {
                 findNavController().navigate(R.id.action_homeFragment_to_llmFragment)
             }
             R.id.btn_search -> {
-                // 검색 기능 실행
+                // 검색/대여 강의실 조회 페이지로 이동
+                findNavController().navigate(R.id.action_homeFragment_to_lectureRoomListFragment)
             }
             R.id.btn_inquiry -> {
                 findNavController().navigate(R.id.action_homeFragment_to_reservationFragment)

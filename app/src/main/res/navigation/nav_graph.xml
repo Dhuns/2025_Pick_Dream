@@ -21,6 +21,9 @@
         <action
             android:id="@+id/action_homeFragment_to_reservationFragment"
             app:destination="@id/reservationFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_lectureRoomListFragment"
+            app:destination="@id/lectureRoomListFragment" />
     </fragment>
 
     <fragment
@@ -53,8 +56,9 @@
 
     <fragment
         android:id="@+id/favoriteFragment"
-        android:name="com.example.pick_dream.ui.FavoriteFragment"
-        android:label="즐겨찾기" />
+        android:name="com.example.pick_dream.ui.favorite.FavoriteFragment"
+        android:label="찜한 강의실"
+        tools:layout="@layout/fragment_favorite" />
 
     <fragment
         android:id="@+id/mypageFragment"
@@ -95,5 +99,28 @@
             app:destination="@id/homeFragment"
             app:popUpTo="@id/homeFragment"
             app:popUpToInclusive="true" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/lectureRoomListFragment"
+        android:name="com.example.pick_dream.ui.home.search.LectureRoomListFragment"
+        android:label="대여 강의실 조회"
+        tools:layout="@layout/fragment_lecture_room_list">
+        <action
+            android:id="@+id/action_lectureRoomListFragment_to_lectureRoomDetailFragment"
+            app:destination="@id/lectureRoomDetailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/lectureRoomDetailFragment"
+        android:name="com.example.pick_dream.ui.home.search.LectureRoomDetailFragment"
+        android:label="강의실 상세"
+        tools:layout="@layout/fragment_lecture_room_detail">
+        <argument
+            android:name="roomName"
+            app:argType="string" />
+        <argument
+            android:name="building"
+            app:argType="string" />
     </fragment>
 </navigation>

@@ -18,4 +18,7 @@
     <string name="star3">3점</string>
     <string name="star4">4점</string>
     <string name="star5">5점</string>
+    <string name="back">뒤로가기</string>
+    <string name="favorite">찜하기</string>
+    <string name="search">검색</string>
 </resources>
