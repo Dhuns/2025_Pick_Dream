@@ -17,6 +17,7 @@ import com.example.pick_dream.ui.home.reservation.ReservationFragment
 import com.example.pick_dream.ui.home.notice.NoticeFragment
 import android.content.Context
 import com.example.pick_dream.ui.home.llm.LlmFragment
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class HomeFragment : Fragment() {
 
@@ -132,5 +133,14 @@ class HomeFragment : Fragment() {
         super.onDestroyView()
         handler.removeCallbacks(timeUpdateRunnable)
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val navView = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+        navView?.visibility = View.VISIBLE
+        if (navView?.selectedItemId != R.id.navigation_home) {
+            navView?.selectedItemId = R.id.navigation_home
+        }
     }
 }

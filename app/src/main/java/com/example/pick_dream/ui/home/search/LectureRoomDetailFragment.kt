@@ -92,8 +92,21 @@ class LectureRoomDetailFragment : Fragment() {
 
         // 대여하기 버튼 클릭
         btnReserve.setOnClickListener {
-            Toast.makeText(requireContext(), "예약 화면으로 이동!", Toast.LENGTH_SHORT).show()
-            // 실제 예약 화면 이동 로직 추가
+            // updatedRoom이 null이 아닐 때만 이동
+            LectureRoomRepository.roomsLiveData.value?.let { rooms ->
+                val matchedRoom = rooms.find {
+                    it.name.trim() == roomName.trim() &&
+                    it.buildingName.trim() == buildingName.trim() &&
+                    it.buildingDetail.trim() == buildingDetail.trim()
+                } ?: rooms.find { it.name.trim() == roomName.trim() }
+                if (matchedRoom != null) {
+                    val bundle = Bundle().apply {
+                        putString("building", "${matchedRoom.buildingName} (${matchedRoom.buildingDetail})")
+                        putString("roomName", matchedRoom.name)
+                    }
+                    findNavController().navigate(R.id.manualReservationFragment, bundle)
+                }
+            }
         }
 
         // 예시: arguments로 roomId를 받아 ViewModel에 전달

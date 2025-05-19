@@ -13,7 +13,8 @@ import com.example.pick_dream.model.Room
 class FavoriteRoomsAdapter(
     private var rooms: List<Room>,
     private val onFavoriteClick: (Room) -> Unit,
-    private val onDetailClick: (Room) -> Unit
+    private val onDetailClick: (Room) -> Unit,
+    private val onReserveClick: (Room) -> Unit
 ) : RecyclerView.Adapter<FavoriteRoomsAdapter.RoomViewHolder>() {
 
     class RoomViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -45,6 +46,9 @@ class FavoriteRoomsAdapter(
         }
         holder.detailBtn.setOnClickListener {
             onDetailClick(room)
+        }
+        holder.reserveBtn.setOnClickListener {
+            onReserveClick(room)
         }
     }
 

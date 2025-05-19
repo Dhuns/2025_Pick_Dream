@@ -15,6 +15,7 @@ import com.example.pick_dream.ui.home.search.LectureRoomRepository
 import com.example.pick_dream.ui.home.search.LectureRoomAdapter
 import com.example.pick_dream.model.Room
 import androidx.navigation.fragment.findNavController
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class FavoriteFragment : Fragment() {
 
@@ -64,6 +65,14 @@ class FavoriteFragment : Fragment() {
                     putString("buildingDetail", buildingDetail)
                 }
                 findNavController().navigate(R.id.lectureRoomDetailFragment, bundle)
+            }, { room ->
+                val buildingName = room.id.substringBefore(" (")
+                val buildingDetail = room.id.substringAfter("(").substringBefore(")")
+                val bundle = Bundle().apply {
+                    putString("building", room.id)
+                    putString("roomName", room.location)
+                }
+                findNavController().navigate(R.id.manualReservationFragment, bundle)
             })
             recyclerView.adapter = adapter
         }
@@ -72,6 +81,10 @@ class FavoriteFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.VISIBLE
+        val navView = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+        navView?.visibility = View.VISIBLE
+        if (navView?.selectedItemId != R.id.navigation_favorite) {
+            navView?.selectedItemId = R.id.navigation_favorite
+        }
     }
 }

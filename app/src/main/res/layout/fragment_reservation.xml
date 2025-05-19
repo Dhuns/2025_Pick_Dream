@@ -9,8 +9,8 @@
         android:layout_width="match_parent"
         android:layout_height="80dp"
         android:paddingHorizontal="16dp"
-        android:background="#3C5ABD"
-        android:paddingTop="8dp">
+        android:background="@color/primary_500"
+        android:paddingTop="0dp">
 
         <!-- 뒤로가기 버튼 -->
         <ImageButton
@@ -21,7 +21,7 @@
             android:layout_alignParentLeft="true"
             android:layout_alignParentTop="true"
             android:layout_marginStart="0dp"
-            android:layout_marginTop="18dp"
+            android:layout_marginTop="22dp"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_arrow_back"
             android:contentDescription="뒤로가기" />

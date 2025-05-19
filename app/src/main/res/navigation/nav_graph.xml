@@ -142,4 +142,13 @@
             android:name="buildingDetail"
             app:argType="string" />
     </fragment>
+
+    <fragment
+        android:id="@+id/manualReservationFragment"
+        android:name="com.example.pick_dream.ui.home.search.manualReservation.ManualReservationFragment"
+        android:label="수동 대여"
+        tools:layout="@layout/fragment_manual_reservation">
+        <argument android:name="building" app:argType="string" />
+        <argument android:name="roomName" app:argType="string" />
+    </fragment>
 </navigation>

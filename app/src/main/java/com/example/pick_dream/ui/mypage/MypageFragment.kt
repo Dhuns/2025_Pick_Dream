@@ -11,6 +11,8 @@ import com.example.pick_dream.databinding.FragmentMypageBinding
 import androidx.fragment.app.viewModels
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.example.pick_dream.R
 
 import android.util.Log
 
@@ -84,5 +86,14 @@ class MypageFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onResume() {
+        super.onResume()
+        val navView = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
+        navView?.visibility = View.VISIBLE
+        if (navView?.selectedItemId != R.id.navigation_mypage) {
+            navView?.selectedItemId = R.id.navigation_mypage
+        }
     }
 }
