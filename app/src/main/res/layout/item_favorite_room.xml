@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="12dp"
+    android:layout_margin="4dp"
     app:cardCornerRadius="12dp"
     app:cardElevation="2dp">
 
@@ -46,16 +46,16 @@
                 <!-- 텍스트+하트 (ConstraintLayout) -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="67dp">
 
                     <LinearLayout
                         android:id="@+id/textContainer"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="vertical"
+                        app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintBottom_toBottomOf="parent">
+                        app:layout_constraintTop_toTopOf="parent">
 
                         <TextView
                             android:id="@+id/tvBuilding"
@@ -74,18 +74,10 @@
                             android:text="5022 강의실"
                             android:textColor="@android:color/black"
                             android:textSize="14sp" />
-                        <TextView
-                            android:id="@+id/tvCapacity"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:text="정원: 0명"
-                            android:textColor="@android:color/black"
-                            android:textSize="13sp"
-                            android:layout_marginTop="2dp" />
 
                         <View
                             android:layout_width="match_parent"
-                            android:layout_height="18dp"
+                            android:layout_height="27dp"
                             android:background="@android:color/transparent" />
 
                     </LinearLayout>
@@ -94,12 +86,12 @@
                         android:id="@+id/btnFavorite"
                         android:layout_width="24dp"
                         android:layout_height="24dp"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
                         android:background="@android:color/transparent"
                         android:contentDescription="찜 버튼"
                         android:padding="0dp"
-                        android:src="@drawable/ic_heart_selector" />
+                        android:src="@drawable/ic_heart_selector"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
                 </androidx.constraintlayout.widget.ConstraintLayout>
 
                 <!-- 넓은 여백 -->
@@ -109,7 +101,7 @@
                 <TextView
                     android:id="@+id/tvFacilities"
                     android:layout_width="match_parent"
-                    android:layout_height="33dp"
+                    android:layout_height="36dp"
                     android:maxLines="2"
                     android:text="빔프로젝터, 마이크, 콘센트, 스크린"
                     android:textColor="@android:color/darker_gray"
@@ -135,7 +127,8 @@
                 android:layout_weight="1"
                 android:text="예약하기"
                 android:textColor="@android:color/white"
-                android:backgroundTint="@color/primary_400" />
+                android:backgroundTint="@color/primary_400"
+                app:rippleColor="@android:color/transparent" />
 
             <Button
                 android:id="@+id/btnDetails"
@@ -148,7 +141,8 @@
                 android:textColor="@color/primary_400"
                 app:strokeColor="@color/primary_400"
                 app:strokeWidth="1dp"
-                android:backgroundTint="@color/primary_050" />
+                android:backgroundTint="@color/primary_050"
+                app:rippleColor="@android:color/transparent" />
         </LinearLayout>
     </LinearLayout>
 

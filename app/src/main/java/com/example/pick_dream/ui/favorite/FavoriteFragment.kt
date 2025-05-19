@@ -13,11 +13,13 @@ import com.example.pick_dream.ui.home.search.LectureRoom
 import com.example.pick_dream.ui.home.search.SectionedItem
 import com.example.pick_dream.ui.home.search.LectureRoomRepository
 import com.example.pick_dream.ui.home.search.LectureRoomAdapter
+import com.example.pick_dream.model.Room
+import androidx.navigation.fragment.findNavController
 
 class FavoriteFragment : Fragment() {
 
     private lateinit var recyclerView: RecyclerView
-    private lateinit var adapter: LectureRoomAdapter
+    private lateinit var adapter: FavoriteRoomsAdapter
     private lateinit var emptyView: TextView
 
     override fun onCreateView(
@@ -28,25 +30,48 @@ class FavoriteFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-    super.onViewCreated(view, savedInstanceState)
-    recyclerView = view.findViewById(R.id.rvFavoriteRooms)
-    emptyView = view.findViewById(R.id.tvEmpty)
-    recyclerView.layoutManager = LinearLayoutManager(requireContext())
-    fun refreshFavorites() {
-        val favoriteRooms = LectureRoomRepository.getFavorites()
-        if (favoriteRooms.isEmpty()) {
-            emptyView.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
-        } else {
-            emptyView.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
+        super.onViewCreated(view, savedInstanceState)
+        recyclerView = view.findViewById(R.id.rvFavoriteRooms)
+        emptyView = view.findViewById(R.id.tvEmpty)
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
+        fun refreshFavorites() {
+            val favoriteLectureRooms = LectureRoomRepository.getFavorites()
+            val favoriteRooms = favoriteLectureRooms.map {
+                Room(
+                    capacity = 0,
+                    equiment = it.roomInfo.split(", "),
+                    location = it.name,
+                    id = "${it.buildingName} (${it.buildingDetail})"
+                )
+            }
+            if (favoriteRooms.isEmpty()) {
+                emptyView.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+            } else {
+                emptyView.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+            }
+            adapter = FavoriteRoomsAdapter(favoriteRooms, { room ->
+                LectureRoomRepository.toggleFavorite(room.location)
+                refreshFavorites()
+            }, { room ->
+                val buildingName = room.id.substringBefore(" (")
+                val buildingDetail = room.id.substringAfter("(").substringBefore(")")
+                val bundle = Bundle().apply {
+                    putString("roomName", room.location)
+                    putString("building", room.id)
+                    putString("buildingName", buildingName)
+                    putString("buildingDetail", buildingDetail)
+                }
+                findNavController().navigate(R.id.lectureRoomDetailFragment, bundle)
+            })
+            recyclerView.adapter = adapter
         }
-        adapter = LectureRoomAdapter(
-            favoriteRooms.map { SectionedItem.Room(it) },
-            onItemClick = { /* 상세 이동 등 필요시 구현 */ },
-            onFavoriteChanged = { refreshFavorites() }
-        )
-        recyclerView.adapter = adapter
+        refreshFavorites()
     }
-    refreshFavorites()
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.VISIBLE
+    }
 }

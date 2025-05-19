@@ -135,5 +135,11 @@
         <argument
             android:name="building"
             app:argType="string" />
+        <argument
+            android:name="buildingName"
+            app:argType="string" />
+        <argument
+            android:name="buildingDetail"
+            app:argType="string" />
     </fragment>
 </navigation>

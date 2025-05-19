@@ -14,6 +14,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.pick_dream.R
 import com.google.android.material.button.MaterialButton
 import androidx.lifecycle.Observer
+import android.util.Log
 
 class LectureRoomDetailFragment : Fragment() {
     private val viewModel: LectureRoomDetailViewModel by viewModels()
@@ -26,9 +27,12 @@ class LectureRoomDetailFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.GONE
 
         val roomName = arguments?.getString("roomName") ?: ""
-        val buildingDetail = arguments?.getString("building")
+        val buildingName = arguments?.getString("buildingName") ?: ""
+        val buildingDetail = arguments?.getString("buildingDetail") ?: ""
+        Log.d("DEBUG", "roomName: '$roomName', buildingName: '$buildingName', buildingDetail: '$buildingDetail'")
 
         val ivLectureRoom = view.findViewById<ImageView>(R.id.ivLectureRoom)
         val tvRoomName = view.findViewById<TextView>(R.id.tvRoomName)
@@ -49,15 +53,31 @@ class LectureRoomDetailFragment : Fragment() {
 
         // LiveData 관찰로 강의실 정보 전체를 갱신
         LectureRoomRepository.roomsLiveData.observe(viewLifecycleOwner) { rooms ->
-            val updatedRoom = rooms.find { it.name == roomName }
+            rooms.forEach {
+                Log.d("DEBUG", "LectureRoom: name='${it.name}', buildingName='${it.buildingName}', buildingDetail='${it.buildingDetail}'")
+            }
+            val updatedRoom = rooms.find {
+                it.name.trim() == roomName.trim() &&
+                it.buildingName.trim() == buildingName.trim() &&
+                it.buildingDetail.trim() == buildingDetail.trim()
+            } ?: rooms.find { it.name.trim() == roomName.trim() }
             if (updatedRoom != null) {
+                Log.d("DEBUG", "updatedRoom: name='${updatedRoom.name}', buildingName='${updatedRoom.buildingName}', buildingDetail='${updatedRoom.buildingDetail}'")
                 tvRoomName.text = "${updatedRoom.buildingName} (${updatedRoom.buildingDetail})"
                 tvRoomDesc.text = updatedRoom.roomInfo
-                // 필요하다면 ivLectureRoom.setImageResource 등도 추가
                 btnFavorite.setImageResource(
                     if (updatedRoom.isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_border
                 )
-                // infoTextViews 등 추가 정보도 updatedRoom에서 갱신
+                // infoBox 세팅
+                infoTextViews[0].text = "강의실 : ${updatedRoom.name}"
+                infoTextViews[1].text = "기자재 목록 : ${updatedRoom.roomInfo}"
+                infoTextViews[2].text = "의자 : 정보 없음"
+                infoTextViews[3].text = "빔 프로젝터 대여 여부 : 정보 없음"
+                infoTextViews[4].text = "전자 칠판 대여 여부 : 정보 없음"
+                infoTextViews[5].text = "장소 대여 여부 : 정보 없음"
+                infoTextViews[6].text = "앱에서 바로 예약 가능"
+            } else {
+                Log.d("DEBUG", "updatedRoom is null!")
             }
         }
         btnFavorite.setOnClickListener {
@@ -67,7 +87,7 @@ class LectureRoomDetailFragment : Fragment() {
 
         // 뒤로가기
         btnBack.setOnClickListener {
-            findNavController().navigate(R.id.lectureRoomListFragment)
+            findNavController().popBackStack()
         }
 
         // 대여하기 버튼 클릭
@@ -81,5 +101,10 @@ class LectureRoomDetailFragment : Fragment() {
         if (roomId != null) {
             viewModel.loadRoomDetail(roomId)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.GONE
     }
 }
