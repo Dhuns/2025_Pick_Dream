@@ -48,7 +48,12 @@ class LectureRoomListFragment : Fragment() {
         var currentSectionedList = buildSectionedList(groupedRooms)
 
         adapter = LectureRoomAdapter(currentSectionedList, { room ->
-            val action = LectureRoomListFragmentDirections.actionLectureRoomListFragmentToLectureRoomDetailFragment(room.name, room.buildingDetail)
+            val action = LectureRoomListFragmentDirections.actionLectureRoomListFragmentToLectureRoomDetailFragment(
+                room.name,
+                "${room.buildingName} (${room.buildingDetail})",
+                room.buildingName,
+                room.buildingDetail
+            )
             findNavController().navigate(action)
         }, { refreshList() })
         recyclerView.adapter = adapter
@@ -115,7 +120,12 @@ class LectureRoomListFragment : Fragment() {
             ?: emptyList()
         val sectionedList = buildSectionedList(filtered)
         adapter = LectureRoomAdapter(sectionedList, { room ->
-            val action = LectureRoomListFragmentDirections.actionLectureRoomListFragmentToLectureRoomDetailFragment(room.name, room.buildingDetail)
+            val action = LectureRoomListFragmentDirections.actionLectureRoomListFragmentToLectureRoomDetailFragment(
+                room.name,
+                "${room.buildingName} (${room.buildingDetail})",
+                room.buildingName,
+                room.buildingDetail
+            )
             findNavController().navigate(action)
         }, { refreshList() })
         view?.findViewById<RecyclerView>(R.id.rvLectureRooms)?.adapter = adapter
@@ -139,7 +149,12 @@ class LectureRoomListFragment : Fragment() {
             ?: emptyList()
         val sectionedList = buildSectionedList(groupedRooms)
         adapter = LectureRoomAdapter(sectionedList, { room ->
-            val action = LectureRoomListFragmentDirections.actionLectureRoomListFragmentToLectureRoomDetailFragment(room.name, room.buildingDetail)
+            val action = LectureRoomListFragmentDirections.actionLectureRoomListFragmentToLectureRoomDetailFragment(
+                room.name,
+                "${room.buildingName} (${room.buildingDetail})",
+                room.buildingName,
+                room.buildingDetail
+            )
             findNavController().navigate(action)
         }, { refreshList() })
         view?.findViewById<RecyclerView>(R.id.rvLectureRooms)?.adapter = adapter

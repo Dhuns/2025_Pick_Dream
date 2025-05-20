@@ -3,17 +3,17 @@
 
     <item
         android:id="@+id/navigation_home"
-        android:icon="@drawable/ic_home"
+        android:icon="@drawable/ic_home_selector"
         android:title="홈" />
 
     <item
         android:id="@+id/navigation_favorite"
-        android:icon="@drawable/ic_favorite"
+        android:icon="@drawable/ic_favorite_selector"
         android:title="찜한 강의실" />
 
     <item
         android:id="@+id/navigation_mypage"
-        android:icon="@drawable/ic_mypage"
+        android:icon="@drawable/ic_mypage_selector"
         android:title="마이페이지" />
 
 </menu>
