@@ -31,11 +31,11 @@ class FavoriteFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        recyclerView = view.findViewById(R.id.rvFavoriteRooms)
-        emptyView = view.findViewById(R.id.tvEmpty)
-        recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        fun refreshFavorites() {
+    super.onViewCreated(view, savedInstanceState)
+    recyclerView = view.findViewById(R.id.rvFavoriteRooms)
+    emptyView = view.findViewById(R.id.tvEmpty)
+    recyclerView.layoutManager = LinearLayoutManager(requireContext())
+    fun refreshFavorites() {
             val favoriteLectureRooms = LectureRoomRepository.getFavorites()
             val favoriteRooms = favoriteLectureRooms.map {
                 Room(
@@ -45,13 +45,13 @@ class FavoriteFragment : Fragment() {
                     id = "${it.buildingName} (${it.buildingDetail})"
                 )
             }
-            if (favoriteRooms.isEmpty()) {
-                emptyView.visibility = View.VISIBLE
-                recyclerView.visibility = View.GONE
-            } else {
-                emptyView.visibility = View.GONE
-                recyclerView.visibility = View.VISIBLE
-            }
+        if (favoriteRooms.isEmpty()) {
+            emptyView.visibility = View.VISIBLE
+            recyclerView.visibility = View.GONE
+        } else {
+            emptyView.visibility = View.GONE
+            recyclerView.visibility = View.VISIBLE
+        }
             adapter = FavoriteRoomsAdapter(favoriteRooms, { room ->
                 LectureRoomRepository.toggleFavorite(room.location)
                 refreshFavorites()
@@ -74,9 +74,9 @@ class FavoriteFragment : Fragment() {
                 }
                 findNavController().navigate(R.id.manualReservationFragment, bundle)
             })
-            recyclerView.adapter = adapter
-        }
-        refreshFavorites()
+        recyclerView.adapter = adapter
+    }
+    refreshFavorites()
     }
 
     override fun onResume() {
