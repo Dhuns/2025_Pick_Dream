@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:background="#F7F9FF"
+    android:background="@android:color/white"
     android:padding="0dp">
 
     <!-- 상단 타이틀 영역 -->
@@ -44,11 +44,12 @@
     <com.google.android.material.card.MaterialCardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:strokeColor="@android:color/darker_gray"
+        app:strokeColor="@color/primary_400"
         app:strokeWidth="1dp"
         app:cardCornerRadius="12dp"
-        android:layout_margin="16dp"
-        android:backgroundTint="@android:color/white">
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="20dp"
+        android:backgroundTint="@color/primary_050">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -77,263 +78,371 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
-    <!-- 날짜 선택 -->
-    <com.google.android.material.card.MaterialCardView
+    <!-- 기존 cardDateSelect와 layoutDateDropdown을 감싸는 부모 레이아웃 추가 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardDateContainer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:strokeColor="@android:color/darker_gray"
-        app:strokeWidth="1dp"
         app:cardCornerRadius="8dp"
-        android:layout_marginTop="8dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:strokeColor="@color/neutral_200"
+        app:strokeWidth="1dp"
+        android:layout_marginTop="16dp"
         android:layout_marginHorizontal="16dp">
 
         <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_calendar"/>
-
-            <TextView
-                android:id="@+id/tvDateSelect"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="날짜 선택"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:paddingStart="12dp" />
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_down"/>
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- 드롭다운 달력 (처음엔 숨김) -->
-    <LinearLayout
-        android:id="@+id/layoutDateDropdown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:background="@android:color/white"
-        android:elevation="4dp"
-        android:padding="12dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="8dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:layout_marginBottom="8dp">
-
-            <Spinner
-                android:id="@+id/spinnerYear"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginEnd="8dp"/>
-            <Spinner
-                android:id="@+id/spinnerMonth"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-
-        <CalendarView
-            android:id="@+id/calendarView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </LinearLayout>
-
-    <!-- 시간 선택 -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:strokeColor="@android:color/darker_gray"
-        app:strokeWidth="1dp"
-        app:cardCornerRadius="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginHorizontal="16dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_clock"/>
-
-            <TextView
-                android:id="@+id/tvTimeSelect"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="시간 선택"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:paddingStart="12dp" />
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_down"/>
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- 시간 선택 드롭다운 (처음엔 숨김) -->
-    <LinearLayout
-        android:id="@+id/layoutTimeDropdown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:visibility="gone"
-        android:background="@android:color/white"
-        android:elevation="4dp"
-        android:padding="16dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="8dp">
-
-        <Spinner
-            android:id="@+id/spinnerStartHour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="시"
-            android:layout_marginEnd="8dp"/>
-        <Spinner
-            android:id="@+id/spinnerStartMinute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="분"
-            android:layout_marginEnd="12dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="~"
-            android:layout_marginEnd="12dp"/>
-        <Spinner
-            android:id="@+id/spinnerEndHour"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="시"
-            android:layout_marginEnd="8dp"/>
-        <Spinner
-            android:id="@+id/spinnerEndMinute"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="4dp"/>
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="분"/>
-    </LinearLayout>
-
-    <!-- 기자재 선택 -->
-    <com.google.android.material.card.MaterialCardView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:strokeColor="@android:color/darker_gray"
-        app:strokeWidth="1dp"
-        app:cardCornerRadius="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginHorizontal="16dp">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="56dp"
-            android:orientation="horizontal"
-            android:gravity="center_vertical"
-            android:paddingStart="16dp"
-            android:paddingEnd="16dp">
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_laptop"/>
-
-            <TextView
-                android:id="@+id/tvEquipmentSelect"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="사용할 기자재 선택"
-                android:textSize="16sp"
-                android:textColor="@color/black"
-                android:paddingStart="12dp" />
-
-            <ImageView
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_arrow_down"/>
-        </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
-
-    <!-- 기자재 선택 드롭다운 (처음엔 숨김) -->
-    <LinearLayout
-        android:id="@+id/layoutEquipmentDropdown"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:visibility="gone"
-        android:background="@android:color/white"
-        android:elevation="4dp"
-        android:padding="16dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="8dp">
-
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="사용할 기자재 선택"
-            android:textStyle="bold"
-            android:layout_marginBottom="8dp"/>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:id="@+id/layoutEquipmentList">
-            <!-- 체크박스 리스트 동적 추가 -->
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- 날짜 선택 (상단) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardDateSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:strokeColor="@android:color/transparent"
+                app:strokeWidth="0dp"
+                app:cardCornerRadius="0dp"
+                app:cardForegroundColor="@android:color/transparent"
+                app:rippleColor="@android:color/transparent"
+                android:layout_marginTop="0dp"
+                android:layout_marginHorizontal="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_calendar"
+                        android:layout_marginEnd="12dp"/>
+
+                    <TextView
+                        android:id="@+id/tvDateSelectTitle"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="날짜 선택"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:gravity="center_vertical"
+                        android:paddingStart="0dp"
+                        android:layout_marginStart="0dp"
+                        android:visibility="visible"
+                        android:textStyle="normal" />
+
+                    <LinearLayout
+                        android:id="@+id/layoutDateHeader"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:orientation="horizontal"
+                        android:gravity="center_vertical"
+                        android:visibility="gone">
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical">
+                            <TextView
+                                android:id="@+id/tvYearSelect"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="2025년"
+                                android:textSize="18sp"
+                                android:textColor="@color/black"
+                                android:paddingEnd="4dp"
+                                android:textStyle="normal"/>
+                            <TextView
+                                android:id="@+id/tvMonthSelect"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="4월"
+                                android:textSize="18sp"
+                                android:textColor="@color/black"
+                                android:paddingEnd="4dp"
+                                android:textStyle="normal"/>
+                            <ImageView
+                                android:id="@+id/imgArrowDateHeader"
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:src="@drawable/ic_arrow_down"/>
+                        </LinearLayout>
+                    </LinearLayout>
+
+                    <ImageView
+                        android:id="@+id/imgArrowDateDropdown"
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_arrow_down"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 드롭다운 달력 (처음엔 숨김) -->
+            <LinearLayout
+                android:id="@+id/layoutDateDropdown"
+                android:layout_width="match_parent"
+                android:layout_height="340dp"
+                android:orientation="vertical"
+                android:gravity="bottom"
+                android:visibility="gone"
+                android:padding="12dp"
+                android:layout_marginHorizontal="0dp"
+                android:layout_marginBottom="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:layout_marginBottom="8dp">
+                    <Spinner
+                        android:id="@+id/spinnerYear"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:visibility="gone"/>
+                </LinearLayout>
+
+                <com.prolificinteractive.materialcalendarview.MaterialCalendarView
+                    android:id="@+id/calendarView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    app:mcv_dateTextAppearance="@style/CalendarDateText"/>
+            </LinearLayout>
         </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 시간 선택 카드+드롭다운 통합 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardTimeContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:strokeColor="@color/neutral_200"
+        app:strokeWidth="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp">
 
         <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="end"
-            android:layout_marginTop="8dp">
-            <CheckBox
-                android:id="@+id/checkboxSelectAll"
-                android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <!-- 기존 cardTimeSelect (margin 제거) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardTimeSelect"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="전체 선택"/>
+                app:strokeColor="@android:color/transparent"
+                app:strokeWidth="0dp"
+                app:cardCornerRadius="0dp"
+                app:cardForegroundColor="@android:color/transparent"
+                app:rippleColor="@android:color/transparent"
+                android:layout_marginTop="0dp"
+                android:layout_marginHorizontal="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_clock"/>
+
+                    <TextView
+                        android:id="@+id/tvTimeSelect"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="시간 선택"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:paddingStart="12dp" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_arrow_down"
+                        android:id="@+id/imgArrowTime"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 기존 layoutTimeDropdown (margin, elevation, background 제거) -->
+            <LinearLayout
+                android:id="@+id/layoutTimeDropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:visibility="gone"
+                android:padding="16dp"
+                android:layout_marginHorizontal="0dp"
+                android:layout_marginBottom="0dp">
+
+                <Spinner
+                    android:id="@+id/spinnerStartHour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="시"
+                    android:layout_marginEnd="8dp"/>
+                <Spinner
+                    android:id="@+id/spinnerStartMinute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="분"
+                    android:layout_marginEnd="12dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="~"
+                    android:layout_marginEnd="12dp"/>
+                <Spinner
+                    android:id="@+id/spinnerEndHour"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="시"
+                    android:layout_marginEnd="8dp"/>
+                <Spinner
+                    android:id="@+id/spinnerEndMinute"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="4dp"/>
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="분"/>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </androidx.cardview.widget.CardView>
+
+    <!-- 기자재 선택 카드+드롭다운 통합 -->
+    <androidx.cardview.widget.CardView
+        android:id="@+id/cardEquipmentContainer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:cardCornerRadius="8dp"
+        app:cardElevation="4dp"
+        app:cardBackgroundColor="@android:color/white"
+        app:strokeColor="@color/neutral_200"
+        app:strokeWidth="1dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginHorizontal="16dp">
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!-- 기존 cardEquipmentSelect (margin 제거) -->
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardEquipmentSelect"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:strokeColor="@android:color/transparent"
+                app:strokeWidth="0dp"
+                app:cardCornerRadius="0dp"
+                app:cardForegroundColor="@android:color/transparent"
+                app:rippleColor="@android:color/transparent"
+                android:layout_marginTop="0dp"
+                android:layout_marginHorizontal="0dp">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:orientation="horizontal"
+                    android:gravity="center_vertical"
+                    android:paddingStart="16dp"
+                    android:paddingEnd="16dp">
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_laptop"/>
+
+                    <TextView
+                        android:id="@+id/tvEquipmentSelect"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:text="사용할 기자재 선택"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        android:paddingStart="12dp" />
+
+                    <ImageView
+                        android:layout_width="24dp"
+                        android:layout_height="24dp"
+                        android:src="@drawable/ic_arrow_down"
+                        android:id="@+id/imgArrowEquipment"/>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+            <!-- 기존 layoutEquipmentDropdown (margin, elevation, background 제거) -->
+            <LinearLayout
+                android:id="@+id/layoutEquipmentDropdown"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                android:visibility="gone"
+                android:padding="16dp"
+                android:layout_marginHorizontal="0dp"
+                android:layout_marginBottom="0dp">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="사용할 기자재 선택"
+                    android:textStyle="bold"
+                    android:layout_marginBottom="8dp"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:id="@+id/layoutEquipmentList">
+                    <!-- 체크박스 리스트 동적 추가 -->
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:gravity="end"
+                    android:layout_marginTop="8dp">
+                    <CheckBox
+                        android:id="@+id/checkboxSelectAll"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="전체 선택"/>
+                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
+    </androidx.cardview.widget.CardView>
 
     <!-- 다음 버튼 -->
     <Button
