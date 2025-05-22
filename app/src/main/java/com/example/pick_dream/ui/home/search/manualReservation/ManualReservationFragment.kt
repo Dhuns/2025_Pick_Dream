@@ -143,27 +143,112 @@ class ManualReservationFragment : Fragment() {
         }
 
         // 시간 선택 드롭다운 토글 및 세팅
-        val hours = (0..23).toList()
-        val minutes = listOf(0, 15, 30, 45)
+        val hours = (9..21).toList()
+        val minutes = listOf(0, 10, 20, 30, 40, 50)
         spinnerStartHour.adapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, hours)
         spinnerEndHour.adapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, hours)
         spinnerStartMinute.adapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, minutes)
         spinnerEndMinute.adapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, minutes)
+
         fun updateTimeText() {
             val sh = spinnerStartHour.selectedItem as Int
             val sm = spinnerStartMinute.selectedItem as Int
             val eh = spinnerEndHour.selectedItem as Int
             val em = spinnerEndMinute.selectedItem as Int
-            tvTimeSelect.text = String.format("%02d:%02d ~ %02d:%02d", sh, sm, eh, em)
+
+            val startTotal = sh * 60 + sm
+            val endTotal = eh * 60 + em
+            val diff = endTotal - startTotal
+
+            val hour = diff / 60
+            val min = diff % 60
+            val durationText = when {
+                diff <= 0 -> ""
+                hour > 0 && min > 0 -> " (${hour}시간 ${min}분)"
+                hour > 0 -> " (${hour}시간)"
+                else -> " (${min}분)"
+            }
+            tvTimeSelect.text = String.format("%02d:%02d ~ %02d:%02d%s", sh, sm, eh, em, durationText)
         }
-        val timeListener = object : android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) { updateTimeText() }
+
+        // 시작 시간 또는 시작 분 선택 시 종료 시간/분 동적 제한
+        fun updateEndTimeSpinners() {
+            val startHour = spinnerStartHour.selectedItem as Int
+            val startMinute = spinnerStartMinute.selectedItem as Int
+            val startTotal = startHour * 60 + startMinute
+            val maxEndTotal = minOf(startTotal + 6 * 60, 21 * 60 + 30)
+            val minutes = listOf(0, 10, 20, 30, 40, 50)
+
+            // 종료 시간 후보 시/분 리스트 생성
+            val endTimes = mutableListOf<Pair<Int, Int>>()
+            for (h in hours) {
+                for (m in minutes) {
+                    val total = h * 60 + m
+                    if (total > startTotal && total <= maxEndTotal && total <= 21 * 60 + 30) {
+                        endTimes.add(h to m)
+                    }
+                }
+            }
+            val endHours = endTimes.map { it.first }.distinct()
+            val endMinutesMap = endHours.associateWith { h -> endTimes.filter { it.first == h }.map { it.second } }
+
+            // 현재 종료 시/분 값 저장
+            val prevEndHour = spinnerEndHour.selectedItem as? Int ?: endHours.firstOrNull() ?: hours.first()
+            val prevEndMinute = spinnerEndMinute.selectedItem as? Int ?: 0
+
+            // 종료 시 어댑터 갱신
+            val endHourAdapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, endHours)
+            spinnerEndHour.adapter = endHourAdapter
+            val endHourIndex = endHours.indexOf(prevEndHour).takeIf { it >= 0 } ?: 0
+            spinnerEndHour.setSelection(endHourIndex)
+
+            // 종료 분 어댑터 갱신 (종료 시 선택 후에 동기화)
+            spinnerEndHour.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+                override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
+                    val selectedEndHour = endHours[position]
+                    val endMinutes = endMinutesMap[selectedEndHour] ?: listOf(0)
+                    val endMinuteAdapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, endMinutes)
+                    spinnerEndMinute.adapter = endMinuteAdapter
+                    val endMinuteIndex = endMinutes.indexOf(prevEndMinute).takeIf { it >= 0 } ?: 0
+                    spinnerEndMinute.setSelection(endMinuteIndex)
+                    updateTimeText()
+                }
+                override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+            }
+        }
+
+        // 시작 시/분 선택 시 종료 시/분 동적 제한
+        spinnerStartHour.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
+                updateEndTimeSpinners()
+            }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
         }
-        spinnerStartHour.onItemSelectedListener = timeListener
-        spinnerStartMinute.onItemSelectedListener = timeListener
-        spinnerEndHour.onItemSelectedListener = timeListener
-        spinnerEndMinute.onItemSelectedListener = timeListener
+        spinnerStartMinute.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
+                updateEndTimeSpinners()
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+        }
+
+        // 최초 진입 시에도 동적 제한 적용
+        updateEndTimeSpinners()
+
+        // 종료 시/분 선택 시 시간 텍스트 갱신
+        spinnerEndHour.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
+                // 분 어댑터는 updateEndTimeSpinners에서 이미 갱신됨
+                updateTimeText()
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+        }
+        spinnerEndMinute.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
+            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
+                updateTimeText()
+            }
+            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
+        }
+
         cardTimeSelect.setOnClickListener {
             val isOpen = layoutTimeDropdown.visibility != View.VISIBLE
             layoutTimeDropdown.visibility = if (isOpen) View.VISIBLE else View.GONE
@@ -177,24 +262,55 @@ class ManualReservationFragment : Fragment() {
         // 기자재 선택 드롭다운 토글 및 세팅
         val equipmentList = listOf("마이크", "빔 프로젝터", "전자칠판", "스크린", "포인터")
         val checkBoxList = mutableListOf<android.widget.CheckBox>()
+        var isProgrammaticChange = false
         layoutEquipmentList.removeAllViews()
         equipmentList.forEach { item ->
-            val cb = android.widget.CheckBox(requireContext())
-            cb.text = item
+            val row = android.widget.LinearLayout(requireContext()).apply {
+                orientation = android.widget.LinearLayout.HORIZONTAL
+                layoutParams = android.widget.LinearLayout.LayoutParams(
+                    android.widget.LinearLayout.LayoutParams.MATCH_PARENT,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                setPadding((8 * resources.displayMetrics.density).toInt(), (4 * resources.displayMetrics.density).toInt(), 0, (4 * resources.displayMetrics.density).toInt())
+                gravity = android.view.Gravity.CENTER_VERTICAL
+            }
+            val tv = android.widget.TextView(requireContext()).apply {
+                text = item
+                textSize = 16f
+                layoutParams = android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
+            }
+            val cb = android.widget.CheckBox(requireContext()).apply {
+                layoutParams = android.widget.LinearLayout.LayoutParams(
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT,
+                    android.widget.LinearLayout.LayoutParams.WRAP_CONTENT
+                )
+                scaleX = 1.1f
+                scaleY = 1.1f
+                buttonTintList = androidx.core.content.ContextCompat.getColorStateList(requireContext(), R.color.checkbox_equipment)
+                background = null
+            }
             cb.setOnCheckedChangeListener { _, _ ->
+                if (isProgrammaticChange) return@setOnCheckedChangeListener
                 val selected = equipmentList.filterIndexed { idx, _ -> checkBoxList[idx].isChecked }
                 tvEquipmentSelect.text = if (selected.isEmpty()) "사용할 기자재 선택" else selected.joinToString(", ")
+                isProgrammaticChange = true
                 checkboxSelectAll.isChecked = checkBoxList.all { it.isChecked }
+                isProgrammaticChange = false
             }
-            layoutEquipmentList.addView(cb)
+            row.addView(tv)
+            row.addView(cb)
+            layoutEquipmentList.addView(row)
             checkBoxList.add(cb)
         }
+        checkboxSelectAll.apply {
+            buttonTintList = androidx.core.content.ContextCompat.getColorStateList(requireContext(), R.color.checkbox_equipment)
+            background = null
+        }
         checkboxSelectAll.setOnCheckedChangeListener { _, isChecked ->
-            checkBoxList.forEach { it.setOnCheckedChangeListener(null); it.isChecked = isChecked; it.setOnCheckedChangeListener { _, _ ->
-                val selected = equipmentList.filterIndexed { idx, _ -> checkBoxList[idx].isChecked }
-                tvEquipmentSelect.text = if (selected.isEmpty()) "사용할 기자재 선택" else selected.joinToString(", ")
-                checkboxSelectAll.isChecked = checkBoxList.all { it.isChecked }
-            } }
+            if (isProgrammaticChange) return@setOnCheckedChangeListener
+            isProgrammaticChange = true
+            checkBoxList.forEach { it.isChecked = isChecked }
+            isProgrammaticChange = false
             val selected = equipmentList.filterIndexed { idx, _ -> checkBoxList[idx].isChecked }
             tvEquipmentSelect.text = if (selected.isEmpty()) "사용할 기자재 선택" else selected.joinToString(", ")
         }
