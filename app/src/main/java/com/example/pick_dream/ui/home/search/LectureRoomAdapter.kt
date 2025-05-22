@@ -6,14 +6,18 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
+import com.google.firebase.firestore.PropertyName
 
-// 강의실 데이터 모델
 data class LectureRoom(
-    val name: String, // ex: 5022 강의실
-    val buildingName: String, // ex: 덕문관
-    val buildingDetail: String, // ex: 5강의동
-    val roomInfo: String, // ex: 빔프로젝터, 마이크, 콘센트, 스크린
-    var isFavorite: Boolean = false
+    val id: String = "",  // 문서 ID
+    val name: String = "", // 강의실 번호 (예: 5104)
+    val buildingName: String = "", // 건물명 (예: 덕문관)
+    val buildingDetail: String = "", // 건물 상세 (예: 5강의동)
+    val location: String = "", // 위치 (예: 1층)
+    val equipment: List<String> = listOf(), // 기자재 목록
+    val capacity: Int = 0, // 수용 인원
+    var isFavorite: Boolean = false, // 즐겨찾기 여부
+    val isAvailable: Boolean = true // 대여 가능 여부
 )
 
 // 섹션 헤더와 강의실 아이템을 구분하는 sealed class
@@ -44,9 +48,10 @@ class LectureRoomAdapter(
         private val tvName: TextView = itemView.findViewById(R.id.tvRoomName)
         private val tvBuilding: TextView = itemView.findViewById(R.id.tvRoomInfo)
         private val btnFavorite: View = itemView.findViewById(R.id.btnFavorite)
+
         fun bind(item: LectureRoom) {
             tvName.text = item.name
-            tvBuilding.text = item.roomInfo
+            tvBuilding.text = item.equipment.joinToString(", ").toString()
             btnFavorite as android.widget.ImageButton
             btnFavorite.setImageResource(
                 if (item.isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_border

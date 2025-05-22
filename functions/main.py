@@ -31,7 +31,7 @@ def extract_room_id(text):
 def correct_input_with_gpt(raw_text):
     try:
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o",
             messages=[
                 {"role": "system", "content": "사용자의 한국어 문장을 자연스럽게 오타 없이 교정해줘."},
                 {"role": "user", "content": raw_text}
