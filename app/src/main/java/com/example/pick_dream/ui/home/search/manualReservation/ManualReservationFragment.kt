@@ -67,22 +67,10 @@ class ManualReservationFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        // 날짜 선택 드롭다운 토글 및 세팅
-        val years = (2020..2030).toList()
-        val months = (1..12).map { "${it}월" }
-        val monthAdapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, months)
-        monthAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        spinnerMonth.adapter = monthAdapter
-        spinnerMonth.post {
-            spinnerMonth.dropDownWidth = spinnerMonth.width
-        }
-
         // 오늘 날짜로 초기화
         val today = java.util.Calendar.getInstance()
-        val yearIndex = years.indexOf(today.get(java.util.Calendar.YEAR))
-        val monthIndex = today.get(java.util.Calendar.MONTH)
+        val yearIndex = (2020..2030).toList().indexOf(today.get(java.util.Calendar.YEAR))
         if (yearIndex >= 0) spinnerYear.setSelection(yearIndex, false)
-        spinnerMonth.setSelection(monthIndex, false)
         calendarView.selectedDate = CalendarDay.from(today)
         calendarView.setCurrentDate(CalendarDay.from(today))
 
@@ -92,68 +80,54 @@ class ManualReservationFragment : Fragment() {
 
         var isUserSelecting = false
 
-        // Spinner에서 연/월 선택 시 달력 이동
-        fun updateCalendarView() {
-            val year = years[spinnerYear.selectedItemPosition]
-            val month = spinnerMonth.selectedItemPosition // 0부터 시작 (1월=0)
-            val calDay = CalendarDay.from(year, month, 1)
-            calendarView.setCurrentDate(calDay)
-        }
-        // 연/월 텍스트 클릭 시 Spinner 드롭다운 표시
-        tvYearSelect.setOnClickListener {
-            spinnerYear.performClick()
-        }
+        val monthDropdown = MonthDropdownPopup(requireContext())
         tvMonthSelect.setOnClickListener {
-            val months = (1..12).map { "${it}월" }.toTypedArray()
-            android.app.AlertDialog.Builder(requireContext())
-                .setTitle("월 선택")
-                .setItems(months) { _, which ->
-                    val yearIndex = spinnerYear.selectedItemPosition
-                    val year = if (yearIndex >= 0) years[yearIndex] else java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
-                    val calDay = CalendarDay.from(year, which, 1)
-                    calendarView.setCurrentDate(calDay)
-                    tvMonthSelect.text = months[which]
-                    spinnerMonth.setSelection(which)
-                }
-                .show()
+            val selectedMonth = tvMonthSelect.text.toString().replace("월", "").toIntOrNull()?.minus(1)
+            monthDropdown.show(tvMonthSelect, selectedMonth) { monthIndex ->
+                tvMonthSelect.text = "${monthIndex + 1}월"
+                val year = tvYearSelect.text.toString().replace("년", "").toIntOrNull() ?: today.get(java.util.Calendar.YEAR)
+                calendarView.setCurrentDate(CalendarDay.from(year, monthIndex, 1))
+            }
         }
         imgArrowDateHeader.setOnClickListener {
-            val months = (1..12).map { "${it}월" }.toTypedArray()
-            android.app.AlertDialog.Builder(requireContext())
-                .setTitle("월 선택")
-                .setItems(months) { _, which ->
-                    val yearIndex = spinnerYear.selectedItemPosition
-                    val year = if (yearIndex >= 0) years[yearIndex] else java.util.Calendar.getInstance().get(java.util.Calendar.YEAR)
-                    val calDay = CalendarDay.from(year, which, 1)
-                    calendarView.setCurrentDate(calDay)
-                    tvMonthSelect.text = months[which]
-                    spinnerMonth.setSelection(which)
-                }
-                .show()
+            val selectedMonth = tvMonthSelect.text.toString().replace("월", "").toIntOrNull()?.minus(1)
+            monthDropdown.show(tvMonthSelect, selectedMonth) { monthIndex ->
+                tvMonthSelect.text = "${monthIndex + 1}월"
+                val year = tvYearSelect.text.toString().replace("년", "").toIntOrNull() ?: today.get(java.util.Calendar.YEAR)
+                calendarView.setCurrentDate(CalendarDay.from(year, monthIndex, 1))
+            }
         }
         // Spinner 선택 시 텍스트 갱신 및 달력 이동
         spinnerYear.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
-                tvYearSelect.text = "${years[position]}년"
-                updateCalendarView()
-            }
-            override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
-        }
-        spinnerMonth.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
-            override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
-                tvMonthSelect.text = "${months[position]}"
-                updateCalendarView()
+                tvYearSelect.text = "${(2020..2030).toList()[position]}년"
+                calendarView.setCurrentDate(CalendarDay.from(position + 2020, 0, 1))
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
         }
         // 달력에서 날짜 선택 시 콜백
+        var selectedDay: CalendarDay? = calendarView.selectedDate
+        calendarView.addDecorator(SundayDecorator(requireContext()) { selectedDay })
+        calendarView.addDecorator(SaturdayDecorator(requireContext()) { selectedDay })
+        val selectedDayDecorator = SelectedDayDecorator(requireContext()) { selectedDay }
+        calendarView.addDecorator(selectedDayDecorator)
         calendarView.setOnDateChangedListener { _, date, _ ->
+            selectedDay = date
+            calendarView.invalidateDecorators()
             isUserSelecting = true
-            tvDateSelectTitle.text = String.format("%d년 %d월 %d일", date.year, date.month + 1, date.day)
-            spinnerYear.setSelection(years.indexOf(date.year))
-            spinnerMonth.setSelection(date.month) // 0부터 시작
+            val weekDays = arrayOf("일", "월", "화", "수", "목", "금", "토")
+            val cal = java.util.Calendar.getInstance()
+            cal.set(date.year, date.month, date.day)
+            val dayOfWeek = weekDays[cal.get(java.util.Calendar.DAY_OF_WEEK) - 1]
+            tvDateSelectTitle.text = String.format("%d년 %d월 %d일(%s)", date.year, date.month + 1, date.day, dayOfWeek)
+            spinnerYear.setSelection(date.year - 2020)
             isUserSelecting = false
             layoutDateDropdown.visibility = View.GONE
+            // 카드 닫힘 상태로 스타일 동기화
+            imgArrowDateHeader.rotation = 0f
+            imgArrowDateDropdown.rotation = 0f
+            tvDateSelectTitle.visibility = View.VISIBLE
+            layoutDateHeader.visibility = View.GONE
         }
         cardDateSelect.setOnClickListener {
             val isOpen = layoutDateDropdown.visibility != View.VISIBLE
@@ -235,8 +209,6 @@ class ManualReservationFragment : Fragment() {
         }
 
         // MaterialCalendarView 커스텀 데코레이터 적용
-        calendarView.addDecorator(SundayDecorator(requireContext()))
-        calendarView.addDecorator(SaturdayDecorator(requireContext()))
         calendarView.setSelectionColor(ContextCompat.getColor(requireContext(), R.color.primary_500))
 
         // 요일별 색상 커스텀 WeekDayFormatter 적용
@@ -273,5 +245,24 @@ class ManualReservationFragment : Fragment() {
             tvYearSelect.text = "${date.year}년"
             tvMonthSelect.text = "${date.month + 1}월"
         }
+    }
+
+    private fun showMonthPopupMenu(anchor: View) {
+        val months = (1..12).map { "${it}월" }
+        val popup = android.widget.PopupMenu(requireContext(), anchor)
+        months.forEachIndexed { idx, month ->
+            popup.menu.add(0, idx, idx, month)
+        }
+        popup.setOnMenuItemClickListener { item ->
+            val monthIndex = item.itemId // 0부터 시작
+            // anchor가 TextView일 때만 텍스트 갱신
+            if (anchor is TextView) {
+                anchor.text = months[monthIndex]
+            }
+            // 달력 월 이동 등 동기화 코드 추가
+            // ... 필요시 추가 ...
+            true
+        }
+        popup.show()
     }
 } 
