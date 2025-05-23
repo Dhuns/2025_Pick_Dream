@@ -499,7 +499,8 @@
                                 android:id="@+id/checkboxSelectAll"
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
-                                android:text="전체 선택" />
+                                android:text="전체 선택"
+                                android:textColor="@color/neutral_600"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
