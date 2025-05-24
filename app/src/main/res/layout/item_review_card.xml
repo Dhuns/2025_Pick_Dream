@@ -15,42 +15,100 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!-- 장소 정보 -->
         <TextView
             android:id="@+id/review_room"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="강의실명"
-            android:textSize="16sp"
-            android:textStyle="bold"
-            android:textColor="#222222"
-            android:layout_marginBottom="4dp" />
+            android:text="덕문관 (5강의동) 5022 강의실"
+            android:textSize="18sp"
+            android:textColor="#000000"
+            android:textStyle="bold" />
 
+        <!-- 날짜 및 시간 정보 -->
         <TextView
             android:id="@+id/review_date"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="작성일"
-            android:textSize="13sp"
-            android:textColor="#888888"
-            android:layout_marginBottom="4dp"/>
+            android:text="2025년 4월 14일 (월) / 오후 3:00 ~ 오후 5:00"
+            android:textSize="12sp"
+            android:textColor="#555555"
+            android:layout_marginTop="4dp"/>
 
-        <TextView
-            android:id="@+id/review_comment"
-            android:layout_width="wrap_content"
+        <!-- 리뷰 및 별점 섹션 -->
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="후기 내용"
-            android:textSize="14sp"
-            android:textColor="#000000"
-            android:layout_marginBottom="8dp"/>
+            android:orientation="vertical"
+            android:padding="12dp"
+            android:layout_marginTop="10dp"
+            android:background="@drawable/rounded_corner_lightblue_border" >
 
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="top"
+                android:paddingStart="16dp" >
 
-        <RatingBar
-            android:id="@+id/review_rating"
-            android:numStars="5"
-            android:stepSize="1.0"
-            android:isIndicator="true"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            style="@style/Widget.AppCompat.RatingBar.Small"/>
+                <!-- 리뷰 작성 아이콘 -->
+                <ImageView
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:src="@drawable/ic_edit" />
+
+                <!-- 리뷰 제목/목적 -->
+                <TextView
+                    android:id="@+id/text_review_purpose"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="발표 리허설 / 전자칠판, 마이크"
+                    android:textSize="12sp"
+                    android:textColor="#555555" />
+            </LinearLayout>
+
+            <!-- 리뷰 코멘트 -->
+            <TextView
+                android:id="@+id/review_comment"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingStart="48dp"
+                android:layout_marginTop="2dp"
+                android:text="발표 준비하기에 좋았어요."
+                android:textSize="14sp"
+                android:textColor="#000000" />
+
+            <!-- 별점 및 점수 -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:orientation="horizontal"
+                android:gravity="center_vertical"
+                android:paddingStart="48dp">
+
+                <!-- 별점 표시 - RatingBar 사용 -->
+                <RatingBar
+                    android:id="@+id/review_rating"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:numStars="5"
+                    android:stepSize="0.5"
+                    android:isIndicator="true"
+                    style="@style/Widget.AppCompat.RatingBar.Small"
+                    android:progressTint="#FFC107" /> <!-- 노란색 별 색상 -->
+
+                <!-- 별점 텍스트 -->
+                <TextView
+                    android:id="@+id/text_rating_score"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:text="4.0/5.0"
+                    android:textSize="14sp"
+                    android:textColor="#8E8E8E" />
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 </androidx.cardview.widget.CardView>
