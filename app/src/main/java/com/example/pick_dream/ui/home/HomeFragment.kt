@@ -16,17 +16,8 @@ import com.example.pick_dream.databinding.FragmentHomeBinding
 import com.example.pick_dream.ui.home.reservation.ReservationFragment
 import com.example.pick_dream.ui.home.notice.NoticeFragment
 import android.content.Context
-import android.util.Log
 import com.example.pick_dream.ui.home.llm.LlmFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.firestore.FirebaseFirestore
-import com.example.pick_dream.model.Reservation
-import com.google.firebase.Timestamp
-import java.text.SimpleDateFormat
-import java.util.Locale
-import java.util.TimeZone
-
 
 class HomeFragment : Fragment() {
 
@@ -47,118 +38,15 @@ class HomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         binding.btnNotice.setOnClickListener {
             findNavController().navigate(R.id.action_homeFragment_to_noticeFragment)
         }
+
         initViews()
         setupClickListeners()
-        loadMyReservation()
+        startTimeCountdown()
     }
-    // 현재 예약 정보 불러오기
-    private fun loadMyReservation() {
-        val db = FirebaseFirestore.getInstance()
-        val currentUid = FirebaseAuth.getInstance().currentUser?.uid ?: return
-
-        db.collection("User").document(currentUid)
-            .get()
-            .addOnSuccessListener { userDoc ->
-                val studentId = userDoc.getString("studentId")
-                if (studentId != null) {
-                    db.collection("Reservations")
-                        .whereEqualTo("userID", studentId)
-                        .whereGreaterThan("endTime", Timestamp.now())
-                        .orderBy("endTime")
-                        .limit(1)
-                        .get()
-                        .addOnSuccessListener { result ->
-                            if (result.isEmpty) {
-                                binding.tvReservationRoom.text = "예약 내역이 없습니다."
-                                binding.tvReservationTime.text = ""
-                                binding.tvRemainingTime.text = ""
-                                return@addOnSuccessListener
-                            }
-
-                            val doc = result.first()
-                            val roomID = doc.getString("roomID") ?: ""
-                            val userID = doc.getString("userID") ?: ""
-                            val startTime = doc.getTimestamp("startTime")
-                            val endTime = doc.getTimestamp("endTime")
-
-                            val reservation = Reservation(
-                                roomID = roomID,
-                                userID = userID,
-                                startTime = startTime,
-                                endTime = endTime
-                            )
-
-                            val timeFormat = SimpleDateFormat("HH:mm", Locale.KOREA)
-                            timeFormat.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-                            val start = reservation.startTime?.toDate()
-                            val end = reservation.endTime?.toDate()
-
-                            val nowMillis = System.currentTimeMillis()
-                            val startMillis = start?.time ?: 0L
-                            val endMillis = end?.time ?: 0L
-
-                            val startStr = start?.let { timeFormat.format(it) } ?: "-"
-                            val endStr = end?.let { timeFormat.format(it) } ?: "-"
-
-                            if (nowMillis < startMillis) {
-                                // 다음 예약만 보여주기
-                                binding.tvReservationRoom.text = "예약 장소 : $roomID"
-                                binding.tvReservationTime.text = "대여 시간 : $startStr - $endStr"
-                                binding.tvRemainingTime.text = "아직 예약 시간이 아닙니다"
-                                return@addOnSuccessListener
-                            }
-
-                            // 예약 시간이면 남은 시간 카운트다운 표시
-                            binding.tvReservationRoom.text = "예약 장소 : $roomID"
-                            binding.tvReservationTime.text = "대여 시간 : $startStr - $endStr"
-
-                            // 남은 시간 타이머
-                            end?.let { endDate ->
-                                val handler = Handler()
-                                val runnable = object : Runnable {
-                                    override fun run() {
-                                        val now = System.currentTimeMillis()
-                                        val remainingMillis = endDate.time - now
-                                        if (remainingMillis > 0) {
-                                            val minutes = (remainingMillis / 1000 / 60) % 60
-                                            val hours = (remainingMillis / 1000 / 60 / 60)
-                                            val seconds = (remainingMillis / 1000) % 60
-                                            binding.tvRemainingTime.text = if (hours > 0) {
-                                                "남은 시간: ${hours}시간 ${minutes}분"
-                                            } else {
-                                                "남은 시간: ${minutes}분 ${seconds}초"
-                                            }
-                                            handler.postDelayed(this, 1000)
-                                        } else {
-                                            binding.tvRemainingTime.text = "대여 시간 종료"
-                                        }
-                                    }
-                                }
-                                handler.post(runnable)
-                            }
-                        }
-                        .addOnFailureListener {
-                            binding.tvReservationRoom.text = "예약 정보를 불러오지 못했습니다."
-                            binding.tvReservationTime.text = ""
-                            binding.tvRemainingTime.text = ""
-                        }
-                } else {
-                    binding.tvReservationRoom.text = "학번 정보가 없습니다."
-                    binding.tvReservationTime.text = ""
-                    binding.tvRemainingTime.text = ""
-                }
-            }
-            .addOnFailureListener {
-                binding.tvReservationRoom.text = "사용자 정보를 불러오지 못했습니다."
-                binding.tvReservationTime.text = ""
-                binding.tvRemainingTime.text = ""
-            }
-    }
-
-
 
     private fun initViews() {
         // 필요 시 여기에서 초기 설정 가능
@@ -205,8 +93,41 @@ class HomeFragment : Fragment() {
             }
         }
     }
+    //시간 카운트 및 마지막 종료 시간 저장 후 후기 표시 여부 초기화
+    private fun startTimeCountdown() {
+        handler = Handler()
+        timeUpdateRunnable = object : Runnable {
+            override fun run() {
+                if (remainingSeconds > 0) {
+                    remainingSeconds--
+                    updateTimeDisplay()
+                    handler.postDelayed(this, 1000)
+                } else {
+                    binding.tvRemainingTime.text = "대여 시간 종료"
+                    // 시간이 종료되면 마지막 종료 시간 저장
+                    val sharedPrefs = requireActivity().getSharedPreferences("ClassroomPrefs", Context.MODE_PRIVATE)
+                    sharedPrefs.edit().apply {
+                        putLong("last_end_time", System.currentTimeMillis())
+                        putBoolean("has_shown_review", false)  // 후기 표시 여부 초기화
+                        apply()
+                    }
+                }
+            }
+        }
+        handler.post(timeUpdateRunnable)
+    }
 
+    private fun updateTimeDisplay() {
+        val hours = remainingSeconds / 3600
+        val minutes = (remainingSeconds % 3600) / 60
+        val seconds = remainingSeconds % 60
 
+        binding.tvRemainingTime.text = if (hours > 0) {
+            "남은 시간: ${hours}시간 ${minutes}분"
+        } else {
+            "남은 시간: ${minutes}분 ${seconds}초"
+        }
+    }
 
     override fun onDestroyView() {
         super.onDestroyView()
