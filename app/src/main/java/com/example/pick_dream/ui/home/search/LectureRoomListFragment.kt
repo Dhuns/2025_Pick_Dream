@@ -30,6 +30,8 @@ class LectureRoomListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        LectureRoomRepository.fetchRoomsFromFirebase()
+
         val recyclerView = view.findViewById<RecyclerView>(R.id.rvLectureRooms)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -113,7 +115,7 @@ class LectureRoomListFragment : Fragment() {
                 it.name.contains(query, ignoreCase = true) ||
                 it.buildingName.contains(query, ignoreCase = true) ||
                 it.buildingDetail.contains(query, ignoreCase = true) ||
-                it.roomInfo.contains(query, ignoreCase = true)
+                it.equipment.any { equip -> equip.contains(query, ignoreCase = true) }
             }
             ?.groupBy { Pair(it.buildingName, it.buildingDetail) }
             ?.map { (buildingPair, rooms) -> buildingPair to rooms }

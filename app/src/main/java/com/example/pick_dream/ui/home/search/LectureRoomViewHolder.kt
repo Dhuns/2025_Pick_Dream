@@ -21,11 +21,14 @@ class LectureRoomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) 
         onClick: (LectureRoom) -> Unit,
         onFavoriteClick: ((LectureRoom) -> Unit)? = null
     ) {
-        // 예시: 이미지, 이름, 정보, 대여 가능 여부 바인딩
         ivRoomImage.setImageResource(R.drawable.sample_room)
-        tvRoomName.text = room.name
-        tvRoomInfo.text = room.roomInfo
-        tvAvailable.text = "대여 가능"
+        tvRoomName.text = "${room.name} (${room.buildingName})"
+        if (room.equipment.isNotEmpty()) {
+            tvRoomInfo.text = room.equipment.joinToString(", ")
+        } else {
+            tvRoomInfo.text = "기자재 정보 없음"
+        }
+        tvAvailable.text = if (room.isAvailable) "대여 가능" else "대여 불가"
         btnFavorite.setImageResource(
             if (isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_border
         )

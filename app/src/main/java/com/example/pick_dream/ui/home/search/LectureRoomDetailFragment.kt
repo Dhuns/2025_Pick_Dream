@@ -64,17 +64,17 @@ class LectureRoomDetailFragment : Fragment() {
             if (updatedRoom != null) {
                 Log.d("DEBUG", "updatedRoom: name='${updatedRoom.name}', buildingName='${updatedRoom.buildingName}', buildingDetail='${updatedRoom.buildingDetail}'")
                 tvRoomName.text = "${updatedRoom.buildingName} (${updatedRoom.buildingDetail})"
-                tvRoomDesc.text = updatedRoom.roomInfo
+                tvRoomDesc.text = updatedRoom.equipment.joinToString(", ").toString()
                 btnFavorite.setImageResource(
                     if (updatedRoom.isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_border
                 )
                 // infoBox 세팅
                 infoTextViews[0].text = "강의실 : ${updatedRoom.name}"
-                infoTextViews[1].text = "기자재 목록 : ${updatedRoom.roomInfo}"
-                infoTextViews[2].text = "의자 : 정보 없음"
-                infoTextViews[3].text = "빔 프로젝터 대여 여부 : 정보 없음"
-                infoTextViews[4].text = "전자 칠판 대여 여부 : 정보 없음"
-                infoTextViews[5].text = "장소 대여 여부 : 정보 없음"
+                infoTextViews[1].text = "기자재 목록 : ${updatedRoom.equipment.joinToString(", ").toString()}"
+                infoTextViews[2].text = "수용 인원 : ${updatedRoom.capacity}명"
+                infoTextViews[3].text = "위치 : ${updatedRoom.location}"
+                infoTextViews[4].text = "빔 프로젝터 : ${if (updatedRoom.equipment.contains("빔프로젝터")) "있음" else "없음"}"
+                infoTextViews[5].text = "전자 칠판 : ${if (updatedRoom.equipment.contains("전자칠판")) "있음" else "없음"}"
                 infoTextViews[6].text = "앱에서 바로 예약 가능"
             } else {
                 Log.d("DEBUG", "updatedRoom is null!")

@@ -36,9 +36,16 @@ class FavoriteRoomsAdapter(
     override fun onBindViewHolder(holder: RoomViewHolder, position: Int) {
         val room = rooms[position]
         holder.image.setImageResource(R.drawable.sample_room)
-        holder.name.text = room.id
-        holder.number.text = room.location
-        holder.features.text = room.equiment.joinToString(", ")
+        
+        // 건물 이름 표시
+        holder.name.text = "${room.buildingName} (${room.buildingDetail})"
+        
+        // 강의실 번호 표시
+        val roomNumber = room.name.replace(Regex("[^0-9]"), "")
+        holder.number.text = "$roomNumber 강의실"
+        
+        // 시설 정보 표시
+        holder.features.text = room.equipment.joinToString(", ")
         holder.btnFavorite.isSelected = true
         
         holder.btnFavorite.setOnClickListener {
