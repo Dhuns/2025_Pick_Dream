@@ -26,6 +26,7 @@ class ReviewAdapter : RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
         val rating: RatingBar = view.findViewById(R.id.review_rating)
         val date: TextView = view.findViewById(R.id.review_date)
         val room: TextView = view.findViewById(R.id.review_room)
+        val purpose: TextView = view.findViewById(R.id.text_review_purpose)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReviewViewHolder {
@@ -38,7 +39,8 @@ class ReviewAdapter : RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
         val review = reviews[position]
         holder.comment.text = review.comment
         holder.rating.rating = review.rating.toFloat()
-        holder.room.text = "강의실 ${review.roomID}"
+        holder.room.text = "${review.roomID} 강의실"
+        holder.purpose.text = "사용 목적 : ${review.eventName}"
 
         // ✅ createdAt: Timestamp → Date → String 변환
         val formatter = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault())

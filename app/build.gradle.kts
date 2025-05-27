@@ -2,7 +2,7 @@ import java.util.Properties
 
 fun getEnvValue(key: String): String {
     val props = Properties()
-    val envFile = rootProject.file(".env")
+    val envFile = rootProject.file("env")
     if (envFile.exists()) {
         envFile.inputStream().use { props.load(it) }
     }
@@ -29,7 +29,7 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
-        manifestPlaceholders.put("GOOGLE_MAPS_API_KEY", getEnvValue("MAPS_API_KEY"))
+        manifestPlaceholders.put("GOOGLE_MAPS_API_KEY", getEnvValue("GOOGLE_MAPS_API_KEY"))
         manifestPlaceholders.put("OPENAI_API_KEY", getEnvValue("OPENAI_API_KEY"))
     }
 
