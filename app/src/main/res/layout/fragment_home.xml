@@ -179,6 +179,7 @@
                         android:layout_marginBottom="8dp" />
 
                     <TextView
+                        android:id="@+id/tv_reservation_room"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="예약 장소 : 4103"
@@ -187,11 +188,13 @@
                         android:layout_marginBottom="4dp" />
 
                     <TextView
+                        android:id="@+id/tv_reservation_time"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="대여 시간 : 17:00 - 20:00"
                         android:textSize="16sp"
                         android:textColor="#333333" />
+
 
                 </LinearLayout>
 
