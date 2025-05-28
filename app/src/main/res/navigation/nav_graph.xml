@@ -30,7 +30,7 @@
         <action
             android:id="@+id/action_mapsFragment_to_reservationFragment"
             app:destination="@id/reservationFragment" />
-   
+
     </fragment>
 
     <fragment
@@ -144,11 +144,23 @@
     </fragment>
 
     <fragment
+        android:id="@+id/manualReservationInputFragment"
+        android:name="com.example.pick_dream.ui.home.search.manualReservation.ManualReservationInputFragment"
+        android:label="수동 대여 입력"
+        tools:layout="@layout/fragment_manual_reservation_input">
+        <argument android:name="building" app:argType="string" />
+        <argument android:name="roomName" app:argType="string" />
+    </fragment>
+
+    <fragment
         android:id="@+id/manualReservationFragment"
         android:name="com.example.pick_dream.ui.home.search.manualReservation.ManualReservationFragment"
         android:label="수동 대여"
         tools:layout="@layout/fragment_manual_reservation">
         <argument android:name="building" app:argType="string" />
         <argument android:name="roomName" app:argType="string" />
+        <action
+            android:id="@+id/action_manualReservationFragment_to_manualReservationInputFragment"
+            app:destination="@id/manualReservationInputFragment" />
     </fragment>
 </navigation>

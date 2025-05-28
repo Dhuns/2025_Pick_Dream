@@ -12,8 +12,24 @@ import androidx.navigation.fragment.findNavController
 import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 
 class ManualReservationFragment : Fragment() {
+    private val reservationViewModel: ManualReservationViewModel by activityViewModels()
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        // 완전히 새로 진입한 경우 ViewModel 값 초기화
+        if (arguments == null || savedInstanceState == null) {
+            reservationViewModel.selectedDay = null
+            reservationViewModel.startHour = null
+            reservationViewModel.startMinute = null
+            reservationViewModel.endHour = null
+            reservationViewModel.endMinute = null
+            reservationViewModel.selectedEquipments = emptyList()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -23,6 +39,7 @@ class ManualReservationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        var selectedDay: CalendarDay? = null
         val tvBuilding = view.findViewById<TextView>(R.id.tvBuildingInfo)
         val tvRoomName = view.findViewById<TextView>(R.id.tvRoomName)
         val btnNext = view.findViewById<Button>(R.id.btnNext)
@@ -53,6 +70,54 @@ class ManualReservationFragment : Fragment() {
         val tvMonthSelect = view.findViewById<TextView>(R.id.tvMonthSelect)
         val layoutDateHeader = view.findViewById<View>(R.id.layoutDateHeader)
 
+        // 버튼 상태 업데이트 함수
+        fun updateButtonState() {
+            val isDateSelected = tvDateSelectTitle.text != "날짜 선택"
+            val isTimeSelected = tvTimeSelect.text != "시간 선택"
+
+            btnNext.isEnabled = isDateSelected && isTimeSelected
+            btnNext.setBackgroundColor(
+                if (isDateSelected && isTimeSelected)
+                    ContextCompat.getColor(requireContext(), R.color.primary_400)
+                else
+                    ContextCompat.getColor(requireContext(), R.color.primary_050)
+            )
+            btnNext.setTextColor(
+                if (isDateSelected && isTimeSelected)
+                    ContextCompat.getColor(requireContext(), R.color.white)
+                else
+                    ContextCompat.getColor(requireContext(), R.color.primary_400)
+            )
+            btnNext.elevation = 0f
+        }
+
+        // 시간 선택 시 버튼 상태 업데이트
+        fun updateTimeText() {
+            val sh = spinnerStartHour.selectedItem as Int
+            val sm = spinnerStartMinute.selectedItem as Int
+            val eh = spinnerEndHour.selectedItem as Int
+            val em = spinnerEndMinute.selectedItem as Int
+            reservationViewModel.startHour = sh
+            reservationViewModel.startMinute = sm
+            reservationViewModel.endHour = eh
+            reservationViewModel.endMinute = em
+
+            val startTotal = sh * 60 + sm
+            val endTotal = eh * 60 + em
+            val diff = endTotal - startTotal
+
+            val hour = diff / 60
+            val min = diff % 60
+            val durationText = when {
+                diff <= 0 -> ""
+                hour > 0 && min > 0 -> " (${hour}시간 ${min}분)"
+                hour > 0 -> " (${hour}시간)"
+                else -> " (${min}분)"
+            }
+            tvTimeSelect.text = String.format("%02d:%02d ~ %02d:%02d%s", sh, sm, eh, em, durationText)
+            updateButtonState()
+        }
+
         // 예시: arguments로 강의실 정보 전달받아 표시
         val building = arguments?.getString("building") ?: ""
         val roomName = arguments?.getString("roomName") ?: ""
@@ -60,7 +125,22 @@ class ManualReservationFragment : Fragment() {
         tvRoomName.text = roomName
 
         btnNext.setOnClickListener {
-            // 다음 단계로 이동 (구현 필요)
+            val bundle = Bundle().apply {
+                putString("building", building)
+                putString("roomName", roomName)
+                // 날짜 정보
+                selectedDay?.let {
+                    putInt("selectedYear", it.year)
+                    putInt("selectedMonth", it.month)
+                    putInt("selectedDay", it.day)
+                }
+                // 시간 정보
+                putInt("startHour", spinnerStartHour.selectedItem as Int)
+                putInt("startMinute", spinnerStartMinute.selectedItem as Int)
+                putInt("endHour", spinnerEndHour.selectedItem as Int)
+                putInt("endMinute", spinnerEndMinute.selectedItem as Int)
+            }
+            findNavController().navigate(R.id.action_manualReservationFragment_to_manualReservationInputFragment, bundle)
         }
 
         btnBack.setOnClickListener {
@@ -73,6 +153,23 @@ class ManualReservationFragment : Fragment() {
         if (yearIndex >= 0) spinnerYear.setSelection(yearIndex, false)
         calendarView.selectedDate = CalendarDay.from(today)
         calendarView.setCurrentDate(CalendarDay.from(today))
+
+        // ViewModel 값으로 초기화
+        reservationViewModel.selectedDay?.let {
+            selectedDay = it
+            calendarView.selectedDate = it
+            calendarView.setCurrentDate(it)
+            val weekDays = arrayOf("일", "월", "화", "수", "목", "금", "토")
+            val cal = java.util.Calendar.getInstance()
+            cal.set(it.year, it.month, it.day)
+            val dayOfWeek = weekDays[cal.get(java.util.Calendar.DAY_OF_WEEK) - 1]
+            tvDateSelectTitle.text = String.format("%d년 %d월 %d일(%s)", it.year, it.month + 1, it.day, dayOfWeek)
+            spinnerYear.setSelection(it.year - 2020)
+        }
+        reservationViewModel.startHour?.let { spinnerStartHour.setSelection((9..21).indexOf(it)) }
+        reservationViewModel.startMinute?.let { spinnerStartMinute.setSelection(listOf(0,10,20,30,40,50).indexOf(it)) }
+        reservationViewModel.endHour?.let { spinnerEndHour.setSelection((9..21).indexOf(it)) }
+        reservationViewModel.endMinute?.let { spinnerEndMinute.setSelection(listOf(0,10,20,30,40,50).indexOf(it)) }
 
         // 오늘 날짜로 상단 연/월 텍스트 초기화
         tvYearSelect.text = "${today.get(java.util.Calendar.YEAR)}년"
@@ -106,13 +203,14 @@ class ManualReservationFragment : Fragment() {
             override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
         }
         // 달력에서 날짜 선택 시 콜백
-        var selectedDay: CalendarDay? = calendarView.selectedDate
+        selectedDay = calendarView.selectedDate
         calendarView.addDecorator(SundayDecorator(requireContext()) { selectedDay })
         calendarView.addDecorator(SaturdayDecorator(requireContext()) { selectedDay })
         val selectedDayDecorator = SelectedDayDecorator(requireContext()) { selectedDay }
         calendarView.addDecorator(selectedDayDecorator)
         calendarView.setOnDateChangedListener { _, date, _ ->
             selectedDay = date
+            reservationViewModel.selectedDay = date
             calendarView.invalidateDecorators()
             isUserSelecting = true
             val weekDays = arrayOf("일", "월", "화", "수", "목", "금", "토")
@@ -123,11 +221,11 @@ class ManualReservationFragment : Fragment() {
             spinnerYear.setSelection(date.year - 2020)
             isUserSelecting = false
             layoutDateDropdown.visibility = View.GONE
-            // 카드 닫힘 상태로 스타일 동기화
             imgArrowDateHeader.rotation = 0f
             imgArrowDateDropdown.rotation = 0f
             tvDateSelectTitle.visibility = View.VISIBLE
             layoutDateHeader.visibility = View.GONE
+            updateButtonState()
         }
         cardDateSelect.setOnClickListener {
             val isOpen = layoutDateDropdown.visibility != View.VISIBLE
@@ -150,26 +248,8 @@ class ManualReservationFragment : Fragment() {
         spinnerStartMinute.adapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, minutes)
         spinnerEndMinute.adapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, minutes)
 
-        fun updateTimeText() {
-            val sh = spinnerStartHour.selectedItem as Int
-            val sm = spinnerStartMinute.selectedItem as Int
-            val eh = spinnerEndHour.selectedItem as Int
-            val em = spinnerEndMinute.selectedItem as Int
-
-            val startTotal = sh * 60 + sm
-            val endTotal = eh * 60 + em
-            val diff = endTotal - startTotal
-
-            val hour = diff / 60
-            val min = diff % 60
-            val durationText = when {
-                diff <= 0 -> ""
-                hour > 0 && min > 0 -> " (${hour}시간 ${min}분)"
-                hour > 0 -> " (${hour}시간)"
-                else -> " (${min}분)"
-            }
-            tvTimeSelect.text = String.format("%02d:%02d ~ %02d:%02d%s", sh, sm, eh, em, durationText)
-        }
+        // 초기 버튼 상태 설정
+        updateButtonState()
 
         // 시작 시간 또는 시작 분 선택 시 종료 시간/분 동적 제한
         fun updateEndTimeSpinners() {
@@ -277,6 +357,7 @@ class ManualReservationFragment : Fragment() {
             val tv = android.widget.TextView(requireContext()).apply {
                 text = item
                 textSize = 16f
+                setTextColor(ContextCompat.getColor(requireContext(), R.color.neutral_600))
                 layoutParams = android.widget.LinearLayout.LayoutParams(0, android.widget.LinearLayout.LayoutParams.WRAP_CONTENT, 1f)
             }
             val cb = android.widget.CheckBox(requireContext()).apply {
@@ -296,14 +377,28 @@ class ManualReservationFragment : Fragment() {
                 isProgrammaticChange = true
                 checkboxSelectAll.isChecked = checkBoxList.all { it.isChecked }
                 isProgrammaticChange = false
+                // ViewModel에 저장
+                reservationViewModel.selectedEquipments = selected
             }
             row.addView(tv)
             row.addView(cb)
             layoutEquipmentList.addView(row)
             checkBoxList.add(cb)
         }
+        // ViewModel 값으로 체크박스 상태 복원
+        if (reservationViewModel.selectedEquipments.isNotEmpty()) {
+            isProgrammaticChange = true
+            equipmentList.forEachIndexed { idx, item ->
+                checkBoxList[idx].isChecked = reservationViewModel.selectedEquipments.contains(item)
+            }
+            isProgrammaticChange = false
+            val selected = equipmentList.filterIndexed { idx, _ -> checkBoxList[idx].isChecked }
+            tvEquipmentSelect.text = if (selected.isEmpty()) "사용할 기자재 선택" else selected.joinToString(", ")
+            checkboxSelectAll.isChecked = checkBoxList.all { it.isChecked }
+        }
+        // 전체 선택 체크박스에도 동일한 스타일 적용
         checkboxSelectAll.apply {
-            buttonTintList = androidx.core.content.ContextCompat.getColorStateList(requireContext(), R.color.checkbox_equipment)
+            buttonTintList = ContextCompat.getColorStateList(requireContext(), R.color.checkbox_equipment)
             background = null
         }
         checkboxSelectAll.setOnCheckedChangeListener { _, isChecked ->
@@ -313,6 +408,8 @@ class ManualReservationFragment : Fragment() {
             isProgrammaticChange = false
             val selected = equipmentList.filterIndexed { idx, _ -> checkBoxList[idx].isChecked }
             tvEquipmentSelect.text = if (selected.isEmpty()) "사용할 기자재 선택" else selected.joinToString(", ")
+            // ViewModel에 저장
+            reservationViewModel.selectedEquipments = selected
         }
         cardEquipmentSelect.setOnClickListener {
             val isOpen = layoutEquipmentDropdown.visibility != View.VISIBLE
@@ -380,5 +477,15 @@ class ManualReservationFragment : Fragment() {
             true
         }
         popup.show()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.GONE
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.VISIBLE
     }
 } 
