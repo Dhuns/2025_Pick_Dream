@@ -5,6 +5,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
 import android.widget.Toast
 import androidx.activity.OnBackPressedCallback
 import androidx.navigation.NavOptions
@@ -72,11 +74,26 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // 1) CardView 처음엔 숨기기
+        // CardView 처음엔 숨기기
         binding.infoCard.visibility = View.GONE
         setupMap()
         setupUI()
         setupBackPress()
+
+        val placeNames = places.map { it.name } // 마커 목록에서 이름 추출
+        val adapter = ArrayAdapter(requireContext(), android.R.layout.simple_dropdown_item_1line, placeNames)
+        val searchInput = view.findViewById<AutoCompleteTextView>(R.id.searchInput)
+        searchInput.setAdapter(adapter)
+
+        searchInput.setOnItemClickListener { _, _, position, _ ->
+            val selectedPlaceName = adapter.getItem(position)
+            val selectedPlace = places.find { it.name == selectedPlaceName }
+            if (selectedPlace != null) {
+                // 해당 장소로 카메라 이동 및 정보 표시
+                map?.animateCamera(CameraUpdateFactory.newLatLngZoom(selectedPlace.latLng, 16f))
+                showPlaceInfo(selectedPlace)
+            }
+        }
     }
 
     private fun setupMap() {
