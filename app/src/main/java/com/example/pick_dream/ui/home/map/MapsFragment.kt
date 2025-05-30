@@ -172,9 +172,16 @@ class MapsFragment : Fragment(), OnMapReadyCallback {
                 .show(childFragmentManager, "img_preview")
         }
         binding.btnReserve.setOnClickListener {
-            findNavController().navigate(
-                R.id.action_mapsFragment_to_reservationFragment
-            )
+            // 건물 이름에서 강의동 번호 추출 (예: "덕문관 (5강의동)" -> "5강의동")
+            val buildingDetail = place.name.substringAfter("(").substringBefore(")")
+            val buildingName = place.name.substringBefore(" (")
+            
+            val action = MapsFragmentDirections
+                .actionMapsFragmentToLectureRoomSelectionFragment(
+                    buildingName = buildingName,
+                    buildingDetail = buildingDetail
+                )
+            findNavController().navigate(action)
         }
     }
 

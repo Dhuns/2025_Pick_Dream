@@ -27,10 +27,6 @@
         <action
             android:id="@+id/action_homeFragment_to_mapsFragment"
             app:destination="@id/mapFragment" />
-        <action
-            android:id="@+id/action_mapsFragment_to_reservationFragment"
-            app:destination="@id/reservationFragment" />
-
     </fragment>
 
     <fragment
@@ -47,7 +43,6 @@
         <action
             android:id="@+id/action_noticeFragment_to_noticeDetailFragment"
             app:destination="@id/noticeDetailFragment" />
-        <!-- HomeFragment로 이동하는 action 추가 -->
         <action
             android:id="@+id/action_noticeFragment_to_homeFragment"
             app:destination="@id/homeFragment"
@@ -59,7 +54,14 @@
         android:id="@+id/mapFragment"
         android:name="com.example.pick_dream.ui.home.map.MapsFragment"
         android:label="지도 화면"
-        tools:layout="@layout/fragment_maps" />
+        tools:layout="@layout/fragment_maps">
+        <action
+            android:id="@+id/action_mapsFragment_to_reservationFragment"
+            app:destination="@id/reservationFragment" />
+        <action
+            android:id="@+id/action_mapsFragment_to_lectureRoomSelectionFragment"
+            app:destination="@id/lectureRoomSelectionFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/reservationFragment"
@@ -162,5 +164,21 @@
         <action
             android:id="@+id/action_manualReservationFragment_to_manualReservationInputFragment"
             app:destination="@id/manualReservationInputFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/lectureRoomSelectionFragment"
+        android:name="com.example.pick_dream.ui.home.map.LectureRoomSelectionFragment"
+        android:label="강의실 선택"
+        tools:layout="@layout/fragment_lecture_room_selection">
+        <argument
+            android:name="buildingName"
+            app:argType="string" />
+        <argument
+            android:name="buildingDetail"
+            app:argType="string" />
+        <action
+            android:id="@+id/action_lectureRoomSelectionFragment_to_manualReservationFragment"
+            app:destination="@id/manualReservationFragment" />
     </fragment>
 </navigation>
