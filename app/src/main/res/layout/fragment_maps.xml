@@ -61,16 +61,16 @@
             android:src="@drawable/ic_search_2"
             android:contentDescription="검색 아이콘" />
 
-        <EditText
+        <AutoCompleteTextView
             android:id="@+id/searchInput"
-            android:layout_width="0dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_weight="1"
-            android:hint="검색어를 입력해주세요"
+            android:hint=" 검색어를 입력하세요"
             android:background="@null"
             android:textColorHint="#999999"
-            android:inputType="text"/>
+            android:inputType="text"
+            android:layout_gravity="center_vertical"
+            android:completionThreshold="1" />
     </LinearLayout>
 
     <!-- 4) 정보 카드 -->
