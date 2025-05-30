@@ -130,24 +130,19 @@ class HomeFragment : Fragment() {
         val db = FirebaseFirestore.getInstance()
         val currentUid = FirebaseAuth.getInstance().currentUser?.uid ?: return
 
-        Log.d("예약", "현재 UID: $currentUid")
-
         db.collection("User").document(currentUid)
             .get()
             .addOnSuccessListener { userDoc ->
                 if (_binding == null) {
-                    Log.e("예약", "바인딩이 null이라 UI를 업데이트할 수 없음 (User 쿼리)")
                     return@addOnSuccessListener
                 }
                 val studentId = userDoc.getString("studentId")
-                Log.d("예약", "가져온 studentId: $studentId")
                 if (studentId != null) {
                     val now = Date()
                     val pattern = "yyyy년 M월 d일 a h시 m분 s초"
                     val formatter = SimpleDateFormat(pattern, Locale.KOREA)
                     formatter.timeZone = TimeZone.getTimeZone("Asia/Seoul")
                     val nowString = formatter.format(now)
-                    Log.d("예약", "nowString: $nowString")
 
                     db.collection("Reservations")
                         .whereEqualTo("userID", studentId)
@@ -159,11 +154,7 @@ class HomeFragment : Fragment() {
                             if (_binding == null) {
                                 return@addOnSuccessListener
                             }
-                            Log.d("예약", "예약 쿼리 결과 개수: ${result.size()}")
-                            if (!isAdded || isDetached) return@addOnSuccessListener
-
                             if (result.isEmpty) {
-                                Log.d("예약", "예약 결과 없음")
                                 _binding?.tvReservationRoom?.text = ""
                                 _binding?.tvReservationTime?.text = ""
                                 _binding?.tvRemainingTime?.text = "예약 내역이 없습니다."
@@ -176,9 +167,6 @@ class HomeFragment : Fragment() {
                             val userID = doc.getString("userID") ?: ""
                             val startTimeRaw = doc.getString("startTime") ?: ""
                             val endTimeRaw = doc.getString("endTime") ?: ""
-
-                            Log.d("예약", "roomID: $roomID, userID: $userID")
-                            Log.d("예약", "startTime: $startTimeRaw, endTime: $endTimeRaw")
 
                             // " UTC+9" 문자열 제거
                             val cleanedStartTime = startTimeRaw.replace(" UTC+9", "")
@@ -194,8 +182,6 @@ class HomeFragment : Fragment() {
                             val startDate: Date? = try { formatter.parse(reservation.startTime) } catch (e: Exception) { null }
                             val endDate: Date? = try { formatter.parse(reservation.endTime) } catch (e: Exception) { null }
 
-                            Log.d("예약", "startDate: $startDate, endDate: $endDate")
-
                             val nowMillis = System.currentTimeMillis()
                             val startMillis = startDate?.time ?: 0L
                             endMillis = endDate?.time ?: 0L
@@ -205,25 +191,20 @@ class HomeFragment : Fragment() {
                             val startStr = startDate?.let { timeFormat.format(it) } ?: "-"
                             val endStr = endDate?.let { timeFormat.format(it) } ?: "-"
 
-                            Log.d("예약", "startStr: $startStr, endStr: $endStr")
-
                             when {
                                 nowMillis < startMillis -> {
-                                    Log.d("예약", "아직 예약 시간이 아님")
                                     _binding?.tvReservationRoom?.text = "예약 장소 : $roomID"
                                     _binding?.tvReservationTime?.text = "대여 시간 : $startStr - $endStr"
                                     _binding?.tvRemainingTime?.text = "아직 예약 시간이 아닙니다"
                                     handler.removeCallbacks(timeUpdateRunnable)
                                 }
                                 nowMillis in startMillis until endMillis -> {
-                                    Log.d("예약", "예약 시간 진행 중")
                                     _binding?.tvReservationRoom?.text = "예약 장소 : $roomID"
                                     _binding?.tvReservationTime?.text = "대여 시간 : $startStr - $endStr"
                                     handler.removeCallbacks(timeUpdateRunnable)
                                     handler.post(timeUpdateRunnable)
                                 }
                                 else -> {
-                                    Log.d("예약", "예약 시간 종료")
                                     _binding?.tvReservationRoom?.text = ""
                                     _binding?.tvReservationTime?.text = ""
                                     _binding?.tvRemainingTime?.text = "예약 내역이 없습니다"
@@ -235,7 +216,6 @@ class HomeFragment : Fragment() {
                             if (_binding == null) {
                                 return@addOnFailureListener
                             }
-                            Log.e("예약", "예약 쿼리 실패: ${e.message}")
                             _binding?.tvReservationRoom?.text = "예약 정보를 불러오지 못했습니다."
                             _binding?.tvReservationTime?.text = ""
                             _binding?.tvRemainingTime?.text = ""
@@ -245,7 +225,6 @@ class HomeFragment : Fragment() {
                     if (_binding == null) {
                         return@addOnSuccessListener
                     }
-                    Log.d("예약", "studentId 없음")
                     _binding?.tvReservationRoom?.text = "학번 정보가 없습니다."
                     _binding?.tvReservationTime?.text = ""
                     _binding?.tvRemainingTime?.text = ""
@@ -256,7 +235,6 @@ class HomeFragment : Fragment() {
                 if (_binding == null) {
                     return@addOnFailureListener
                 }
-                Log.e("예약", "User 정보 쿼리 실패: ${e.message}")
                 _binding?.tvReservationRoom?.text = "사용자 정보를 불러오지 못했습니다."
                 _binding?.tvReservationTime?.text = ""
                 _binding?.tvRemainingTime?.text = ""

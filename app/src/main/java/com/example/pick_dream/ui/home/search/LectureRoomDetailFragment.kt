@@ -14,7 +14,6 @@ import androidx.navigation.fragment.findNavController
 import com.example.pick_dream.R
 import com.google.android.material.button.MaterialButton
 import androidx.lifecycle.Observer
-import android.util.Log
 
 class LectureRoomDetailFragment : Fragment() {
     private val viewModel: LectureRoomDetailViewModel by viewModels()
@@ -32,7 +31,6 @@ class LectureRoomDetailFragment : Fragment() {
         val roomName = arguments?.getString("roomName") ?: ""
         val buildingName = arguments?.getString("buildingName") ?: ""
         val buildingDetail = arguments?.getString("buildingDetail") ?: ""
-        Log.d("DEBUG", "roomName: '$roomName', buildingName: '$buildingName', buildingDetail: '$buildingDetail'")
 
         val ivLectureRoom = view.findViewById<ImageView>(R.id.ivLectureRoom)
         val tvRoomName = view.findViewById<TextView>(R.id.tvRoomName)
@@ -54,7 +52,6 @@ class LectureRoomDetailFragment : Fragment() {
         // LiveData 관찰로 강의실 정보 전체를 갱신
         LectureRoomRepository.roomsLiveData.observe(viewLifecycleOwner) { rooms ->
             rooms.forEach {
-                Log.d("DEBUG", "LectureRoom: name='${it.name}', buildingName='${it.buildingName}', buildingDetail='${it.buildingDetail}'")
             }
             val updatedRoom = rooms.find {
                 it.name.trim() == roomName.trim() &&
@@ -62,7 +59,6 @@ class LectureRoomDetailFragment : Fragment() {
                 it.buildingDetail.trim() == buildingDetail.trim()
             } ?: rooms.find { it.name.trim() == roomName.trim() }
             if (updatedRoom != null) {
-                Log.d("DEBUG", "updatedRoom: name='${updatedRoom.name}', buildingName='${updatedRoom.buildingName}', buildingDetail='${updatedRoom.buildingDetail}'")
                 tvRoomName.text = "${updatedRoom.buildingName} (${updatedRoom.buildingDetail})"
                 tvRoomDesc.text = updatedRoom.equipment.joinToString(", ").toString()
                 btnFavorite.setImageResource(
@@ -76,8 +72,6 @@ class LectureRoomDetailFragment : Fragment() {
                 infoTextViews[4].text = "빔 프로젝터 : ${if (updatedRoom.equipment.contains("빔프로젝터")) "있음" else "없음"}"
                 infoTextViews[5].text = "전자 칠판 : ${if (updatedRoom.equipment.contains("전자칠판")) "있음" else "없음"}"
                 infoTextViews[6].text = "앱에서 바로 예약 가능"
-            } else {
-                Log.d("DEBUG", "updatedRoom is null!")
             }
         }
         btnFavorite.setOnClickListener {

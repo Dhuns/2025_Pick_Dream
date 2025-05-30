@@ -5,18 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import androidx.fragment.app.DialogFragment
 import com.example.pick_dream.R
 import android.app.Dialog
 import androidx.core.content.ContextCompat
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.StyleSpan
 import android.graphics.Typeface
+import android.widget.ImageView
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
+import android.widget.ImageButton
 
-class ReservationDetailBottomSheet : BottomSheetDialogFragment(R.style.CustomBottomSheetDialog) {
+class ReservationDetailBottomSheet : DialogFragment(R.style.FullScreenDialog) {
     private lateinit var tvInfoAll: TextView
+    private var imageRes: Int = R.drawable.sample_room
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -29,6 +33,13 @@ class ReservationDetailBottomSheet : BottomSheetDialogFragment(R.style.CustomBot
         
         // View 초기화
         tvInfoAll = view.findViewById(R.id.tv_info_all)
+        val ivRoomImage = view.findViewById<ImageView>(R.id.ivRoomImage)
+        imageRes = arguments?.getInt(KEY_IMAGE_RES) ?: R.drawable.sample_room
+        ivRoomImage.setImageResource(imageRes)
+        // 뒤로가기 버튼 클릭 시 닫기
+        view.findViewById<ImageButton>(R.id.btnBack)?.setOnClickListener {
+            dismiss()
+        }
 
         // 전달받은 데이터 표시
         arguments?.let { bundle ->
@@ -64,14 +75,12 @@ class ReservationDetailBottomSheet : BottomSheetDialogFragment(R.style.CustomBot
         }
     }
 
-    override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val dialog = super.onCreateDialog(savedInstanceState)
-        dialog.setOnShowListener {
-            val bottomSheet = (dialog as BottomSheetDialog).findViewById<View>(com.google.android.material.R.id.design_bottom_sheet)
-            bottomSheet?.background = ContextCompat.getDrawable(requireContext(), R.drawable.bg_bottom_sheet_rounded)
-            dialog.window?.setDimAmount(0f)
-        }
-        return dialog
+    override fun onStart() {
+        super.onStart()
+        val displayMetrics = resources.displayMetrics
+        val width = (displayMetrics.widthPixels * 0.6).toInt()
+        dialog?.window?.setLayout(width, ViewGroup.LayoutParams.MATCH_PARENT)
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 
     override fun onDestroyView() {
@@ -86,6 +95,7 @@ class ReservationDetailBottomSheet : BottomSheetDialogFragment(R.style.CustomBot
         private const val KEY_PEOPLE = "people"
         private const val KEY_FACILITIES = "facilities"
         private const val KEY_RESERVER = "reserver"
+        private const val KEY_IMAGE_RES = "imageRes"
 
         fun newInstance(
             room: String,
@@ -93,7 +103,8 @@ class ReservationDetailBottomSheet : BottomSheetDialogFragment(R.style.CustomBot
             time: String,
             people: String,
             facilities: String,
-            reserver: String
+            reserver: String,
+            imageRes: Int
         ): ReservationDetailBottomSheet {
             return ReservationDetailBottomSheet().apply {
                 arguments = Bundle().apply {
@@ -103,6 +114,7 @@ class ReservationDetailBottomSheet : BottomSheetDialogFragment(R.style.CustomBot
                     putString(KEY_PEOPLE, people)
                     putString(KEY_FACILITIES, facilities)
                     putString(KEY_RESERVER, reserver)
+                    putInt(KEY_IMAGE_RES, imageRes)
                 }
             }
         }

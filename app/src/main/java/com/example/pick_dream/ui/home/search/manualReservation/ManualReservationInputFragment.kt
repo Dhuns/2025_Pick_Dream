@@ -106,9 +106,10 @@ class ManualReservationInputFragment : Fragment() {
                     }
                     // 2. 예약 데이터 생성
                     arguments?.let { args ->
+                        val roomId = args.getString("roomId") ?: ""
                         val reservation = Reservation(
                             userID = studentId,
-                            roomID = args.getString("roomId") ?: "",
+                            roomID = roomId,
                             eventName = eventName,
                             eventDescription = eventDescription,
                             eventTarget = eventTarget,

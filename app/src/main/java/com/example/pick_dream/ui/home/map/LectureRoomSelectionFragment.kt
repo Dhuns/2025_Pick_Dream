@@ -1,7 +1,6 @@
 package com.example.pick_dream.ui.home.map
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -63,30 +62,22 @@ class LectureRoomSelectionFragment : Fragment() {
         binding.progressBar.visibility = View.VISIBLE
         binding.tvEmptyMessage.visibility = View.GONE
         
-        Log.d("LectureRoom", "Searching for rooms in building: ${args.buildingDetail}")
-        
         db.collection("rooms")
             .get()
             .addOnSuccessListener { documents ->
                 val rooms = documents.mapNotNull { doc ->
                     try {
                         val room = doc.toObject(LectureRoom::class.java)
-                        Log.d("LectureRoom", "Raw document data: ${doc.data}")
-                        Log.d("LectureRoom", "Found room: ${room.name}, building: ${room.buildingDetail}, available: ${room.isAvailable}")
                         
                         // buildingDetail 비교 시 공백 제거 및 대소문자 무시
                         if (room.buildingDetail.replace(" ", "") == args.buildingDetail.replace(" ", "")) room else null
                     } catch (e: Exception) {
-                        Log.e("LectureRoom", "Error parsing room data", e)
                         null
                     }
                 }
                 
-                Log.d("LectureRoom", "Total rooms found: ${rooms.size}")
-                
                 // 사용 가능한 강의실만 필터링
                 val availableRooms = rooms.filter { it.isAvailable }
-                Log.d("LectureRoom", "Available rooms: ${availableRooms.size}")
                 
                 adapter.submitList(availableRooms)
                 binding.progressBar.visibility = View.GONE
@@ -99,7 +90,6 @@ class LectureRoomSelectionFragment : Fragment() {
                 }
             }
             .addOnFailureListener { e ->
-                Log.e("LectureRoom", "Error loading rooms", e)
                 binding.progressBar.visibility = View.GONE
                 binding.tvEmptyMessage.visibility = View.VISIBLE
                 binding.tvEmptyMessage.text = "강의실 정보를 불러오는데 실패했습니다."
