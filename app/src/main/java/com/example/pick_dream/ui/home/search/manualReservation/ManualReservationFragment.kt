@@ -13,6 +13,7 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
+import android.widget.Toast
 
 class ManualReservationFragment : Fragment() {
     private val reservationViewModel: ManualReservationViewModel by activityViewModels()
@@ -121,6 +122,8 @@ class ManualReservationFragment : Fragment() {
         // 예시: arguments로 강의실 정보 전달받아 표시
         val building = arguments?.getString("building") ?: ""
         val roomName = arguments?.getString("roomName") ?: ""
+        // roomName에서 숫자만 추출해 roomId로 사용
+        val roomId = Regex("\\d+").find(roomName)?.value ?: ""
         tvBuilding.text = building
         tvRoomName.text = roomName
 
@@ -128,6 +131,7 @@ class ManualReservationFragment : Fragment() {
             val bundle = Bundle().apply {
                 putString("building", building)
                 putString("roomName", roomName)
+                putString("roomId", roomId) // 추출한 roomId 사용
                 // 날짜 정보
                 selectedDay?.let {
                     putInt("selectedYear", it.year)
@@ -147,12 +151,21 @@ class ManualReservationFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        // 오늘 날짜로 초기화
+        // 오늘 날짜 구하기
         val today = java.util.Calendar.getInstance()
+        val yesterday = java.util.Calendar.getInstance().apply { add(java.util.Calendar.DATE, -1) }
+        val todayCalendarDay = CalendarDay.from(today)
+        val yesterdayCalendarDay = CalendarDay.from(yesterday)
         val yearIndex = (2020..2030).toList().indexOf(today.get(java.util.Calendar.YEAR))
         if (yearIndex >= 0) spinnerYear.setSelection(yearIndex, false)
-        calendarView.selectedDate = CalendarDay.from(today)
-        calendarView.setCurrentDate(CalendarDay.from(today))
+        calendarView.selectedDate = todayCalendarDay
+        calendarView.setCurrentDate(todayCalendarDay)
+        // minDate를 2025년 1월 1일로 설정 (과거 날짜도 달력에 표시)
+        calendarView.state().edit()
+            .setMinimumDate(CalendarDay.from(2025, 0, 1)) // 0: 1월
+            .commit()
+        // 과거 날짜는 neutral_300 색상 + 비활성화
+        calendarView.addDecorator(PastDayDecorator(requireContext()))
 
         // ViewModel 값으로 초기화
         reservationViewModel.selectedDay?.let {
@@ -208,6 +221,7 @@ class ManualReservationFragment : Fragment() {
         calendarView.addDecorator(SaturdayDecorator(requireContext()) { selectedDay })
         val selectedDayDecorator = SelectedDayDecorator(requireContext()) { selectedDay }
         calendarView.addDecorator(selectedDayDecorator)
+        calendarView.addDecorator(PastDayDecorator(requireContext()))
         calendarView.setOnDateChangedListener { _, date, _ ->
             selectedDay = date
             reservationViewModel.selectedDay = date
