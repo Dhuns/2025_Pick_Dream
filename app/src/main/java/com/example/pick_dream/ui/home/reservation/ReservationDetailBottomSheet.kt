@@ -77,9 +77,10 @@ class ReservationDetailBottomSheet : DialogFragment(R.style.FullScreenDialog) {
 
     override fun onStart() {
         super.onStart()
-        val displayMetrics = resources.displayMetrics
-        val width = (displayMetrics.widthPixels * 0.6).toInt()
-        dialog?.window?.setLayout(width, ViewGroup.LayoutParams.MATCH_PARENT)
+        dialog?.window?.setLayout(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
         dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
     }
 

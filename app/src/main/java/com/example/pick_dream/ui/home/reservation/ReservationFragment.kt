@@ -34,6 +34,9 @@ class ReservationFragment : Fragment() {
     private val binding get() = _binding!!
     private var userName: String = ""
     private var userId: String = ""
+    private var currentPage = 1
+    private var totalPages = 1
+    private var historyList: List<ReservationData> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -152,6 +155,7 @@ class ReservationFragment : Fragment() {
                 if (_binding == null || !isAdded) return@addOnSuccessListener
                 fun ReservationData.startDate(): Calendar? = parseKoreanDateToCalendar(this.startTime)
                 val doneList = mergedList.filter { it.status == "종료" }
+                    .sortedByDescending { item: ReservationData -> item.startDate()?.time }
                 val confirmedList = mergedList.filter { it.status == "확정" }.sortedBy { item: ReservationData -> item.startDate()?.time }
                 val waitingList = mergedList.filter { it.status == "대기" }.sortedBy { item: ReservationData -> item.startDate()?.time }
                 val currentReservation = when {
@@ -277,8 +281,15 @@ class ReservationFragment : Fragment() {
         }
     }
 
-    private fun setupHistoryList(historyList: List<ReservationData>) {
-        if (_binding == null || !isAdded) return
+    private fun setupHistoryList(list: List<ReservationData>) {
+        historyList = list
+        totalPages = if (list.isEmpty()) 1 else ((list.size - 1) / 3 + 1)
+        currentPage = 1
+        showHistoryPage(currentPage)
+        setupPagination()
+    }
+
+    private fun showHistoryPage(page: Int) {
         val container = binding.root.findViewById<LinearLayout>(R.id.layoutHistoryList)
         container?.removeAllViews()
         if (historyList.isEmpty()) {
@@ -286,7 +297,9 @@ class ReservationFragment : Fragment() {
             return
         }
         container?.visibility = View.VISIBLE
-        for (item in historyList) {
+        val startIdx = (page - 1) * 3
+        val endIdx = minOf(startIdx + 3, historyList.size)
+        for (item in historyList.subList(startIdx, endIdx)) {
             val itemView = LayoutInflater.from(context).inflate(R.layout.item_reservation_history, container, false)
             val imgRoom = itemView.findViewById<ImageView>(R.id.imgRoom)
             val tvRoomName = itemView.findViewById<TextView>(R.id.tvRoomName)
@@ -314,17 +327,61 @@ class ReservationFragment : Fragment() {
     }
 
     private fun setupPagination() {
-        val pageCount = 5
-        // 전체 레이아웃에서 layoutPageNumbers만 찾아서 페이지 번호만 동적으로 추가
         val layoutPageNumbers = binding.root.findViewById<LinearLayout>(R.id.layoutPageNumbers)
         layoutPageNumbers?.removeAllViews()
-        for (i in 1..pageCount) {
+        if (totalPages <= 1) return
+
+        val maxPageButtons = 5
+        var startPage = maxOf(1, currentPage - 2)
+        var endPage = minOf(totalPages, startPage + maxPageButtons - 1)
+        if (endPage - startPage < maxPageButtons - 1) {
+            startPage = maxOf(1, endPage - maxPageButtons + 1)
+        }
+
+        val showArrows = totalPages > maxPageButtons
+
+        // < 버튼 (5페이지 초과일 때만)
+        if (showArrows && startPage > 1) {
+            val prevBtn = TextView(requireContext())
+            prevBtn.text = "<"
+            prevBtn.textSize = 18f
+            prevBtn.setPadding(16, 8, 16, 8)
+            prevBtn.setOnClickListener {
+                currentPage = maxOf(1, currentPage - 1)
+                showHistoryPage(currentPage)
+                setupPagination()
+            }
+            layoutPageNumbers?.addView(prevBtn)
+        }
+
+        // 페이지 번호 버튼 + 현재 페이지 ● 표시
+        for (i in startPage..endPage) {
             val tv = TextView(requireContext())
             tv.text = i.toString()
             tv.textSize = 16f
             tv.setPadding(16, 8, 16, 8)
-            tv.setTextColor(if (i == 1) 0xFF222222.toInt() else 0xFFB0B0B0.toInt())
+            tv.setTextColor(if (i == currentPage) 0xFF222222.toInt() else 0xFFB0B0B0.toInt())
+            tv.setTypeface(null, if (i == currentPage) Typeface.BOLD else Typeface.NORMAL)
+            tv.setOnClickListener {
+                currentPage = i
+                showHistoryPage(currentPage)
+                setupPagination()
+            }
             layoutPageNumbers?.addView(tv)
+        }
+
+        // > 버튼 (5페이지 초과일 때만)
+        if (showArrows && endPage < totalPages) {
+            val nextBtn = TextView(requireContext())
+            nextBtn.text = ">"
+            nextBtn.textSize = 18f
+            nextBtn.setPadding(16, 8, 16, 8)
+            nextBtn.setOnClickListener {
+                currentPage = minOf(totalPages, currentPage + 1)
+                showHistoryPage(currentPage)
+                setupPagination()
+            }
+            layoutPageNumbers?.addView(nextBtn)
         }
     }
 

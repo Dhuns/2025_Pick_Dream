@@ -107,6 +107,20 @@ class ManualReservationInputFragment : Fragment() {
                     // 2. 예약 데이터 생성
                     arguments?.let { args ->
                         val roomId = args.getString("roomId") ?: ""
+                        val startTimeStr = toKorean12HourString(
+                            args.getInt("selectedYear"),
+                            args.getInt("selectedMonth") + 1,
+                            args.getInt("selectedDay"),
+                            args.getInt("startHour"),
+                            args.getInt("startMinute")
+                        )
+                        val endTimeStr = toKorean12HourString(
+                            args.getInt("selectedYear"),
+                            args.getInt("selectedMonth") + 1,
+                            args.getInt("selectedDay"),
+                            args.getInt("endHour"),
+                            args.getInt("endMinute")
+                        )
                         val reservation = Reservation(
                             userID = studentId,
                             roomID = roomId,
@@ -114,18 +128,8 @@ class ManualReservationInputFragment : Fragment() {
                             eventDescription = eventDescription,
                             eventTarget = eventTarget,
                             eventParticipants = eventParticipants,
-                            startTime = String.format("%d년 %d월 %d일 오후 %d시 %d분 0초 UTC+9",
-                                args.getInt("selectedYear"),
-                                args.getInt("selectedMonth") + 1,
-                                args.getInt("selectedDay"),
-                                args.getInt("startHour"),
-                                args.getInt("startMinute")),
-                            endTime = String.format("%d년 %d월 %d일 오후 %d시 %d분 0초 UTC+9",
-                                args.getInt("selectedYear"),
-                                args.getInt("selectedMonth") + 1,
-                                args.getInt("selectedDay"),
-                                args.getInt("endHour"),
-                                args.getInt("endMinute")),
+                            startTime = startTimeStr,
+                            endTime = endTimeStr,
                             status = "대기"
                         )
                         // 3. Firestore에 저장
@@ -184,5 +188,16 @@ class ManualReservationInputFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.VISIBLE
+    }
+
+    // 24시간제를 12시간제(오전/오후)로 변환하는 함수 추가
+    private fun toKorean12HourString(year: Int, month: Int, day: Int, hour24: Int, minute: Int): String {
+        val ampm = if (hour24 < 12) "오전" else "오후"
+        val hour12 = when {
+            hour24 == 0 -> 12
+            hour24 > 12 -> hour24 - 12
+            else -> hour24
+        }
+        return String.format("%d년 %d월 %d일 %s %d시 %d분 0초 UTC+9", year, month, day, ampm, hour12, minute)
     }
 }
