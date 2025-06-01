@@ -241,8 +241,7 @@ class HomeFragment : Fragment() {
                 handler.removeCallbacks(timeUpdateRunnable)
             }
     }
-
-
+    
     override fun onDestroyView() {
         super.onDestroyView()
         handler.removeCallbacks(timeUpdateRunnable)
