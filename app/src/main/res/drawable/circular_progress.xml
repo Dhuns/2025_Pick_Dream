@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 배경 원 -->
+    <!-- 배경 원 (트랙) -->
     <item>
         <shape android:shape="ring"
-            android:innerRadiusRatio="2.5"
-            android:thicknessRatio="0.1"
+            android:innerRadiusRatio="3"
+            android:thickness="6dp"
             android:useLevel="false">
-            <solid android:color="#E0E0E0" />
+            <solid android:color="#33FFFFFF" />
         </shape>
     </item>
     <!-- 진행률 원 -->
@@ -15,10 +15,10 @@
             android:fromDegrees="-90"
             android:toDegrees="-90">
             <shape android:shape="ring"
-                android:innerRadiusRatio="2.5"
-                android:thicknessRatio="0.1"
+                android:innerRadiusRatio="3"
+                android:thickness="6dp"
                 android:useLevel="true">
-                <solid android:color="#5D5FEF" />
+                <solid android:color="@android:color/white" />
             </shape>
         </rotate>
     </item>

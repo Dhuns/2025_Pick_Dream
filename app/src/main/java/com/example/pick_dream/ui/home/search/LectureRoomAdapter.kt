@@ -7,6 +7,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
 import com.google.firebase.firestore.PropertyName
+import androidx.recyclerview.widget.DiffUtil
 
 data class LectureRoom(
     val id: String = "",  // 문서 ID
@@ -27,7 +28,7 @@ sealed class SectionedItem {
 }
 
 class LectureRoomAdapter(
-    private val items: List<SectionedItem>,
+    private var items: List<SectionedItem>,
     private val onItemClick: (LectureRoom) -> Unit,
     private val onFavoriteChanged: (() -> Unit)? = null
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -35,6 +36,13 @@ class LectureRoomAdapter(
     companion object {
         private const val VIEW_TYPE_HEADER = 0
         private const val VIEW_TYPE_ROOM = 1
+    }
+
+    fun updateList(newItems: List<SectionedItem>) {
+        val diffCallback = SectionedItemDiffCallback(items, newItems)
+        val diffResult = DiffUtil.calculateDiff(diffCallback)
+        items = newItems
+        diffResult.dispatchUpdatesTo(this)
     }
 
     inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -58,7 +66,8 @@ class LectureRoomAdapter(
             )
             btnFavorite.setOnClickListener {
                 LectureRoomRepository.toggleFavorite(item.name)
-                notifyDataSetChanged()
+                // 해당 아이템만 업데이트
+                notifyItemChanged(adapterPosition)
                 onFavoriteChanged?.invoke()
             }
             itemView.setOnClickListener { onItemClick(item) }
@@ -91,4 +100,28 @@ class LectureRoomAdapter(
     }
 
     override fun getItemCount(): Int = items.size
+}
+
+class SectionedItemDiffCallback(
+    private val oldList: List<SectionedItem>,
+    private val newList: List<SectionedItem>
+) : DiffUtil.Callback() {
+    override fun getOldListSize(): Int = oldList.size
+    override fun getNewListSize(): Int = newList.size
+
+    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+        return when {
+            oldItem is SectionedItem.Header && newItem is SectionedItem.Header ->
+                oldItem.buildingName == newItem.buildingName && oldItem.buildingDetail == newItem.buildingDetail
+            oldItem is SectionedItem.Room && newItem is SectionedItem.Room ->
+                oldItem.room.name == newItem.room.name
+            else -> false
+        }
+    }
+
+    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
+        return oldList[oldItemPosition] == newList[newItemPosition]
+    }
 }

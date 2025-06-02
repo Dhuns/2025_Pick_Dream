@@ -40,4 +40,5 @@
     <color name="teal_200">#6391EE</color>
     <color name="teal_700">#FF018786</color>
     <color name="gray_600">#757575</color>
+    <color name="default_reservation_bg_color">#EEEEEE</color>
 </resources>

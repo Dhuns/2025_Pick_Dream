@@ -17,9 +17,12 @@ import android.widget.EditText
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
+import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 
 class LectureRoomListFragment : Fragment() {
     private lateinit var adapter: LectureRoomAdapter
+    private lateinit var recyclerView: RecyclerView
+    private var currentQuery: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
@@ -32,7 +35,7 @@ class LectureRoomListFragment : Fragment() {
 
         LectureRoomRepository.fetchRoomsFromFirebase()
 
-        val recyclerView = view.findViewById<RecyclerView>(R.id.rvLectureRooms)
+        recyclerView = view.findViewById<RecyclerView>(R.id.rvLectureRooms)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         val etSearch = view.findViewById<EditText>(R.id.etSearch)
@@ -42,29 +45,14 @@ class LectureRoomListFragment : Fragment() {
         val btnFilterOutlet = view.findViewById<View>(R.id.btnFilterOutlet)
         val btnFilterScreen = view.findViewById<View>(R.id.btnFilterScreen)
 
-        // 예시 데이터 (Repository에서 가져옴)
-        val groupedRooms = LectureRoomRepository.roomsLiveData.value
-            ?.groupBy { Pair(it.buildingName, it.buildingDetail) }
-            ?.map { (buildingPair, rooms) -> buildingPair to rooms }
-            ?: emptyList()
-        var currentSectionedList = buildSectionedList(groupedRooms)
-
-        adapter = LectureRoomAdapter(currentSectionedList, { room ->
-            val action = LectureRoomListFragmentDirections.actionLectureRoomListFragmentToLectureRoomDetailFragment(
-                room.name,
-                "${room.buildingName} (${room.buildingDetail})",
-                room.buildingName,
-                room.buildingDetail
-            )
-            findNavController().navigate(action)
-        }, { refreshList() })
-        recyclerView.adapter = adapter
+        // 초기 데이터 설정
+        setupAdapter()
 
         // 검색 동작 구현
         etSearch.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
-                val query = etSearch.text.toString().trim()
-                filterAndShow(query, groupedRooms)
+                currentQuery = etSearch.text.toString().trim()
+                filterAndShow(currentQuery)
                 // 키보드 내리기
                 val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(etSearch.windowToken, 0)
@@ -80,8 +68,8 @@ class LectureRoomListFragment : Fragment() {
         }
 
         btnSearch.setOnClickListener {
-            val query = etSearch.text.toString().trim()
-            filterAndShow(query, groupedRooms)
+            currentQuery = etSearch.text.toString().trim()
+            filterAndShow(currentQuery)
             // 키보드 내리기
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(etSearch.windowToken, 0)
@@ -89,27 +77,64 @@ class LectureRoomListFragment : Fragment() {
 
         btnFilterBeam.setOnClickListener {
             etSearch.setText("빔프로젝터")
-            filterAndShow("빔프로젝터", groupedRooms)
+            currentQuery = "빔프로젝터"
+            filterAndShow(currentQuery)
         }
         btnFilterMic.setOnClickListener {
             etSearch.setText("마이크")
-            filterAndShow("마이크", groupedRooms)
+            currentQuery = "마이크"
+            filterAndShow(currentQuery)
         }
         btnFilterOutlet.setOnClickListener {
             etSearch.setText("콘센트")
-            filterAndShow("콘센트", groupedRooms)
+            currentQuery = "콘센트"
+            filterAndShow(currentQuery)
         }
         btnFilterScreen.setOnClickListener {
             etSearch.setText("스크린")
-            filterAndShow("스크린", groupedRooms)
+            currentQuery = "스크린"
+            filterAndShow(currentQuery)
         }
 
         // 하단 네비게이션 바 숨기기
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.GONE
     }
 
-    // 검색어에 따라 섹션별로 필터링된 리스트를 만들어 어댑터에 반영
-    private fun filterAndShow(query: String, groupedRooms: List<Pair<Pair<String, String>, List<LectureRoom>>>) {
+    private fun setupAdapter() {
+        val groupedRooms = LectureRoomRepository.roomsLiveData.value
+            ?.groupBy { Pair(it.buildingName, it.buildingDetail) }
+            ?.map { (buildingPair, rooms) -> buildingPair to rooms }
+            ?: emptyList()
+        val sectionedList = buildSectionedList(groupedRooms)
+        
+        adapter = LectureRoomAdapter(sectionedList, 
+            onItemClick = { room ->
+                val action = LectureRoomListFragmentDirections
+                    .actionLectureRoomListFragmentToLectureRoomDetailFragment(
+                        room.name,
+                        "${room.buildingName} (${room.buildingDetail})",
+                        room.buildingName,
+                        room.buildingDetail
+                    )
+                findNavController().navigate(action)
+            },
+            onFavoriteChanged = { 
+                // 현재 스크롤 위치 저장
+                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+                val position = layoutManager.findFirstVisibleItemPosition()
+                val offset = recyclerView.getChildAt(0)?.top ?: 0
+                
+                // 리스트 갱신
+                filterAndShow(currentQuery)
+                
+                // 스크롤 위치 복원
+                layoutManager.scrollToPositionWithOffset(position, offset)
+            }
+        )
+        recyclerView.adapter = adapter
+    }
+
+    private fun filterAndShow(query: String) {
         val filtered = LectureRoomRepository.roomsLiveData.value
             ?.filter {
                 it.name.contains(query, ignoreCase = true) ||
@@ -120,20 +145,11 @@ class LectureRoomListFragment : Fragment() {
             ?.groupBy { Pair(it.buildingName, it.buildingDetail) }
             ?.map { (buildingPair, rooms) -> buildingPair to rooms }
             ?: emptyList()
+            
         val sectionedList = buildSectionedList(filtered)
-        adapter = LectureRoomAdapter(sectionedList, { room ->
-            val action = LectureRoomListFragmentDirections.actionLectureRoomListFragmentToLectureRoomDetailFragment(
-                room.name,
-                "${room.buildingName} (${room.buildingDetail})",
-                room.buildingName,
-                room.buildingDetail
-            )
-            findNavController().navigate(action)
-        }, { refreshList() })
-        view?.findViewById<RecyclerView>(R.id.rvLectureRooms)?.adapter = adapter
+        adapter.updateList(sectionedList)
     }
 
-    // 섹션 리스트 생성 함수
     private fun buildSectionedList(groupedRooms: List<Pair<Pair<String, String>, List<LectureRoom>>>): MutableList<SectionedItem> {
         val sectionedList = mutableListOf<SectionedItem>()
         for ((buildingPair, rooms) in groupedRooms) {
@@ -142,24 +158,6 @@ class LectureRoomListFragment : Fragment() {
             sectionedList.addAll(rooms.map { SectionedItem.Room(it) })
         }
         return sectionedList
-    }
-
-    fun refreshList() {
-        val groupedRooms = LectureRoomRepository.roomsLiveData.value
-            ?.groupBy { Pair(it.buildingName, it.buildingDetail) }
-            ?.map { (buildingPair, rooms) -> buildingPair to rooms }
-            ?: emptyList()
-        val sectionedList = buildSectionedList(groupedRooms)
-        adapter = LectureRoomAdapter(sectionedList, { room ->
-            val action = LectureRoomListFragmentDirections.actionLectureRoomListFragmentToLectureRoomDetailFragment(
-                room.name,
-                "${room.buildingName} (${room.buildingDetail})",
-                room.buildingName,
-                room.buildingDetail
-            )
-            findNavController().navigate(action)
-        }, { refreshList() })
-        view?.findViewById<RecyclerView>(R.id.rvLectureRooms)?.adapter = adapter
     }
 
     override fun onDestroyView() {

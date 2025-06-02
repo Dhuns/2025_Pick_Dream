@@ -49,6 +49,18 @@ class HomeFragment : Fragment() {
                 } else {
                     "남은 시간: ${minutes}분 ${seconds}초"
                 }
+
+                // 진행률 업데이트
+                val startMillis = binding.root.getTag(R.id.tag_start_millis)?.toString()?.toLongOrNull() ?: 0L // loadMyReservation에서 저장한 값 가져오기
+                if (startMillis > 0 && endMillis > startMillis) {
+                    val totalDuration = endMillis - startMillis
+                    val elapsedTime = now - startMillis
+                    val progressPercentage = (elapsedTime * 100 / totalDuration).toInt()
+                    val displayProgress = if (progressPercentage > 100) 100 else if (progressPercentage < 0) 0 else progressPercentage
+                    _binding?.pbReservationProgress?.progress = displayProgress
+                    _binding?.tvProgressPercentage?.text = "$displayProgress%"
+                }
+
                 handler.postDelayed(this, 1000)
             } else {
                 binding.tvReservationRoom.text = "예약 내역이 없습니다."
@@ -158,6 +170,10 @@ class HomeFragment : Fragment() {
                                 _binding?.tvReservationRoom?.text = ""
                                 _binding?.tvReservationTime?.text = ""
                                 _binding?.tvRemainingTime?.text = "예약 내역이 없습니다."
+                                // 예약 없을 시 진행률 UI 초기화
+                                _binding?.ivRoomBackground?.setImageResource(R.color.default_reservation_bg_color) // 기본 배경색 또는 이미지
+                                _binding?.pbReservationProgress?.progress = 0
+                                _binding?.tvProgressPercentage?.text = "0%"
                                 handler.removeCallbacks(timeUpdateRunnable)
                                 return@addOnSuccessListener
                             }
@@ -186,6 +202,9 @@ class HomeFragment : Fragment() {
                             val startMillis = startDate?.time ?: 0L
                             endMillis = endDate?.time ?: 0L
 
+                            // 진행률 계산 및 UI 업데이트를 위한 시작 시간 저장
+                            binding.root.setTag(R.id.tag_start_millis, startMillis)
+
                             val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
                             timeFormat.timeZone = TimeZone.getTimeZone("Asia/Seoul")
                             val startStr = startDate?.let { timeFormat.format(it) } ?: "-"
@@ -196,11 +215,27 @@ class HomeFragment : Fragment() {
                                     _binding?.tvReservationRoom?.text = "예약 장소 : $roomID"
                                     _binding?.tvReservationTime?.text = "대여 시간 : $startStr - $endStr"
                                     _binding?.tvRemainingTime?.text = "아직 예약 시간이 아닙니다"
+                                    _binding?.ivRoomBackground?.setImageResource(R.drawable.sample_room)
+                                    _binding?.pbReservationProgress?.progress = 0
+                                    _binding?.tvProgressPercentage?.text = "0%"
                                     handler.removeCallbacks(timeUpdateRunnable)
                                 }
                                 nowMillis in startMillis until endMillis -> {
                                     _binding?.tvReservationRoom?.text = "예약 장소 : $roomID"
                                     _binding?.tvReservationTime?.text = "대여 시간 : $startStr - $endStr"
+                                    
+                                    // 진행률 계산
+                                    val totalDuration = endMillis - startMillis
+                                    val elapsedTime = nowMillis - startMillis
+                                    // elapsedTime이 0보다 작을 경우(시계 문제 등) 0으로 처리하여 음수 % 방지
+                                    val currentElapsedTime = if (elapsedTime < 0) 0 else elapsedTime
+                                    val progressPercentage = if (totalDuration > 0) (currentElapsedTime * 100 / totalDuration).toInt() else 0
+                                    val displayProgress = progressPercentage.coerceIn(0, 100)
+
+                                    _binding?.ivRoomBackground?.setImageResource(R.drawable.sample_room)
+                                    _binding?.pbReservationProgress?.progress = displayProgress
+                                    _binding?.tvProgressPercentage?.text = "$displayProgress%"
+                                    
                                     handler.removeCallbacks(timeUpdateRunnable)
                                     handler.post(timeUpdateRunnable)
                                 }
@@ -208,6 +243,10 @@ class HomeFragment : Fragment() {
                                     _binding?.tvReservationRoom?.text = ""
                                     _binding?.tvReservationTime?.text = ""
                                     _binding?.tvRemainingTime?.text = "예약 내역이 없습니다"
+                                    // 예약 시간 아닐 시 진행률 UI 초기화
+                                    _binding?.ivRoomBackground?.setImageResource(R.color.default_reservation_bg_color) // 기본 배경색 또는 이미지
+                                    _binding?.pbReservationProgress?.progress = 0
+                                    _binding?.tvProgressPercentage?.text = "0%"
                                     handler.removeCallbacks(timeUpdateRunnable)
                                 }
                             }
@@ -219,6 +258,10 @@ class HomeFragment : Fragment() {
                             _binding?.tvReservationRoom?.text = "예약 정보를 불러오지 못했습니다."
                             _binding?.tvReservationTime?.text = ""
                             _binding?.tvRemainingTime?.text = ""
+                            // 실패 시 진행률 UI 초기화
+                            _binding?.ivRoomBackground?.setImageResource(R.color.default_reservation_bg_color) // 기본 배경색 또는 이미지
+                            _binding?.pbReservationProgress?.progress = 0
+                            _binding?.tvProgressPercentage?.text = "0%"
                             handler.removeCallbacks(timeUpdateRunnable)
                         }
                 } else {
@@ -228,6 +271,10 @@ class HomeFragment : Fragment() {
                     _binding?.tvReservationRoom?.text = "학번 정보가 없습니다."
                     _binding?.tvReservationTime?.text = ""
                     _binding?.tvRemainingTime?.text = ""
+                    // 실패 시 진행률 UI 초기화
+                    _binding?.ivRoomBackground?.setImageResource(R.color.default_reservation_bg_color) // 기본 배경색 또는 이미지
+                    _binding?.pbReservationProgress?.progress = 0
+                    _binding?.tvProgressPercentage?.text = "0%"
                     handler.removeCallbacks(timeUpdateRunnable)
                 }
             }
@@ -238,6 +285,10 @@ class HomeFragment : Fragment() {
                 _binding?.tvReservationRoom?.text = "사용자 정보를 불러오지 못했습니다."
                 _binding?.tvReservationTime?.text = ""
                 _binding?.tvRemainingTime?.text = ""
+                // 실패 시 진행률 UI 초기화
+                _binding?.ivRoomBackground?.setImageResource(R.color.default_reservation_bg_color) // 기본 배경색 또는 이미지
+                _binding?.pbReservationProgress?.progress = 0
+                _binding?.tvProgressPercentage?.text = "0%"
                 handler.removeCallbacks(timeUpdateRunnable)
             }
     }
