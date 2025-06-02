@@ -33,10 +33,8 @@ class ReviewpageFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // 리뷰 페이지 내에서 하단 네비게이션 바 숨기기
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.GONE
 
-        // 별점 클릭 이벤트
         val starViews = starIds.map { binding.root.findViewById<ImageView>(it) }
         starViews.forEachIndexed { index, imageView ->
             imageView.setOnClickListener {
@@ -46,34 +44,28 @@ class ReviewpageFragment : Fragment() {
         }
         updateStars(starViews, selectedStars)
 
-        // 용도 체크박스 (색상 변경)
         for (i in 0 until binding.layoutPurpose.childCount) {
             val cb = binding.layoutPurpose.getChildAt(i)
             if (cb is CheckBox) {
                 cb.buttonDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.checkbox_selector)
                 cb.setOnCheckedChangeListener { buttonView, isChecked ->
-                    // selector가 알아서 색상 변경
                 }
             }
         }
 
-        // 기자재 체크박스 (색상 변경)
         for (i in 0 until binding.layoutEquip.childCount) {
             val cb = binding.layoutEquip.getChildAt(i)
             if (cb is CheckBox) {
                 cb.buttonDrawable = ContextCompat.getDrawable(requireContext(), R.drawable.checkbox_selector)
                 cb.setOnCheckedChangeListener { buttonView, isChecked ->
-                    // selector가 알아서 색상 변경
                 }
             }
         }
 
-        // 리뷰작성 -> 리뷰 완료
         binding.btnSubmit.setOnClickListener {
             findNavController().navigate(R.id.action_reviewpageFragment_to_reviewCompleteFragment)
         }
 
-        // 상단바 엑스 버튼 -> 홈
         binding.btnClose.setOnClickListener {
             findNavController().navigate(R.id.action_reviewpageFragment_to_homeFragment)
         }
@@ -89,7 +81,6 @@ class ReviewpageFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // 리뷰프래그먼트가 사라질 때 다시 보이게 (여기에 추가)
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.VISIBLE
         _binding = null
     }

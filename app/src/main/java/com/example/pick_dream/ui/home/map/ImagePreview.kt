@@ -26,7 +26,6 @@ class ImagePreviewDialogFragment : DialogFragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // 풀스크린 스타일 적용
         setStyle(STYLE_NO_TITLE, android.R.style.Theme_Black_NoTitleBar_Fullscreen)
     }
 
@@ -37,7 +36,6 @@ class ImagePreviewDialogFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        // 툴바 뒤로가기 아이콘 눌렀을 때 다이얼로그 닫기
         view.findViewById<Toolbar>(R.id.dialogToolbar)
             .setNavigationOnClickListener { dismiss() }
         val images = requireArguments().getIntegerArrayList(ARG_IMAGES) .orEmpty()
@@ -64,14 +62,11 @@ class ImagePreviewDialogFragment : DialogFragment() {
                 }
             }
         })
-        // 예약 버튼 클릭
         view.findViewById<Button>(R.id.btnReserveFull)
             .setOnClickListener {
-                // 예약 로직 (예: 네비게이션 이동)
                 findNavController().navigate(R.id.action_mapsFragment_to_reservationFragment)
                 dismiss()
             }
-        // X 버튼
         view.findViewById<ImageButton>(R.id.btnClose)
             .setOnClickListener { dismiss() }
     }

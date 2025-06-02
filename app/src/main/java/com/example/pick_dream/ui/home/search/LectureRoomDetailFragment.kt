@@ -7,13 +7,11 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.example.pick_dream.R
 import com.google.android.material.button.MaterialButton
-import androidx.lifecycle.Observer
 
 class LectureRoomDetailFragment : Fragment() {
     private val viewModel: LectureRoomDetailViewModel by viewModels()
@@ -49,7 +47,6 @@ class LectureRoomDetailFragment : Fragment() {
             infoBox.getChildAt(6) as TextView
         )
 
-        // LiveData 관찰로 강의실 정보 전체를 갱신
         LectureRoomRepository.roomsLiveData.observe(viewLifecycleOwner) { rooms ->
             rooms.forEach {
             }
@@ -64,7 +61,6 @@ class LectureRoomDetailFragment : Fragment() {
                 btnFavorite.setImageResource(
                     if (updatedRoom.isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_border
                 )
-                // infoBox 세팅
                 infoTextViews[0].text = "강의실 : ${updatedRoom.name}"
                 infoTextViews[1].text = "기자재 목록 : ${updatedRoom.equipment.joinToString(", ").toString()}"
                 infoTextViews[2].text = "수용 인원 : ${updatedRoom.capacity}명"
@@ -76,17 +72,13 @@ class LectureRoomDetailFragment : Fragment() {
         }
         btnFavorite.setOnClickListener {
             LectureRoomRepository.toggleFavorite(roomName)
-            // UI 갱신은 LiveData 관찰로만 처리
         }
 
-        // 뒤로가기
         btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
 
-        // 대여하기 버튼 클릭
         btnReserve.setOnClickListener {
-            // updatedRoom이 null이 아닐 때만 이동
             LectureRoomRepository.roomsLiveData.value?.let { rooms ->
                 val matchedRoom = rooms.find {
                     it.name.trim() == roomName.trim() &&
@@ -103,7 +95,6 @@ class LectureRoomDetailFragment : Fragment() {
             }
         }
 
-        // 예시: arguments로 roomId를 받아 ViewModel에 전달
         val roomId = arguments?.getString("roomId")
         if (roomId != null) {
             viewModel.loadRoomDetail(roomId)

@@ -22,7 +22,6 @@
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
-            <!-- 사진 -->
             <ImageView
                 android:id="@+id/imgRoom"
                 android:layout_width="0dp"
@@ -43,7 +42,6 @@
                 android:paddingTop="2dp"
                 android:orientation="vertical">
 
-                <!-- 텍스트+하트 (ConstraintLayout) -->
                 <androidx.constraintlayout.widget.ConstraintLayout
                     android:layout_width="match_parent"
                     android:layout_height="67dp">
@@ -146,5 +144,4 @@
         </LinearLayout>
     </LinearLayout>
 
-    <!-- 카드 하단 여백을 아주 조금만 남기고 싶으면 -->
 </com.google.android.material.card.MaterialCardView>

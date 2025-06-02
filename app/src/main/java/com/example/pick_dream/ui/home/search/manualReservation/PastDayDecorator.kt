@@ -6,7 +6,6 @@ import com.prolificinteractive.materialcalendarview.DayViewDecorator
 import com.prolificinteractive.materialcalendarview.DayViewFacade
 import androidx.core.content.ContextCompat
 import com.example.pick_dream.R
-import java.time.LocalDate
 
 class PastDayDecorator(context: Context) : DayViewDecorator {
     private val today = CalendarDay.today()

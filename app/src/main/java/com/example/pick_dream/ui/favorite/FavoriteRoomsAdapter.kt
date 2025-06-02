@@ -36,15 +36,12 @@ class FavoriteRoomsAdapter(
     override fun onBindViewHolder(holder: RoomViewHolder, position: Int) {
         val room = rooms[position]
         holder.image.setImageResource(R.drawable.sample_room)
-        
-        // 건물 이름 표시
+
         holder.name.text = "${room.buildingName} (${room.buildingDetail})"
-        
-        // 강의실 번호 표시
+
         val roomNumber = room.name.replace(Regex("[^0-9]"), "")
         holder.number.text = "$roomNumber 강의실"
-        
-        // 시설 정보 표시
+
         holder.features.text = room.equipment.joinToString(", ")
         holder.btnFavorite.isSelected = true
         
@@ -58,21 +55,5 @@ class FavoriteRoomsAdapter(
             onReserveClick(room)
         }
     }
-
-    fun updateRooms(newRooms: List<Room>) {
-        rooms = newRooms
-        notifyDataSetChanged()
-    }
-
-    fun removeRoom(room: Room) {
-        val newList = rooms.toMutableList()
-        val position = newList.indexOf(room)
-        if (position != -1) {
-            newList.removeAt(position)
-            rooms = newList
-            notifyItemRemoved(position)
-        }
-    }
-
     override fun getItemCount() = rooms.size
 }

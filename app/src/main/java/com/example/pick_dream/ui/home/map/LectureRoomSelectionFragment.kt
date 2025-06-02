@@ -11,7 +11,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.pick_dream.databinding.FragmentLectureRoomSelectionBinding
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.PropertyName
 
 class LectureRoomSelectionFragment : Fragment() {
@@ -68,15 +67,13 @@ class LectureRoomSelectionFragment : Fragment() {
                 val rooms = documents.mapNotNull { doc ->
                     try {
                         val room = doc.toObject(LectureRoom::class.java)
-                        
-                        // buildingDetail 비교 시 공백 제거 및 대소문자 무시
+
                         if (room.buildingDetail.replace(" ", "") == args.buildingDetail.replace(" ", "")) room else null
                     } catch (e: Exception) {
                         null
                     }
                 }
-                
-                // 사용 가능한 강의실만 필터링
+
                 val availableRooms = rooms.filter { it.isAvailable }
                 
                 adapter.submitList(availableRooms)
@@ -125,6 +122,5 @@ data class LectureRoom(
     @get:PropertyName("isAvailable") @set:PropertyName("isAvailable")
     var isAvailable: Boolean = false
 ) {
-    // Firebase는 매개변수가 없는 생성자가 필요합니다
     constructor() : this("", "", "", "", 0, emptyList(), false)
 } 

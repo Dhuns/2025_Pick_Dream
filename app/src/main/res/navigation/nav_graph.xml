@@ -89,7 +89,6 @@
         <argument android:name="content" app:argType="string" />
     </fragment>
 
-    <!-- 리뷰 작성 프래그먼트 -->
     <fragment
         android:id="@+id/reviewpageFragment"
         android:name="com.example.pick_dream.ui.reviewpage.ReviewpageFragment"
@@ -104,7 +103,6 @@
             app:popUpToInclusive="true" />
     </fragment>
 
-    <!-- 리뷰 완료 프래그먼트 -->
     <fragment
         android:id="@+id/reviewCompleteFragment"
         android:name="com.example.pick_dream.ui.reviewpage.ReviewpageCompleteFragment"

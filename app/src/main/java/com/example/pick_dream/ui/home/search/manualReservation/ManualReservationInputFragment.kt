@@ -13,7 +13,6 @@ import androidx.navigation.fragment.findNavController
 import androidx.fragment.app.activityViewModels
 import android.text.Editable
 import android.text.TextWatcher
-import androidx.appcompat.app.AlertDialog
 import com.example.pick_dream.model.Reservation
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -95,7 +94,6 @@ class ManualReservationInputFragment : Fragment() {
                 return@setOnClickListener
             }
 
-            // 1. User 컬렉션에서 학번(userID) 조회
             db.collection("User").document(currentUser.uid)
                 .get()
                 .addOnSuccessListener { document ->
@@ -104,7 +102,6 @@ class ManualReservationInputFragment : Fragment() {
                         Toast.makeText(context, "학번 정보를 찾을 수 없습니다.", Toast.LENGTH_SHORT).show()
                         return@addOnSuccessListener
                     }
-                    // 2. 예약 데이터 생성
                     arguments?.let { args ->
                         val roomId = args.getString("roomId") ?: ""
                         val startTimeStr = toKorean12HourString(
@@ -132,7 +129,6 @@ class ManualReservationInputFragment : Fragment() {
                             endTime = endTimeStr,
                             status = "대기"
                         )
-                        // 3. Firestore에 저장
                         db.collection("Reservations")
                             .add(reservation)
                             .addOnSuccessListener {
@@ -141,7 +137,6 @@ class ManualReservationInputFragment : Fragment() {
                                     .setView(dialogView)
                                     .setCancelable(false)
                                     .create()
-                                // 둥근 흰색 배경 적용
                                 val background = android.graphics.drawable.GradientDrawable()
                                 background.setColor(android.graphics.Color.WHITE)
                                 val radius = resources.displayMetrics.density * 16 // 16dp
@@ -171,7 +166,6 @@ class ManualReservationInputFragment : Fragment() {
                 }
         }
 
-        // 이전 화면에서 전달받은 데이터 표시
         arguments?.let { args ->
             val building = args.getString("building") ?: ""
             val roomName = args.getString("roomName") ?: ""
@@ -190,7 +184,6 @@ class ManualReservationInputFragment : Fragment() {
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.VISIBLE
     }
 
-    // 24시간제를 12시간제(오전/오후)로 변환하는 함수 추가
     private fun toKorean12HourString(year: Int, month: Int, day: Int, hour24: Int, minute: Int): String {
         val ampm = if (hour24 < 12) "오전" else "오후"
         val hour12 = when {

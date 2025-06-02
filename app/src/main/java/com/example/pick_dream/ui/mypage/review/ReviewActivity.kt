@@ -19,7 +19,6 @@ class ReviewActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_review)
 
-        // 뒤로가기 버튼 클릭 시 현재 액티비티 종료
         val backButton = findViewById<ImageButton>(R.id.backButton)
         backButton.setOnClickListener {
             finish()
@@ -29,11 +28,9 @@ class ReviewActivity : AppCompatActivity() {
         recyclerView.layoutManager = LinearLayoutManager(this)
         recyclerView.adapter = adapter
 
-//Firebase
         val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
         val db = FirebaseFirestore.getInstance()
 
-// 1. uid로 학번(studentId) 가져오기
         db.collection("User").document(uid).get()
             .addOnSuccessListener { document ->
                 val studentId = document.getString("studentId") ?: return@addOnSuccessListener
@@ -41,7 +38,6 @@ class ReviewActivity : AppCompatActivity() {
                 recyclerView.layoutManager = LinearLayoutManager(this)
                 recyclerView.adapter = adapter
 
-                // 2. 학번으로 후기 불러오기
                 db.collection("Reviews")
                     .whereEqualTo("userID", studentId)  // 🔥 여기서 학번 사용!
                     .get()

@@ -4,7 +4,7 @@ data class Room(
     val capacity: Int = 0,
     val equipment: List<String> = emptyList(),
     val location: String = "",
-    val id: String = "" ,// 강의실 번호(문서ID)
+    val id: String = "" ,
     val name: String = "",
     val buildingName: String = "",
     val buildingDetail: String = "",

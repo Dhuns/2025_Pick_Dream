@@ -12,7 +12,7 @@
         android:id="@+id/imageLogo"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:src="@drawable/logo_main" /> <!-- 이미지 이름 -->
+        android:src="@drawable/logo_main" />
 
 
     <!-- 아이디 입력 -->

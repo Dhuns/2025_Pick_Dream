@@ -7,8 +7,6 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.example.pick_dream.R
-import android.app.Dialog
-import androidx.core.content.ContextCompat
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.style.StyleSpan
@@ -30,18 +28,15 @@ class ReservationDetailBottomSheet : DialogFragment(R.style.FullScreenDialog) {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        
-        // View 초기화
+
         tvInfoAll = view.findViewById(R.id.tv_info_all)
         val ivRoomImage = view.findViewById<ImageView>(R.id.ivRoomImage)
         imageRes = arguments?.getInt(KEY_IMAGE_RES) ?: R.drawable.sample_room
         ivRoomImage.setImageResource(imageRes)
-        // 뒤로가기 버튼 클릭 시 닫기
         view.findViewById<ImageButton>(R.id.btnBack)?.setOnClickListener {
             dismiss()
         }
 
-        // 전달받은 데이터 표시
         arguments?.let { bundle ->
             val infoList = listOf(
                 "강의실" to (bundle.getString(KEY_ROOM) ?: ""),

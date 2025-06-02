@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -33,7 +32,7 @@
             android:textStyle="bold"/>
     </FrameLayout>
 
-    <!-- 대화 내용(채팅 목록) : 스크롤 가능, 입력창 위에 위치 -->
+    <!-- 대화 내용 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
@@ -46,7 +45,7 @@
         android:paddingBottom="12dp"
         android:clipToPadding="false" />
 
-    <!--추천질문들, 가로스크롤-->
+    <!--추천질문들 -->
     <HorizontalScrollView
         android:id="@+id/suggestionScroll"
         android:layout_width="match_parent"
@@ -67,7 +66,7 @@
             android:gravity="center_vertical" />
     </HorizontalScrollView>
 
-    <!-- 입력창(회색 박스, 하단 고정, 버튼 없음) -->
+    <!-- 입력창  -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

@@ -3,5 +3,4 @@
     <solid android:color="@android:color/white"/>
     <corners android:radius="12dp"/>
     <size android:minWidth="120dp"/>
-    <!-- 그림자 효과는 elevation으로 적용, 필요시 outlineProvider 사용 -->
 </shape> 

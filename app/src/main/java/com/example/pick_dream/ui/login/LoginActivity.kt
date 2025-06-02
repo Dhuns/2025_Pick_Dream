@@ -33,18 +33,15 @@ class LoginActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // 더미 이메일 형식으로 변환
-            val dummyEmail = "$id@example.com"
+            val dummyEmail = "${id}@example.com"
 
             auth.signInWithEmailAndPassword(dummyEmail, password)
                 .addOnCompleteListener { task ->
                     if (task.isSuccessful) {
-                        // 로그인 성공
                         val intent = Intent(this, MainActivity::class.java)
                         startActivity(intent)
                         finish()
                     } else {
-                        // 로그인 실패
                         Toast.makeText(
                             this,
                             "로그인 실패: ${task.exception?.message}",

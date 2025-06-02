@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -91,7 +90,7 @@
                 android:layout_marginStart="8dp"
                 android:paddingStart="8dp" />
 
-            <!-- 이용 완료 리스트 (리니어레이아웃으로 동적 추가) -->
+            <!-- 이용 완료 리스트 -->
             <LinearLayout
                 android:id="@+id/layoutHistoryList"
                 android:layout_width="match_parent"
@@ -111,7 +110,7 @@
                 android:textSize="16sp"
                 android:layout_marginTop="32dp"/>
 
-            <!-- 페이지네이션(목차) -->
+            <!-- 페이지네이션 -->
             <LinearLayout
                 android:id="@+id/layoutPagination"
                 android:layout_width="match_parent"
@@ -129,7 +128,6 @@
                     android:contentDescription="이전 페이지"
                     android:padding="2dp"
                     android:background="@android:color/transparent" />
-                <!-- 페이지 번호는 코드에서 동적으로 추가 -->
                 <LinearLayout
                     android:id="@+id/layoutPageNumbers"
                     android:layout_width="wrap_content"
@@ -151,7 +149,7 @@
         </LinearLayout>
     </ScrollView>
 
-    <!-- 오버레이: 강의실 사진 + 뒤로가기 버튼 (진단용, 항상 보이게) -->
+    <!-- 오버레이: 강의실 사진 + 뒤로가기 버튼 -->
     <FrameLayout
         android:id="@+id/overlayRoomPhoto"
         android:layout_width="match_parent"

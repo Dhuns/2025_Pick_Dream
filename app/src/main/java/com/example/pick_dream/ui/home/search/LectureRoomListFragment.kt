@@ -4,20 +4,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
-import com.example.pick_dream.ui.home.search.LectureRoom
-import com.example.pick_dream.ui.home.search.LectureRoomAdapter
-import com.example.pick_dream.ui.home.search.LectureRoomListFragmentDirections
 import android.widget.EditText
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.content.Context
-import androidx.recyclerview.widget.RecyclerView.OnScrollListener
 
 class LectureRoomListFragment : Fragment() {
     private lateinit var adapter: LectureRoomAdapter
@@ -45,15 +40,12 @@ class LectureRoomListFragment : Fragment() {
         val btnFilterOutlet = view.findViewById<View>(R.id.btnFilterOutlet)
         val btnFilterScreen = view.findViewById<View>(R.id.btnFilterScreen)
 
-        // 초기 데이터 설정
         setupAdapter()
 
-        // 검색 동작 구현
         etSearch.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                 currentQuery = etSearch.text.toString().trim()
                 filterAndShow(currentQuery)
-                // 키보드 내리기
                 val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                 imm.hideSoftInputFromWindow(etSearch.windowToken, 0)
                 true
@@ -70,7 +62,6 @@ class LectureRoomListFragment : Fragment() {
         btnSearch.setOnClickListener {
             currentQuery = etSearch.text.toString().trim()
             filterAndShow(currentQuery)
-            // 키보드 내리기
             val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
             imm.hideSoftInputFromWindow(etSearch.windowToken, 0)
         }
@@ -96,7 +87,6 @@ class LectureRoomListFragment : Fragment() {
             filterAndShow(currentQuery)
         }
 
-        // 하단 네비게이션 바 숨기기
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.GONE
     }
 
@@ -118,16 +108,13 @@ class LectureRoomListFragment : Fragment() {
                     )
                 findNavController().navigate(action)
             },
-            onFavoriteChanged = { 
-                // 현재 스크롤 위치 저장
+            onFavoriteChanged = {
                 val layoutManager = recyclerView.layoutManager as LinearLayoutManager
                 val position = layoutManager.findFirstVisibleItemPosition()
                 val offset = recyclerView.getChildAt(0)?.top ?: 0
-                
-                // 리스트 갱신
+
                 filterAndShow(currentQuery)
-                
-                // 스크롤 위치 복원
+
                 layoutManager.scrollToPositionWithOffset(position, offset)
             }
         )
@@ -162,7 +149,6 @@ class LectureRoomListFragment : Fragment() {
 
     override fun onDestroyView() {
         super.onDestroyView()
-        // 프래그먼트가 사라질 때 다시 보이게
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.VISIBLE
     }
 }

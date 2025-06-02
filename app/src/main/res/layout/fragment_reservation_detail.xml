@@ -13,7 +13,7 @@
         android:src="@drawable/sample_room"
         android:background="@android:color/white"/>
 
-    <!-- 뒤로가기 버튼 (이미지 위 좌상단) -->
+    <!-- 뒤로가기 버튼 -->
     <ImageButton
         android:id="@+id/btnBack"
         android:layout_width="40dp"
@@ -28,7 +28,7 @@
         android:tint="#222222"
         android:layout_gravity="start|top"/>
 
-    <!-- 바텀시트(예약 정보) 카드: 이미지 아래에서 둥글게 올라오게 -->
+    <!-- 바텀시트(예약 정보) 카드 -->
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -71,6 +71,7 @@
                 />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
         <!-- 유의사항 타이틀 -->
         <TextView
             android:layout_width="wrap_content"

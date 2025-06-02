@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layer-list xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- 배경 원 (트랙) -->
     <item>
         <shape android:shape="ring"
             android:innerRadiusRatio="3"
@@ -9,7 +8,6 @@
             <solid android:color="#33FFFFFF" />
         </shape>
     </item>
-    <!-- 진행률 원 -->
     <item>
         <rotate
             android:fromDegrees="-90"
