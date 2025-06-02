@@ -25,7 +25,6 @@
         android:layout_gravity="top|center_horizontal"
         android:layout_marginTop="68dp">
 
-        <!-- 여기서는 예시로 3개 -->
         <View android:layout_width="8dp" android:layout_height="8dp"
             android:background="@drawable/dot_selected"
             android:layout_margin="4dp"/>
@@ -37,7 +36,6 @@
             android:layout_margin="4dp"/>
     </LinearLayout>
 
-    <!-- ViewPager2: 전체 화면 이미지를 좌우 넘김 -->
     <androidx.viewpager2.widget.ViewPager2
         android:id="@+id/imagePager"
         android:layout_width="match_parent"

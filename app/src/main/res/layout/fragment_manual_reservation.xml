@@ -98,7 +98,7 @@
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
 
-            <!-- 기존 cardDateSelect와 layoutDateDropdown을 감싸는 부모 레이아웃 추가 -->
+            <!-- 부모 레이아웃 추가 -->
             <androidx.cardview.widget.CardView
                 android:id="@+id/cardDateContainer"
                 android:layout_width="match_parent"
@@ -208,7 +208,7 @@
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- 드롭다운 달력 (처음엔 숨김) -->
+                    <!-- 드롭다운 달력 -->
                     <LinearLayout
                         android:id="@+id/layoutDateDropdown"
                         android:layout_width="match_parent"
@@ -262,7 +262,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <!-- 기존 cardTimeSelect (margin 제거) -->
+                    <!-- 기존 cardTimeSelect -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardTimeSelect"
                         android:layout_width="match_parent"
@@ -306,7 +306,7 @@
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- 기존 layoutTimeDropdown (margin, elevation, background 제거) -->
+                    <!-- 기존 layoutTimeDropdown -->
                     <HorizontalScrollView
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
@@ -425,7 +425,7 @@
                     android:layout_height="wrap_content"
                     android:orientation="vertical">
 
-                    <!-- 기존 cardEquipmentSelect (margin 제거) -->
+                    <!-- 기존 cardEquipmentSelect -->
                     <com.google.android.material.card.MaterialCardView
                         android:id="@+id/cardEquipmentSelect"
                         android:layout_width="match_parent"
@@ -469,7 +469,7 @@
                         </LinearLayout>
                     </com.google.android.material.card.MaterialCardView>
 
-                    <!-- 기존 layoutEquipmentDropdown (margin, elevation, background 제거) -->
+                    <!-- 기존 layoutEquipmentDropdown -->
                     <LinearLayout
                         android:id="@+id/layoutEquipmentDropdown"
                         android:layout_width="match_parent"
@@ -485,7 +485,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:orientation="vertical">
-                            <!-- 체크박스 리스트 동적 추가 -->
                         </LinearLayout>
 
                         <LinearLayout

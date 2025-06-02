@@ -2,7 +2,6 @@ package com.example.pick_dream.ui.home.search
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.toObject
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -24,11 +23,9 @@ object LectureRoomRepository {
             .addOnSuccessListener { result ->
                 val roomList = result.mapNotNull { it.toObject<LectureRoom>() }
                 _roomsLiveData.value = roomList
-                // 찜 목록도 함께 불러오기
                 fetchWishlists()
             }
             .addOnFailureListener { exception ->
-                // 로깅 또는 기본값 처리
             }
     }
 
@@ -41,17 +38,14 @@ object LectureRoomRepository {
             .addOnSuccessListener { result ->
                 val wishlistIds = result.documents.map { it.id }
                 _wishlistsLiveData.value = wishlistIds
-                // 찜 상태 업데이트
                 updateFavoriteStatus(wishlistIds)
             }
             .addOnFailureListener { exception ->
-                // 로깅 또는 기본값 처리
             }
     }
 
     private fun updateFavoriteStatus(wishlistIds: List<String>) {
         _roomsLiveData.value = _roomsLiveData.value?.map { room ->
-            // 강의실 번호만 추출하여 비교
             val roomNumber = room.name.replace(Regex("[^0-9]"), "")
             room.copy(isFavorite = wishlistIds.contains(roomNumber))
         }
@@ -60,18 +54,15 @@ object LectureRoomRepository {
     fun toggleFavorite(name: String) {
         val userId = auth.currentUser?.uid ?: return
         val userWishlistRef = db.collection("User").document(userId).collection("wishlists")
-        
-        // 강의실 번호만 추출
+
         val roomNumber = name.replace(Regex("[^0-9]"), "")
         
         if (_wishlistsLiveData.value?.contains(roomNumber) == true) {
-            // 찜 제거
             userWishlistRef.document(roomNumber).delete()
                 .addOnSuccessListener {
                     fetchWishlists()
                 }
         } else {
-            // 찜 추가 - 숫자만 저장
             userWishlistRef.document(roomNumber)
                 .set(mapOf("timestamp" to com.google.firebase.Timestamp.now()))
                 .addOnSuccessListener {

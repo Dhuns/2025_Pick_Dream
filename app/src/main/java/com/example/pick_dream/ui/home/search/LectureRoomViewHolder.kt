@@ -6,7 +6,6 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
-import com.example.pick_dream.ui.home.search.LectureRoom
 
 class LectureRoomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
     private val ivRoomImage: ImageView = itemView.findViewById(R.id.ivRoomImage)

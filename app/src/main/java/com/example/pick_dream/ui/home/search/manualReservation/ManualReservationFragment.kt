@@ -13,14 +13,12 @@ import com.prolificinteractive.materialcalendarview.MaterialCalendarView
 import com.prolificinteractive.materialcalendarview.CalendarDay
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import android.widget.Toast
 
 class ManualReservationFragment : Fragment() {
     private val reservationViewModel: ManualReservationViewModel by activityViewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        // 완전히 새로 진입한 경우 ViewModel 값 초기화
         if (arguments == null || savedInstanceState == null) {
             reservationViewModel.selectedDay = null
             reservationViewModel.startHour = null
@@ -71,7 +69,6 @@ class ManualReservationFragment : Fragment() {
         val tvMonthSelect = view.findViewById<TextView>(R.id.tvMonthSelect)
         val layoutDateHeader = view.findViewById<View>(R.id.layoutDateHeader)
 
-        // 버튼 상태 업데이트 함수
         fun updateButtonState() {
             val isDateSelected = tvDateSelectTitle.text != "날짜 선택"
             val isTimeSelected = tvTimeSelect.text != "시간 선택"
@@ -92,7 +89,6 @@ class ManualReservationFragment : Fragment() {
             btnNext.elevation = 0f
         }
 
-        // 시간 선택 시 버튼 상태 업데이트
         fun updateTimeText() {
             val sh = spinnerStartHour.selectedItem as Int
             val sm = spinnerStartMinute.selectedItem as Int
@@ -119,10 +115,8 @@ class ManualReservationFragment : Fragment() {
             updateButtonState()
         }
 
-        // 예시: arguments로 강의실 정보 전달받아 표시
         val building = arguments?.getString("building") ?: ""
         val roomName = arguments?.getString("roomName") ?: ""
-        // roomName에서 숫자만 추출해 roomId로 사용
         val roomId = Regex("\\d+").find(roomName)?.value ?: ""
         tvBuilding.text = building
         tvRoomName.text = roomName
@@ -131,14 +125,12 @@ class ManualReservationFragment : Fragment() {
             val bundle = Bundle().apply {
                 putString("building", building)
                 putString("roomName", roomName)
-                putString("roomId", roomId) // 추출한 roomId 사용
-                // 날짜 정보
+                putString("roomId", roomId)
                 selectedDay?.let {
                     putInt("selectedYear", it.year)
                     putInt("selectedMonth", it.month)
                     putInt("selectedDay", it.day)
                 }
-                // 시간 정보
                 putInt("startHour", spinnerStartHour.selectedItem as Int)
                 putInt("startMinute", spinnerStartMinute.selectedItem as Int)
                 putInt("endHour", spinnerEndHour.selectedItem as Int)
@@ -151,7 +143,6 @@ class ManualReservationFragment : Fragment() {
             findNavController().popBackStack()
         }
 
-        // 오늘 날짜 구하기
         val today = java.util.Calendar.getInstance()
         val yesterday = java.util.Calendar.getInstance().apply { add(java.util.Calendar.DATE, -1) }
         val todayCalendarDay = CalendarDay.from(today)
@@ -160,14 +151,11 @@ class ManualReservationFragment : Fragment() {
         if (yearIndex >= 0) spinnerYear.setSelection(yearIndex, false)
         calendarView.selectedDate = todayCalendarDay
         calendarView.setCurrentDate(todayCalendarDay)
-        // minDate를 2025년 1월 1일로 설정 (과거 날짜도 달력에 표시)
         calendarView.state().edit()
-            .setMinimumDate(CalendarDay.from(2025, 0, 1)) // 0: 1월
+            .setMinimumDate(CalendarDay.from(2025, 0, 1))
             .commit()
-        // 과거 날짜는 neutral_300 색상 + 비활성화
         calendarView.addDecorator(PastDayDecorator(requireContext()))
 
-        // ViewModel 값으로 초기화
         reservationViewModel.selectedDay?.let {
             selectedDay = it
             calendarView.selectedDate = it
@@ -184,7 +172,6 @@ class ManualReservationFragment : Fragment() {
         reservationViewModel.endHour?.let { spinnerEndHour.setSelection((9..21).indexOf(it)) }
         reservationViewModel.endMinute?.let { spinnerEndMinute.setSelection(listOf(0,10,20,30,40,50).indexOf(it)) }
 
-        // 오늘 날짜로 상단 연/월 텍스트 초기화
         tvYearSelect.text = "${today.get(java.util.Calendar.YEAR)}년"
         tvMonthSelect.text = "${today.get(java.util.Calendar.MONTH) + 1}월"
 
@@ -207,7 +194,6 @@ class ManualReservationFragment : Fragment() {
                 calendarView.setCurrentDate(CalendarDay.from(year, monthIndex, 1))
             }
         }
-        // Spinner 선택 시 텍스트 갱신 및 달력 이동
         spinnerYear.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
                 tvYearSelect.text = "${(2020..2030).toList()[position]}년"
@@ -215,13 +201,8 @@ class ManualReservationFragment : Fragment() {
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
         }
-        // 달력에서 날짜 선택 시 콜백
         selectedDay = calendarView.selectedDate
-        calendarView.addDecorator(SundayDecorator(requireContext()) { selectedDay })
-        calendarView.addDecorator(SaturdayDecorator(requireContext()) { selectedDay })
-        val selectedDayDecorator = SelectedDayDecorator(requireContext()) { selectedDay }
-        calendarView.addDecorator(selectedDayDecorator)
-        calendarView.addDecorator(PastDayDecorator(requireContext()))
+        setupCalendarDecorators(calendarView) { selectedDay }
         calendarView.setOnDateChangedListener { _, date, _ ->
             selectedDay = date
             reservationViewModel.selectedDay = date
@@ -254,7 +235,6 @@ class ManualReservationFragment : Fragment() {
             layoutDateHeader.visibility = if (isOpen) View.VISIBLE else View.GONE
         }
 
-        // 시간 선택 드롭다운 토글 및 세팅
         val hours = (9..21).toList()
         val minutes = listOf(0, 10, 20, 30, 40, 50)
         spinnerStartHour.adapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, hours)
@@ -262,10 +242,8 @@ class ManualReservationFragment : Fragment() {
         spinnerStartMinute.adapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, minutes)
         spinnerEndMinute.adapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, minutes)
 
-        // 초기 버튼 상태 설정
         updateButtonState()
 
-        // 시작 시간 또는 시작 분 선택 시 종료 시간/분 동적 제한
         fun updateEndTimeSpinners() {
             val startHour = spinnerStartHour.selectedItem as Int
             val startMinute = spinnerStartMinute.selectedItem as Int
@@ -273,7 +251,6 @@ class ManualReservationFragment : Fragment() {
             val maxEndTotal = minOf(startTotal + 6 * 60, 21 * 60 + 30)
             val minutes = listOf(0, 10, 20, 30, 40, 50)
 
-            // 종료 시간 후보 시/분 리스트 생성
             val endTimes = mutableListOf<Pair<Int, Int>>()
             for (h in hours) {
                 for (m in minutes) {
@@ -286,17 +263,14 @@ class ManualReservationFragment : Fragment() {
             val endHours = endTimes.map { it.first }.distinct()
             val endMinutesMap = endHours.associateWith { h -> endTimes.filter { it.first == h }.map { it.second } }
 
-            // 현재 종료 시/분 값 저장
             val prevEndHour = spinnerEndHour.selectedItem as? Int ?: endHours.firstOrNull() ?: hours.first()
             val prevEndMinute = spinnerEndMinute.selectedItem as? Int ?: 0
 
-            // 종료 시 어댑터 갱신
             val endHourAdapter = android.widget.ArrayAdapter(requireContext(), android.R.layout.simple_spinner_dropdown_item, endHours)
             spinnerEndHour.adapter = endHourAdapter
             val endHourIndex = endHours.indexOf(prevEndHour).takeIf { it >= 0 } ?: 0
             spinnerEndHour.setSelection(endHourIndex)
 
-            // 종료 분 어댑터 갱신 (종료 시 선택 후에 동기화)
             spinnerEndHour.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
                 override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
                     val selectedEndHour = endHours[position]
@@ -311,7 +285,6 @@ class ManualReservationFragment : Fragment() {
             }
         }
 
-        // 시작 시/분 선택 시 종료 시/분 동적 제한
         spinnerStartHour.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
                 updateEndTimeSpinners()
@@ -325,13 +298,10 @@ class ManualReservationFragment : Fragment() {
             override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
         }
 
-        // 최초 진입 시에도 동적 제한 적용
         updateEndTimeSpinners()
 
-        // 종료 시/분 선택 시 시간 텍스트 갱신
         spinnerEndHour.onItemSelectedListener = object : android.widget.AdapterView.OnItemSelectedListener {
             override fun onItemSelected(parent: android.widget.AdapterView<*>, view: View?, position: Int, id: Long) {
-                // 분 어댑터는 updateEndTimeSpinners에서 이미 갱신됨
                 updateTimeText()
             }
             override fun onNothingSelected(parent: android.widget.AdapterView<*>) {}
@@ -353,7 +323,6 @@ class ManualReservationFragment : Fragment() {
             imgArrowEquipment.rotation = 0f
         }
 
-        // 기자재 선택 드롭다운 토글 및 세팅
         val equipmentList = listOf("마이크", "빔 프로젝터", "전자칠판", "스크린", "포인터")
         val checkBoxList = mutableListOf<android.widget.CheckBox>()
         var isProgrammaticChange = false
@@ -391,7 +360,6 @@ class ManualReservationFragment : Fragment() {
                 isProgrammaticChange = true
                 checkboxSelectAll.isChecked = checkBoxList.all { it.isChecked }
                 isProgrammaticChange = false
-                // ViewModel에 저장
                 reservationViewModel.selectedEquipments = selected
             }
             row.addView(tv)
@@ -399,7 +367,6 @@ class ManualReservationFragment : Fragment() {
             layoutEquipmentList.addView(row)
             checkBoxList.add(cb)
         }
-        // ViewModel 값으로 체크박스 상태 복원
         if (reservationViewModel.selectedEquipments.isNotEmpty()) {
             isProgrammaticChange = true
             equipmentList.forEachIndexed { idx, item ->
@@ -410,7 +377,6 @@ class ManualReservationFragment : Fragment() {
             tvEquipmentSelect.text = if (selected.isEmpty()) "사용할 기자재 선택" else selected.joinToString(", ")
             checkboxSelectAll.isChecked = checkBoxList.all { it.isChecked }
         }
-        // 전체 선택 체크박스에도 동일한 스타일 적용
         checkboxSelectAll.apply {
             buttonTintList = ContextCompat.getColorStateList(requireContext(), R.color.checkbox_equipment)
             background = null
@@ -422,7 +388,6 @@ class ManualReservationFragment : Fragment() {
             isProgrammaticChange = false
             val selected = equipmentList.filterIndexed { idx, _ -> checkBoxList[idx].isChecked }
             tvEquipmentSelect.text = if (selected.isEmpty()) "사용할 기자재 선택" else selected.joinToString(", ")
-            // ViewModel에 저장
             reservationViewModel.selectedEquipments = selected
         }
         cardEquipmentSelect.setOnClickListener {
@@ -435,10 +400,8 @@ class ManualReservationFragment : Fragment() {
             imgArrowTime.rotation = 0f
         }
 
-        // MaterialCalendarView 커스텀 데코레이터 적용
         calendarView.setSelectionColor(ContextCompat.getColor(requireContext(), R.color.primary_500))
 
-        // 요일별 색상 커스텀 WeekDayFormatter 적용
         calendarView.setWeekDayFormatter { dayOfWeek ->
             val text = when (dayOfWeek) {
                 java.util.Calendar.SUNDAY -> "일"
@@ -461,13 +424,11 @@ class ManualReservationFragment : Fragment() {
             }
         }
 
-        // MaterialCalendarView 상단 타이틀 바 숨기기
         calendarView.post {
             val titleLayout = calendarView.getChildAt(0)
             titleLayout?.visibility = View.GONE
         }
 
-        // 달력의 월이 바뀔 때 상단 연/월 텍스트 동기화
         calendarView.setOnMonthChangedListener { _, date ->
             tvYearSelect.text = "${date.year}년"
             tvMonthSelect.text = "${date.month + 1}월"
@@ -481,13 +442,10 @@ class ManualReservationFragment : Fragment() {
             popup.menu.add(0, idx, idx, month)
         }
         popup.setOnMenuItemClickListener { item ->
-            val monthIndex = item.itemId // 0부터 시작
-            // anchor가 TextView일 때만 텍스트 갱신
+            val monthIndex = item.itemId
             if (anchor is TextView) {
                 anchor.text = months[monthIndex]
             }
-            // 달력 월 이동 등 동기화 코드 추가
-            // ... 필요시 추가 ...
             true
         }
         popup.show()
@@ -501,5 +459,12 @@ class ManualReservationFragment : Fragment() {
     override fun onPause() {
         super.onPause()
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.VISIBLE
+    }
+
+    private fun setupCalendarDecorators(calendarView: MaterialCalendarView, getSelectedDay: () -> CalendarDay?) {
+        calendarView.addDecorator(SundayDecorator(requireContext(), getSelectedDay))
+        calendarView.addDecorator(SaturdayDecorator(requireContext(), getSelectedDay))
+        calendarView.addDecorator(SelectedDayDecorator(requireContext(), getSelectedDay))
+        calendarView.addDecorator(PastDayDecorator(requireContext()))
     }
 } 

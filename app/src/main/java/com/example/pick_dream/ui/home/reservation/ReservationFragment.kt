@@ -16,11 +16,9 @@ import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
 import com.example.pick_dream.databinding.FragmentReservationBinding
-import com.example.pick_dream.databinding.ItemReservationCurrentBinding
 import com.example.pick_dream.databinding.ItemReservationHistoryBinding
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
@@ -50,12 +48,10 @@ class ReservationFragment : Fragment() {
         view.findViewById<ImageButton>(R.id.btnBack)?.setOnClickListener {
             requireActivity().onBackPressed()
         }
-        // Firestore 데이터 오기 전에는 전체 내용 GONE, ProgressBar만 VISIBLE
         binding.progressBar.visibility = View.VISIBLE
         binding.root.findViewById<View>(R.id.scrollViewReservation)?.visibility = View.GONE
         binding.root.findViewById<LinearLayout>(R.id.layoutHistoryList)?.visibility = View.GONE
         binding.root.findViewById<TextView>(R.id.tvEmptyState)?.visibility = View.GONE
-        // Firestore 연동: 로그인된 사용자 UID로 User 컬렉션에서 학번(userID) 조회 후 Reservations 쿼리
         val db = FirebaseFirestore.getInstance()
         val firebaseUser = FirebaseAuth.getInstance().currentUser
         if (firebaseUser != null) {
@@ -111,7 +107,6 @@ class ReservationFragment : Fragment() {
             binding.root.findViewById<View>(R.id.scrollViewReservation)?.visibility = View.VISIBLE
             showError("로그인된 사용자가 없습니다.")
         }
-        // 오버레이 관련 뷰 바인딩
         val overlayRoomPhoto = view.findViewById<android.widget.FrameLayout>(R.id.overlayRoomPhoto)
         val btnOverlayBack = view.findViewById<ImageButton>(R.id.btnOverlayBack)
         btnOverlayBack?.setOnClickListener {
@@ -214,7 +209,6 @@ class ReservationFragment : Fragment() {
             val dialog = AlertDialog.Builder(requireContext())
                 .setView(dialogView)
                 .create()
-            // 둥근 흰색 배경 적용 및 다이얼로그 너비 확실히 줄이기
             val background = android.graphics.drawable.GradientDrawable()
             background.setColor(android.graphics.Color.WHITE)
             val radius = resources.displayMetrics.density * 16 // 16dp
@@ -226,7 +220,6 @@ class ReservationFragment : Fragment() {
             }
             dialogView.findViewById<TextView>(R.id.btnDialogYes)?.setOnClickListener {
                 dialog.dismiss()
-                // Firestore 예약 취소(삭제) 로직 추가
                 val db = FirebaseFirestore.getInstance()
                 db.collection("Reservations")
                     .whereEqualTo("userID", userId)
@@ -244,7 +237,6 @@ class ReservationFragment : Fragment() {
                 val doneDialog = AlertDialog.Builder(requireContext())
                     .setView(doneView)
                     .create()
-                // 둥근 흰색 배경 적용 (완료 다이얼로그)
                 val doneBackground = android.graphics.drawable.GradientDrawable()
                 doneBackground.setColor(android.graphics.Color.WHITE)
                 doneBackground.cornerRadius = radius
@@ -264,9 +256,7 @@ class ReservationFragment : Fragment() {
             dialog.show()
         }
         btnConfirm?.setOnClickListener {
-            // 주요 시설
             val facilities = currentReservation.equipment.joinToString(", ")
-            // 예약자 정보 (이름+학번)
             val reserver = if (userName.isNotBlank() && userId.isNotBlank()) "$userName ($userId)" else userName
             val bottomSheet = ReservationDetailBottomSheet.newInstance(
                 room = "$building ${room}",
@@ -340,7 +330,6 @@ class ReservationFragment : Fragment() {
 
         val showArrows = totalPages > maxPageButtons
 
-        // < 버튼 (5페이지 초과일 때만)
         if (showArrows && startPage > 1) {
             val prevBtn = TextView(requireContext())
             prevBtn.text = "<"
@@ -354,7 +343,6 @@ class ReservationFragment : Fragment() {
             layoutPageNumbers?.addView(prevBtn)
         }
 
-        // 페이지 번호 버튼 + 현재 페이지 ● 표시
         for (i in startPage..endPage) {
             val tv = TextView(requireContext())
             tv.text = i.toString()
@@ -370,7 +358,6 @@ class ReservationFragment : Fragment() {
             layoutPageNumbers?.addView(tv)
         }
 
-        // > 버튼 (5페이지 초과일 때만)
         if (showArrows && endPage < totalPages) {
             val nextBtn = TextView(requireContext())
             nextBtn.text = ">"
@@ -400,14 +387,12 @@ class ReservationFragment : Fragment() {
         _binding = null
     }
 
-    // 데이터가 없을 때 안내 문구 표시 함수 추가
     private fun showEmptyState(show: Boolean) {
         if (_binding == null) return
         val emptyView = binding.root.findViewById<TextView>(R.id.tvEmptyState)
         emptyView?.visibility = if (show) View.VISIBLE else View.GONE
     }
 
-    // 에러 안내 함수 추가
     private fun showError(msg: String) {
         if (_binding == null) return
         Toast.makeText(context, msg, Toast.LENGTH_SHORT).show()

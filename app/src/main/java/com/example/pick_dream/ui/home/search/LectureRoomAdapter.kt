@@ -6,22 +6,20 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
-import com.google.firebase.firestore.PropertyName
 import androidx.recyclerview.widget.DiffUtil
 
 data class LectureRoom(
-    val id: String = "",  // 문서 ID
-    val name: String = "", // 강의실 번호 (예: 5104)
-    val buildingName: String = "", // 건물명 (예: 덕문관)
-    val buildingDetail: String = "", // 건물 상세 (예: 5강의동)
-    val location: String = "", // 위치 (예: 1층)
-    val equipment: List<String> = listOf(), // 기자재 목록
-    val capacity: Int = 0, // 수용 인원
-    var isFavorite: Boolean = false, // 즐겨찾기 여부
-    val isAvailable: Boolean = true // 대여 가능 여부
+    val id: String = "",
+    val name: String = "",
+    val buildingName: String = "",
+    val buildingDetail: String = "",
+    val location: String = "",
+    val equipment: List<String> = listOf(),
+    val capacity: Int = 0,
+    var isFavorite: Boolean = false,
+    val isAvailable: Boolean = true
 )
 
-// 섹션 헤더와 강의실 아이템을 구분하는 sealed class
 sealed class SectionedItem {
     data class Header(val buildingName: String, val buildingDetail: String) : SectionedItem()
     data class Room(val room: LectureRoom) : SectionedItem()
@@ -66,7 +64,6 @@ class LectureRoomAdapter(
             )
             btnFavorite.setOnClickListener {
                 LectureRoomRepository.toggleFavorite(item.name)
-                // 해당 아이템만 업데이트
                 notifyItemChanged(adapterPosition)
                 onFavoriteChanged?.invoke()
             }

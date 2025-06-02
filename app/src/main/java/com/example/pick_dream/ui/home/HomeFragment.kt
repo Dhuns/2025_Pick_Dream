@@ -5,20 +5,12 @@ import android.os.Handler
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.LinearLayout
-import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
-import androidx.navigation.NavOptions
 import com.example.pick_dream.R
 import com.example.pick_dream.databinding.FragmentHomeBinding
-import com.example.pick_dream.ui.home.reservation.ReservationFragment
-import com.example.pick_dream.ui.home.notice.NoticeFragment
-import android.content.Context
-import android.util.Log
 import com.example.pick_dream.model.Reservation
-import com.example.pick_dream.ui.home.llm.LlmFragment
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -32,7 +24,6 @@ class HomeFragment : Fragment() {
     private var _binding: FragmentHomeBinding? = null
     private val binding get() = _binding!!
 
-    // handler와 timeUpdateRunnable을 선언과 동시에 초기화
     private val handler = Handler()
     private var endMillis: Long = 0L
 
@@ -50,7 +41,6 @@ class HomeFragment : Fragment() {
                     "남은 시간: ${minutes}분 ${seconds}초"
                 }
 
-                // 진행률 업데이트
                 val startMillis = binding.root.getTag(R.id.tag_start_millis)?.toString()?.toLongOrNull() ?: 0L // loadMyReservation에서 저장한 값 가져오기
                 if (startMillis > 0 && endMillis > startMillis) {
                     val totalDuration = endMillis - startMillis
@@ -92,7 +82,6 @@ class HomeFragment : Fragment() {
 
 
     private fun initViews() {
-        // 필요 시 여기에서 초기 설정 가능
     }
 
     private fun setupClickListeners() {
@@ -101,10 +90,6 @@ class HomeFragment : Fragment() {
                 onButtonClick(it)
             }
         }
-        // 공지사항 전체보기 버튼 클릭 시 NoticeFragment로 이동 (Navigation Component 사용)
-//        binding.btnNotice.setOnClickListener {
-//            findNavController().navigate(R.id.noticeFragment)
-//        }
     }
 
     private fun onButtonClick(view: View) {
@@ -120,11 +105,9 @@ class HomeFragment : Fragment() {
 
         when (view.id) {
             R.id.btn_llm -> {
-                // LLM Fragment로 이동
                 findNavController().navigate(R.id.action_homeFragment_to_llmFragment)
             }
             R.id.btn_search -> {
-                // 검색/대여 강의실 조회 페이지로 이동
                 findNavController().navigate(R.id.action_homeFragment_to_lectureRoomListFragment)
             }
             R.id.btn_inquiry -> {
@@ -132,12 +115,10 @@ class HomeFragment : Fragment() {
             }
             R.id.btn_map -> {
                 findNavController().navigate(R.id.action_homeFragment_to_mapsFragment)
-                // 지도 기능 실행
             }
         }
     }
 
-    // 현재 예약 정보 불러오기
     private fun loadMyReservation() {
         val db = FirebaseFirestore.getInstance()
         val currentUid = FirebaseAuth.getInstance().currentUser?.uid ?: return
@@ -167,14 +148,7 @@ class HomeFragment : Fragment() {
                                 return@addOnSuccessListener
                             }
                             if (result.isEmpty) {
-                                _binding?.tvReservationRoom?.text = ""
-                                _binding?.tvReservationTime?.text = ""
-                                _binding?.tvRemainingTime?.text = "예약 내역이 없습니다."
-                                // 예약 없을 시 진행률 UI 초기화
-                                _binding?.ivRoomBackground?.setImageResource(R.color.default_reservation_bg_color) // 기본 배경색 또는 이미지
-                                _binding?.pbReservationProgress?.progress = 0
-                                _binding?.tvProgressPercentage?.text = "0%"
-                                handler.removeCallbacks(timeUpdateRunnable)
+                                resetReservationInfo()
                                 return@addOnSuccessListener
                             }
 
@@ -184,7 +158,6 @@ class HomeFragment : Fragment() {
                             val startTimeRaw = doc.getString("startTime") ?: ""
                             val endTimeRaw = doc.getString("endTime") ?: ""
 
-                            // " UTC+9" 문자열 제거
                             val cleanedStartTime = startTimeRaw.replace(" UTC+9", "")
                             val cleanedEndTime = endTimeRaw.replace(" UTC+9", "")
 
@@ -202,7 +175,6 @@ class HomeFragment : Fragment() {
                             val startMillis = startDate?.time ?: 0L
                             endMillis = endDate?.time ?: 0L
 
-                            // 진행률 계산 및 UI 업데이트를 위한 시작 시간 저장
                             binding.root.setTag(R.id.tag_start_millis, startMillis)
 
                             val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
@@ -223,11 +195,9 @@ class HomeFragment : Fragment() {
                                 nowMillis in startMillis until endMillis -> {
                                     _binding?.tvReservationRoom?.text = "예약 장소 : $roomID"
                                     _binding?.tvReservationTime?.text = "대여 시간 : $startStr - $endStr"
-                                    
-                                    // 진행률 계산
+
                                     val totalDuration = endMillis - startMillis
                                     val elapsedTime = nowMillis - startMillis
-                                    // elapsedTime이 0보다 작을 경우(시계 문제 등) 0으로 처리하여 음수 % 방지
                                     val currentElapsedTime = if (elapsedTime < 0) 0 else elapsedTime
                                     val progressPercentage = if (totalDuration > 0) (currentElapsedTime * 100 / totalDuration).toInt() else 0
                                     val displayProgress = progressPercentage.coerceIn(0, 100)
@@ -240,14 +210,7 @@ class HomeFragment : Fragment() {
                                     handler.post(timeUpdateRunnable)
                                 }
                                 else -> {
-                                    _binding?.tvReservationRoom?.text = ""
-                                    _binding?.tvReservationTime?.text = ""
-                                    _binding?.tvRemainingTime?.text = "예약 내역이 없습니다"
-                                    // 예약 시간 아닐 시 진행률 UI 초기화
-                                    _binding?.ivRoomBackground?.setImageResource(R.color.default_reservation_bg_color) // 기본 배경색 또는 이미지
-                                    _binding?.pbReservationProgress?.progress = 0
-                                    _binding?.tvProgressPercentage?.text = "0%"
-                                    handler.removeCallbacks(timeUpdateRunnable)
+                                    resetReservationInfo()
                                 }
                             }
                         }
@@ -255,41 +218,20 @@ class HomeFragment : Fragment() {
                             if (_binding == null) {
                                 return@addOnFailureListener
                             }
-                            _binding?.tvReservationRoom?.text = "예약 정보를 불러오지 못했습니다."
-                            _binding?.tvReservationTime?.text = ""
-                            _binding?.tvRemainingTime?.text = ""
-                            // 실패 시 진행률 UI 초기화
-                            _binding?.ivRoomBackground?.setImageResource(R.color.default_reservation_bg_color) // 기본 배경색 또는 이미지
-                            _binding?.pbReservationProgress?.progress = 0
-                            _binding?.tvProgressPercentage?.text = "0%"
-                            handler.removeCallbacks(timeUpdateRunnable)
+                            resetReservationInfo("예약 정보를 불러오지 못했습니다.")
                         }
                 } else {
                     if (_binding == null) {
                         return@addOnSuccessListener
                     }
-                    _binding?.tvReservationRoom?.text = "학번 정보가 없습니다."
-                    _binding?.tvReservationTime?.text = ""
-                    _binding?.tvRemainingTime?.text = ""
-                    // 실패 시 진행률 UI 초기화
-                    _binding?.ivRoomBackground?.setImageResource(R.color.default_reservation_bg_color) // 기본 배경색 또는 이미지
-                    _binding?.pbReservationProgress?.progress = 0
-                    _binding?.tvProgressPercentage?.text = "0%"
-                    handler.removeCallbacks(timeUpdateRunnable)
+                    resetReservationInfo("학번 정보가 없습니다.")
                 }
             }
             .addOnFailureListener { e ->
                 if (_binding == null) {
                     return@addOnFailureListener
                 }
-                _binding?.tvReservationRoom?.text = "사용자 정보를 불러오지 못했습니다."
-                _binding?.tvReservationTime?.text = ""
-                _binding?.tvRemainingTime?.text = ""
-                // 실패 시 진행률 UI 초기화
-                _binding?.ivRoomBackground?.setImageResource(R.color.default_reservation_bg_color) // 기본 배경색 또는 이미지
-                _binding?.pbReservationProgress?.progress = 0
-                _binding?.tvProgressPercentage?.text = "0%"
-                handler.removeCallbacks(timeUpdateRunnable)
+                resetReservationInfo("사용자 정보를 불러오지 못했습니다.")
             }
     }
     
@@ -306,5 +248,15 @@ class HomeFragment : Fragment() {
         if (navView?.selectedItemId != R.id.navigation_home) {
             navView?.selectedItemId = R.id.navigation_home
         }
+    }
+
+    private fun resetReservationInfo(message: String = "예약 내역이 없습니다.") {
+        _binding?.tvReservationRoom?.text = ""
+        _binding?.tvReservationTime?.text = ""
+        _binding?.tvRemainingTime?.text = message
+        _binding?.ivRoomBackground?.setImageResource(R.color.default_reservation_bg_color)
+        _binding?.pbReservationProgress?.progress = 0
+        _binding?.tvProgressPercentage?.text = "0%"
+        handler.removeCallbacks(timeUpdateRunnable)
     }
 }

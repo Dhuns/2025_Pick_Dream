@@ -24,7 +24,6 @@
             android:textStyle="bold" />
     </RelativeLayout>
 
-    <!-- RecyclerView만 남긴다 -->
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFavoriteRooms"
         android:layout_width="match_parent"

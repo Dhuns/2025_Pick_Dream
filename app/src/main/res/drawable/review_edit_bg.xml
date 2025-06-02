@@ -1,5 +1,4 @@
-<!-- res/drawable/review_edit_bg.xml -->
 <shape xmlns:android="http://schemas.android.com/apk/res/android">
-    <solid android:color="#F2F2F2"/> <!-- 연한 회색 배경 -->
-    <corners android:radius="12dp"/> <!-- 모서리 둥글게 -->
+    <solid android:color="#F2F2F2"/>
+    <corners android:radius="12dp"/>
 </shape>

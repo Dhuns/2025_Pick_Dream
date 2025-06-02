@@ -7,8 +7,6 @@ import android.widget.ImageView
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SwitchCompat
-import androidx.core.view.ViewCompat
-import androidx.core.view.WindowInsetsCompat
 import com.example.pick_dream.R
 
 class SettingActivity : AppCompatActivity() {
@@ -26,11 +24,8 @@ class SettingActivity : AppCompatActivity() {
         enableEdgeToEdge()
         setContentView(R.layout.activity_setting)
 
-        // 뷰 초기화
         initializeViews()
-        // 이벤트 리스너 설정
         setupListeners()
-        // 초기 상태 설정
         setupInitialState()
 
     }
@@ -47,28 +42,22 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
-        // 뒤로가기 버튼
         backButton.setOnClickListener {
             finish()
         }
 
-        // 스위치 리스너
         switch1.setOnCheckedChangeListener { _, isChecked ->
-            // 스위치1 상태 변경 처리
             saveSwitchState("switch1", isChecked)
         }
 
         switch2.setOnCheckedChangeListener { _, isChecked ->
-            // 스위치2 상태 변경 처리
             saveSwitchState("switch2", isChecked)
         }
 
         switch3.setOnCheckedChangeListener { _, isChecked ->
-            // 스위치3 상태 변경 처리
             saveSwitchState("switch3", isChecked)
         }
 
-        // 언어 선택 리스너
         findViewById<View>(R.id.langKorean).setOnClickListener {
             setLanguage("ko")
         }
@@ -87,12 +76,10 @@ class SettingActivity : AppCompatActivity() {
     }
 
     private fun setupInitialState() {
-        // 저장된 스위치 상태 불러오기
         switch1.isChecked = getSwitchState("switch1")
         switch2.isChecked = getSwitchState("switch2")
         switch3.isChecked = getSwitchState("switch3")
 
-        // 저장된 언어 설정 불러오기
         val currentLang = getCurrentLanguage()
         setLanguage(currentLang)
     }

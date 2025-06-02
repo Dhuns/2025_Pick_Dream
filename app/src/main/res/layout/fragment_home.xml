@@ -85,7 +85,6 @@
                     android:layout_marginStart="5dp"/>
             </LinearLayout>
 
-            <!-- Spacer: 위에 빈 공간 추가 -->
             <View
                 android:layout_width="match_parent"
                 android:layout_height="35dp"
@@ -144,7 +143,7 @@
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="#80000000" /> <!-- 50% 투명도의 검은색 -->
+                        android:background="#80000000" />
 
                     <!-- 56% 원형 프로그레스 -->
                     <ProgressBar
@@ -213,7 +212,7 @@
                 android:layout_height="20dp"
                 android:layout_weight="1" />
 
-            <!-- 기능 버튼들: 2x2 GridLayout -->
+            <!-- 기능 버튼들 -->
             <GridLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:background="#FFF">
 
-    <!-- 상단 강의실 이미지 (라운드 처리) -->
+    <!-- 상단 강의실 이미지 -->
     <ImageView
         android:id="@+id/ivLectureRoom"
         android:layout_width="match_parent"
@@ -48,7 +48,7 @@
         android:clipToOutline="false"
         android:layout_marginTop="-32dp">
 
-        <!-- 강의실명 + 하트(찜하기) -->
+        <!-- 강의실명 + 하트 -->
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

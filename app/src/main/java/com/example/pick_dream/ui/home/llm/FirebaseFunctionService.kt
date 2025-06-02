@@ -10,7 +10,7 @@ import java.io.IOException
 
 object FirebaseFunctionService {
     private val client = OkHttpClient()
-    private val mainHandler = Handler(Looper.getMainLooper())  //UI 스레드용 핸들러
+    private val mainHandler = Handler(Looper.getMainLooper())
 
     private const val FUNCTION_URL =
         "https://ai-assistant-yaluz6ij5a-uc.a.run.app"
@@ -32,7 +32,6 @@ object FirebaseFunctionService {
 
         client.newCall(request).enqueue(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                //실패도 UI 스레드로 전달
                 mainHandler.post {
                     onFailure(e)
                 }
@@ -42,7 +41,6 @@ object FirebaseFunctionService {
                 response.use {
                     val result = it.body?.string()
                     if (result != null) {
-                        //UI 스레드에서 콜백 실행
                         mainHandler.post {
                             onSuccess(result)
                         }
