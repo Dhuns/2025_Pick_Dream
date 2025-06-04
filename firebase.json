@@ -5,9 +5,8 @@
   },
   "functions": [
     {
-      "source": "functions2",
+      "source": "functions",
       "codebase": "default",
-      "runtime": "nodejs20",
       "ignore": [
         "venv",
         ".git",
