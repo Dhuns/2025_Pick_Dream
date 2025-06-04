@@ -24,6 +24,7 @@
             android:id="@+id/btn_back"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginStart="16dp"
             android:layout_gravity="start|center_vertical"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_arrow_back"
@@ -36,7 +37,7 @@
             android:layout_gravity="center"
             android:text="지도"
             android:textColor="@android:color/white"
-            android:textSize="22sp"
+            android:textSize="24sp"
             android:textStyle="bold"/>
     </FrameLayout>
 

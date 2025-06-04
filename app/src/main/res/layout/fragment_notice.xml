@@ -9,7 +9,7 @@
     <View
         android:id="@+id/topBar"
         android:layout_width="0dp"
-        android:layout_height="110dp"
+        android:layout_height="80dp"
         android:background="#3C5ABD"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -24,7 +24,9 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/topBar"
         app:layout_constraintBottom_toBottomOf="@id/topBar"
-        android:layout_marginStart="8dp"/>
+        android:layout_marginStart="16dp"
+
+        />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -32,13 +34,13 @@
         android:layout_height="wrap_content"
         android:text="공지사항"
         android:textColor="#FFFFFF"
-        android:textSize="22sp"
+        android:textSize="24sp"
         android:textStyle="bold"
         app:layout_constraintTop_toTopOf="@id/topBar"
         app:layout_constraintBottom_toBottomOf="@id/topBar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="40dp"/>
+        android:layout_gravity="center" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardSearch"

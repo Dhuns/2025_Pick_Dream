@@ -19,7 +19,8 @@
             android:layout_gravity="start|center_vertical"
             android:background="@android:color/transparent"
             android:src="@drawable/ic_arrow_back"
-            android:contentDescription="뒤로가기" />
+            android:contentDescription="뒤로가기"
+            android:layout_marginStart="16dp"/>
 
         <TextView
             android:id="@+id/toolbar_title"
@@ -28,7 +29,7 @@
             android:layout_gravity="center"
             android:text="AI 예약"
             android:textColor="@android:color/white"
-            android:textSize="22sp"
+            android:textSize="24sp"
             android:textStyle="bold"/>
     </FrameLayout>
 
