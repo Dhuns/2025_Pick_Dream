@@ -53,21 +53,27 @@ class LectureRoomAdapter(
     inner class RoomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
         private val tvName: TextView = itemView.findViewById(R.id.tvRoomName)
         private val tvBuilding: TextView = itemView.findViewById(R.id.tvRoomInfo)
-        private val btnFavorite: View = itemView.findViewById(R.id.btnFavorite)
+        private val btnFavorite: android.widget.ImageButton = itemView.findViewById(R.id.btnFavorite)
 
-        fun bind(item: LectureRoom) {
-            tvName.text = item.name
-            tvBuilding.text = item.equipment.joinToString(", ").toString()
-            btnFavorite as android.widget.ImageButton
+        fun bind(lectureRoomItem: LectureRoom) {
+            tvName.text = lectureRoomItem.name
+            tvBuilding.text = lectureRoomItem.equipment.joinToString(", ")
+            
             btnFavorite.setImageResource(
-                if (item.isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_border
+                if (lectureRoomItem.isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_border
             )
+
+            itemView.setOnClickListener { onItemClick(lectureRoomItem) }
+            
             btnFavorite.setOnClickListener {
-                LectureRoomRepository.toggleFavorite(item.name)
-                notifyItemChanged(adapterPosition)
-                onFavoriteChanged?.invoke()
+                lectureRoomItem.isFavorite = !lectureRoomItem.isFavorite
+                
+                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
+                    notifyItemChanged(bindingAdapterPosition)
+                }
+                
+                LectureRoomRepository.toggleFavorite(lectureRoomItem.name)
             }
-            itemView.setOnClickListener { onItemClick(item) }
         }
     }
 

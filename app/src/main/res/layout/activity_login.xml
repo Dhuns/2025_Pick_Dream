@@ -1,36 +1,59 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="32dp"
-    android:gravity="center"
+    android:paddingHorizontal="32dp"
+    android:paddingVertical="16dp"
+    android:gravity="center" 
     android:background="#FFFFFF">
 
-    <!-- 로고 입력 -->
+    <!-- 로고 -->
     <ImageView
         android:id="@+id/imageLogo"
         android:layout_width="120dp"
         android:layout_height="120dp"
-        android:src="@drawable/logo_main" />
+        android:src="@drawable/logo_main"
+        android:layout_marginBottom="48dp"/>
 
-
-    <!-- 아이디 입력 -->
-    <EditText
-        android:id="@+id/editTextId"
+    <!-- 학번(이메일) 입력 -->
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textFieldIdLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="학번"
-        android:inputType="text" />
+        app:startIconDrawable="@drawable/ic_person_outline">
+        <!-- TODO: @drawable/ic_person_outline을 실제 아이콘 리소스로 교체 필요 (예: Material Icons에서 person 검색) -->
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextId"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            android:maxLines="1"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- 비밀번호 입력 -->
-    <EditText
-        android:id="@+id/editTextPassword"
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/textFieldPasswordLayout"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:hint="비밀번호"
-        android:inputType="textPassword"
-        android:layout_marginTop="16dp" />
+        app:passwordToggleEnabled="true"
+        app:startIconDrawable="@drawable/ic_lock_outline"
+        android:layout_marginTop="16dp">
+        <!-- TODO: @drawable/ic_lock_outline을 실제 아이콘 리소스로 교체 필요 (예: Material Icons에서 lock 검색) -->
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/editTextPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:maxLines="1"/>
+    </com.google.android.material.textfield.TextInputLayout>
 
     <!-- 로그인 버튼 -->
     <Button
@@ -38,8 +61,31 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="로그인"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="32dp"
+        android:paddingVertical="12dp"
         android:backgroundTint="#6391ED"
-        android:textColor="#FFFFFF" />
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:cornerRadius="8dp"/>
+
+    <!-- 추가 작업 링크 -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        android:gravity="center">
+
+        <TextView
+            android:id="@+id/tvForgotPassword"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="비밀번호를 잊으셨나요?"
+            android:textColor="#6391ED"
+            android:textSize="14sp"
+            android:background="?attr/selectableItemBackground"
+            android:padding="8dp"/>
+    </LinearLayout>
 
 </LinearLayout>
