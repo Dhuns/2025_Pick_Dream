@@ -18,96 +18,116 @@
     android:backgroundTint="#FFFFFF"
     android:clipToOutline="true">
 
-    <LinearLayout
+    <!-- "현재 예약 정보가 없습니다." 메시지용 TextView -->
+    <TextView
+        android:id="@+id/tvNoCurrentReservationMessage_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:layout_marginBottom="4dp">
-
-        <!-- 이미지 -->
-        <ImageView
-            android:id="@+id/imgRoom"
-            android:layout_width="144dp"
-            android:layout_height="match_parent"
-            android:layout_marginEnd="20dp"
-            android:background="@drawable/bg_image_rounded"
-            android:scaleType="centerCrop"
-            android:src="@drawable/sample_room"
-            android:clipToOutline="true" />
-
-        <!-- 텍스트 영역 -->
-        <LinearLayout
-            android:layout_width="0dp"
-            android:layout_height="110dp"
-            android:layout_weight="1"
-            android:orientation="vertical"
-            android:gravity="top">
-
-            <TextView
-                android:id="@+id/tvRoomName"
-                android:layout_width="121dp"
-                android:layout_height="66dp"
-                android:layout_marginBottom="2dp"
-                android:text="덕문관 (5강의동)\n5022 강의실"
-                android:textColor="#222222"
-                android:textSize="15sp"
-                android:textStyle="bold" />
-
-            <TextView
-                android:id="@+id/tvDate"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2025년 4월 22일 (화)"
-                android:textColor="#666666"
-                android:textSize="12sp" />
-
-            <TextView
-                android:id="@+id/tvTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="오후 3:00 - 오후 5:00"
-                android:textColor="#666666"
-                android:textSize="12sp" />
-        </LinearLayout>
-    </LinearLayout>
-
-    <!-- 버튼 영역 -->
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
+        android:text="현재 예약 정보가 없습니다."
+        android:textSize="16sp"
+        android:textColor="@color/gray" 
         android:gravity="center"
-        android:layout_marginTop="4dp">
+        android:padding="16dp"
+        android:visibility="gone" /> <!-- 기본적으로 숨김 -->
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnCancel"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:text="예약취소"
-            android:textColor="@android:color/white"
-            android:textStyle="bold"
-            app:backgroundTint="@color/primary_400"
-            app:cornerRadius="4dp"
-            style="@style/Widget.MaterialComponents.Button"
-            android:layout_marginEnd="12dp"
-            app:rippleColor="@android:color/transparent"
-        />
+    <!-- 기존 예약 상세 정보들을 담는 레이아웃 -->
+    <LinearLayout
+        android:id="@+id/layoutReservationDetails_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnConfirm"
-            android:layout_width="0dp"
-            android:layout_height="50dp"
-            android:layout_weight="1"
-            android:text="예약확인"
-            android:textColor="@color/primary_400"
-            android:textStyle="bold"
-            app:backgroundTint="@android:color/white"
-            app:strokeColor="@color/primary_400"
-            app:strokeWidth="1dp"
-            app:cornerRadius="4dp"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            app:rippleColor="@android:color/transparent"
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="4dp">
+
+            <!-- 이미지 -->
+            <ImageView
+                android:id="@+id/imgRoom"
+                android:layout_width="144dp"
+                android:layout_height="match_parent"
+                android:layout_marginEnd="20dp"
+                android:background="@drawable/bg_image_rounded"
+                android:scaleType="centerCrop"
+                android:src="@drawable/sample_room"
+                android:clipToOutline="true" />
+
+            <!-- 텍스트 영역 -->
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="110dp"
+                android:layout_weight="1"
+                android:orientation="vertical"
+                android:gravity="top">
+
+                <TextView
+                    android:id="@+id/tvRoomName"
+                    android:layout_width="121dp"
+                    android:layout_height="66dp"
+                    android:layout_marginBottom="2dp"
+                    android:text="덕문관 (5강의동)\n5022 강의실"
+                    android:textColor="#222222"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
+
+                <TextView
+                    android:id="@+id/tvDate"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2025년 4월 22일 (화)"
+                    android:textColor="#666666"
+                    android:textSize="12sp" />
+
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="오후 3:00 - 오후 5:00"
+                    android:textColor="#666666"
+                    android:textSize="12sp" />
+            </LinearLayout>
+        </LinearLayout>
+
+        <!-- 버튼 영역 -->
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:gravity="center"
+            android:layout_marginTop="4dp">
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnCancel"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="예약취소"
+                android:textColor="@android:color/white"
+                android:textStyle="bold"
+                app:backgroundTint="@color/primary_400"
+                app:cornerRadius="4dp"
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_marginEnd="12dp"
+                app:rippleColor="@android:color/transparent"
+            />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnConfirm"
+                android:layout_width="0dp"
+                android:layout_height="50dp"
+                android:layout_weight="1"
+                android:text="예약확인"
+                android:textColor="@color/primary_400"
+                android:textStyle="bold"
+                app:backgroundTint="@android:color/white"
+                app:strokeColor="@color/primary_400"
+                app:strokeWidth="1dp"
+                app:cornerRadius="4dp"
+                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                app:rippleColor="@android:color/transparent"
+            />
+        </LinearLayout>
     </LinearLayout>
 </LinearLayout> 
