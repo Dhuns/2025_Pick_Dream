@@ -2,7 +2,7 @@ from firebase_functions import https_fn
 from firebase_admin import firestore, initialize_app, auth, credentials
 from openai import OpenAI
 from dotenv import load_dotenv
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 import os
 import json
@@ -18,6 +18,8 @@ initialize_app(cred)
 db = firestore.client()
 client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
+KST = timezone(timedelta(hours=9))
+
 # 방 번호 추출 함수
 def extract_room_id(text):
     m = re.search(r'(\d)\s*(?:강의동|동)?\s*[-\s]?\s*(\d{2,3})\s*호?', text)
@@ -28,15 +30,14 @@ def extract_room_id(text):
         return m2.group(1)
     return None
 
-# 사용자 중복 예약/방 중복 예약 검사 함수
+
 def has_conflict(field: str, value: str, start, end):
     conflicts = db.collection("Reservations") \
-        .where("startTime", "<", end) \
-        .where("endTime", ">", start) \
+        .where("startTimestamp", "<", end) \
+        .where("endTimestamp", ">", start) \
         .where(field, "==", value).stream()
     logging.info(f"[has_conflict] field={field}, value={value}")
     return any(True for _ in conflicts)
-
 
 def handle_query_equipment(query, userID):
     doc = db.collection("rooms").document(query["room"]).get()
@@ -49,7 +50,6 @@ def handle_query_equipment(query, userID):
         return https_fn.Response(f"{query['room']}호에 있는 기자재: {eq_list}", status=200)
     return https_fn.Response(f"{query['room']}호에 '{item}'이(가) {'있습니다' if item in eq else '없습니다' }.", status=200)
 
-# 수정된 handle_reserve 함수 with debug logging
 
 def handle_reserve(query, userID):
     try:
@@ -59,7 +59,6 @@ def handle_reserve(query, userID):
         room_raw = query.get("room")
         query["room"] = extract_room_id(room_raw) if room_raw else None
 
-        # 필수 정보 보완 from Pending
         if not query["room"] or not query.get("startTime") or not query.get("duration"):
             pending = db.collection("PendingReservations").document(userID).get()
             if pending.exists:
@@ -68,30 +67,49 @@ def handle_reserve(query, userID):
                 query["startTime"] = query.get("startTime") or pending_data.get("startTime")
                 query["duration"] = query.get("duration") or pending_data.get("duration")
                 query["eventName"] = query.get("eventName") or pending_data.get("eventName", "추천 예약")
+                query["eventParticipants"] = query.get("eventParticipants") or pending_data.get("eventParticipants")
             else:
-                # ⬇️ 이 부분을 새로 추가
                 if not query["room"]:
                     return https_fn.Response("강의실 정보를 확인할 수 없어요.", status=400)
-                
-                now = datetime.utcnow() + timedelta(hours=9)
+                now = datetime.now(KST)
                 query["startTime"] = (now + timedelta(minutes=10)).isoformat(timespec="seconds")
                 query["duration"] = 2
-                query["eventName"] = query.get("eventName", "일반 예약")
+                query["eventName"] = query.get("eventName", "추천 예약")
+                query["eventParticipants"] = query.get("eventParticipants")
                 logging.info("[handle_reserve] Pending 없이 기본값으로 예약 진행")
 
-        # room 정규화 다시 한 번
+        query["eventName"] = "추천 예약"
+        query["eventDescription"] = ""
+        query["eventTarget"] = ""
+        query["eventParticipants"] = query.get("eventParticipants", "").strip()
+        query["status"] = "대기"
+
+        required_fields = ["room", "startTime", "duration", "userID", "eventParticipants"]
+        missing = [f for f in required_fields if not query.get(f) or str(query.get(f)).strip() == ""]
+        if missing:
+            db.collection("PendingReservations").document(userID).set(query)
+            friendly_names = {
+                "room": "강의실",
+                "startTime": "시작 시간",
+                "duration": "이용 시간",
+                "userID": "사용자 정보",
+                "eventParticipants": "이용 인원 수"
+            }
+            readable = ", ".join(friendly_names.get(f, f) for f in missing)
+            return https_fn.Response(f"다음 정보가 필요해요: {readable}", status=400)
+
         query["room"] = extract_room_id(query["room"]) or query["room"]
 
-        # 방 존재 확인
         room_doc = db.collection("rooms").document(query["room"]).get()
         if not room_doc.exists:
             logging.warning(f"[handle_reserve] 존재하지 않는 강의실: {query['room']}")
             return https_fn.Response("해당 강의실은 존재하지 않습니다.", status=404)
 
-        # 시간 파싱
         try:
             query["duration"] = int(query["duration"])
             start = datetime.fromisoformat(query["startTime"])
+            if start.tzinfo is None:
+                start = start.replace(tzinfo=timezone.utc).astimezone(KST)
         except Exception as e:
             logging.exception(f"[handle_reserve] 시간 파싱 실패: {query.get('startTime')}")
             return https_fn.Response("시작 시간이 올바른 형식이 아니에요.", status=400)
@@ -99,46 +117,48 @@ def handle_reserve(query, userID):
         if query["duration"] < 1 or query["duration"] > 6:
             return https_fn.Response("예약 시간은 최소 1시간, 최대 6시간까지만 가능합니다.", status=400)
 
-        now = datetime.utcnow() + timedelta(hours=9)
+        now = datetime.now(KST)
         if start < now:
             return https_fn.Response("예약 시작 시간은 현재 시간 이후여야 해요.", status=400)
 
         end = start + timedelta(hours=query["duration"])
 
         if has_conflict("userID", userID, start, end):
-            return https_fn.Response("해당 시간대에 이미 다른 방을 예약하셨습니다.", status=409)
+            return https_fn.Response("해당 시간에 이미 예약한 강의실이 있어요. 다른 시간대를 선택해 주세요.", status=409)
         if has_conflict("roomID", query["room"], start, end):
-            return https_fn.Response("이미 예약된 시간입니다.", status=409)
+            return https_fn.Response(f"{query['room']}호는 해당 시간에 이미 예약되어 있어요.", status=409)
 
-        # 예약 저장
         try:
             doc_ref = db.collection("Reservations").add({
                 "roomID": query["room"],
-                "startTime": start.isoformat(timespec="seconds") + "Z",
-                "endTime": end.isoformat(timespec="seconds") + "Z",
-                "eventName": query.get("eventName", "일반 예약"),
-                "status": "확정",
+                "startTime": start.strftime("%Y년 %-m월 %-d일 %p %-I시 %M분 %S초 UTC+9"),
+                "endTime": end.strftime("%Y년 %-m월 %-d일 %p %-I시 %M분 %S초 UTC+9"),
+                "startTimestamp": start,
+                "endTimestamp": end,
+                "eventName": query["eventName"],
+                "eventDescription": query["eventDescription"],
+                "eventTarget": query["eventTarget"],
+                "eventParticipants": query["eventParticipants"],
+                "status": query["status"],
                 "userID": userID
             })
-
         except Exception as e:
             logging.exception("[handle_reserve] 예약 저장 실패")
             return https_fn.Response("예약 저장 중 오류가 발생했어요.", status=500)
 
-        # Pending 삭제
         try:
             db.collection("PendingReservations").document(userID).delete()
         except Exception as e:
             logging.warning(f"[handle_reserve] Pending 삭제 실패: {e}")
 
         logging.info(f"[handle_reserve] 예약 성공: {doc_ref[1].id}")
-        return https_fn.Response(
-            f"{query['room']}호가 예약되었습니다 ✅", status=200
-        )
+        return https_fn.Response(f"{query['room']}호가 예약되었습니다 ✅", status=200)
 
     except Exception as e:
         logging.exception("[handle_reserve] 최상위 예외 발생")
         return https_fn.Response("예약 처리 중 알 수 없는 오류가 발생했어요. 로그를 확인해 주세요.", status=500)
+
+
 
 def handle_cancel_reservation(query, userID):
     try:
@@ -151,7 +171,7 @@ def handle_cancel_reservation(query, userID):
             col = col.where("roomID", "==", room_id)
 
         try:
-            docs = col.order_by("startTime", direction=firestore.Query.DESCENDING).limit(1).get()
+            docs = col.order_by("startTimestamp", direction=firestore.Query.DESCENDING)
         except Exception as e:
             logging.exception("[handle_cancel_reservation] 예약 조회 실패")
             return https_fn.Response("예약 조회 중 문제가 발생했어요. 로그를 확인해주세요.", status=500)
@@ -254,8 +274,8 @@ def handle_recommend_room(query, userID):
         if require_available_now:
             conflict = db.collection("Reservations") \
                 .where("roomID", "==", room_id) \
-                .where("startTime", "<=", base_time.isoformat()) \
-                .where("endTime", ">", base_time.isoformat()) \
+                .where("startTimestamp", "<=", base_time) \
+                .where("endTimestamp", ">", base_time) \
                 .get()
             if conflict:
                 continue
@@ -306,11 +326,9 @@ def handle_recommend_room(query, userID):
     if avg is not None:
         response += f"\n⭐ 평균 평점: {avg}점\n📊 긍정 {pos_rate}%, 부정 {neg_rate}%"
 
-    response += "\n\n이 강의실로 예약해드릴까요?"
-
     db.collection("PendingReservations").document(userID).set({
         "room": room_id,
-        "startTime": (base_time + timedelta(minutes=10)).isoformat(),  # base_time 기반
+        "startTime": (base_time + timedelta(minutes=10)).astimezone(KST).isoformat(),
         "duration": 2,
         "eventName": "추천 예약"
     })
@@ -347,7 +365,7 @@ def handle_room_availability(query, userID):
     room = query.get("room")
     if not room:
         return https_fn.Response("강의실 번호를 입력해 주세요.", status=400)
-    now = datetime.utcnow()
+    now = datetime.utcnow(KST)
     one_day_later = now + timedelta(days=1)
     docs = db.collection("Reservations") \
         .where("roomID", "==", room) \
@@ -443,9 +461,9 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
 {{
 "action": "reserve",
 "room": "5104",
-"startTime": "2025-05-21T13:00:00",
+"startTime": "2025-06-04T13:00:00+09:00",
 "duration": 2,
-"eventName": "스터디",
+"eventParticipants": "6명",
 "userID": "{userID}"
 }}
 
@@ -469,7 +487,7 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
 {{
 "action": "recommend_room",
 "keywords": ["6명", "TV", "마이크"],
-"afterTime": "2025-05-28T13:00:00"
+"startTime": "2025-06-04T13:00:00+09:00"
 }}
 
 7. 강의실 평가 요청
@@ -530,9 +548,11 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
   - 인원수: "6명", "8명" 등
   - 기자재: "TV", "마이크", "전자칠판", "빔프로젝터"
   - 시간: "지금"
-- 특정 시각 이후 사용 조건은:
-  - `"afterTime": "YYYY-MM-DDTHH:MM:SS"` 형태로 추가 가능
+
+시간 조건이 있는 경우 다음 형식을 따름:
+- `"afterTime": "YYYY-MM-DDTHH:MM:SS"` 형태로 특정 시점 이후 가능한 강의실 추천 가능
 """
+
 
         gpt = client.chat.completions.create(
             model="gpt-4",
