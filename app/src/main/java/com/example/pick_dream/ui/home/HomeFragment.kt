@@ -196,8 +196,8 @@ class HomeFragment : Fragment() {
                             val endTimeRaw = doc.getString("endTime") ?: ""
                             val status = doc.getString("status") ?: "대기"
 
-                            val cleanedStartTime = startTimeRaw.replace(Regex("\\s*UTC\\+9\\s*$"), "")
-                            val cleanedEndTime = endTimeRaw.replace(Regex("\\s*UTC\\+9\\s*$"), "")
+                            // val cleanedStartTime = startTimeRaw.replace(Regex("\\s*UTC\\+9\\s*$"), "") // 이전 로직으로 되돌리기 위해 주석 처리
+                            // val cleanedEndTime = endTimeRaw.replace(Regex("\\s*UTC\\+9\\s*$"), "")   // 이전 로직으로 되돌리기 위해 주석 처리
                             
                             val dateTimeParser = SimpleDateFormat("yyyy년 M월 d일 a h시 m분 s초", Locale.KOREA)
                             dateTimeParser.timeZone = TimeZone.getTimeZone("Asia/Seoul")
@@ -205,14 +205,14 @@ class HomeFragment : Fragment() {
                             var startDate: Date? = null
                             var endDate: Date? = null
                             try {
-                                startDate = dateTimeParser.parse(cleanedStartTime)
+                                startDate = dateTimeParser.parse(startTimeRaw) // Firestore 원본 문자열 파싱
                             } catch (e: Exception) {
-                                Log.e("HomeFragment", "startTime parse error: $cleanedStartTime, ${e.message}")
+                                Log.e("HomeFragment", "startTime parse error: $startTimeRaw, ${e.message}")
                             }
                             try {
-                                endDate = dateTimeParser.parse(cleanedEndTime)
+                                endDate = dateTimeParser.parse(endTimeRaw) // Firestore 원본 문자열 파싱
                             } catch (e: Exception) {
-                                Log.e("HomeFragment", "endTime parse error: $cleanedEndTime, ${e.message}")
+                                Log.e("HomeFragment", "endTime parse error: $endTimeRaw, ${e.message}")
                             }
 
                             val nowMillis = System.currentTimeMillis()

@@ -1,18 +1,19 @@
 package com.example.pick_dream.ui.home.search
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
-import android.widget.EditText
-import android.view.inputmethod.EditorInfo
-import android.view.inputmethod.InputMethodManager
-import android.content.Context
 
 class LectureRoomListFragment : Fragment() {
     private lateinit var adapter: LectureRoomAdapter
@@ -28,10 +29,10 @@ class LectureRoomListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        LectureRoomRepository.fetchRoomsFromFirebase()
-
         recyclerView = view.findViewById<RecyclerView>(R.id.rvLectureRooms)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+        initializeAdapter()
 
         val etSearch = view.findViewById<EditText>(R.id.etSearch)
         val btnSearch = view.findViewById<View>(R.id.btnSearch)
@@ -39,22 +40,31 @@ class LectureRoomListFragment : Fragment() {
         val btnFilterMic = view.findViewById<View>(R.id.btnFilterMic)
         val btnFilterOutlet = view.findViewById<View>(R.id.btnFilterOutlet)
         val btnFilterScreen = view.findViewById<View>(R.id.btnFilterScreen)
+        val btnBack = view.findViewById<View>(R.id.btnBack)
 
-        setupAdapter()
+        LectureRoomRepository.roomsLiveData.observe(viewLifecycleOwner, Observer { rooms ->
+            if (rooms != null) {
+                filterAndShow(currentQuery)
+            } else {
+                if(::adapter.isInitialized) {
+                    adapter.updateList(mutableListOf())
+                }
+            }
+        })
+
+        LectureRoomRepository.fetchRoomsFromFirebase()
 
         etSearch.setOnEditorActionListener { v, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH || actionId == EditorInfo.IME_ACTION_DONE) {
                 currentQuery = etSearch.text.toString().trim()
                 filterAndShow(currentQuery)
-                val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                imm.hideSoftInputFromWindow(etSearch.windowToken, 0)
+                hideKeyboard(etSearch)
                 true
             } else {
                 false
             }
         }
 
-        val btnBack = view.findViewById<View>(R.id.btnBack)
         btnBack.setOnClickListener {
             findNavController().navigate(R.id.homeFragment)
         }
@@ -62,8 +72,7 @@ class LectureRoomListFragment : Fragment() {
         btnSearch.setOnClickListener {
             currentQuery = etSearch.text.toString().trim()
             filterAndShow(currentQuery)
-            val imm = requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(etSearch.windowToken, 0)
+            hideKeyboard(etSearch)
         }
 
         btnFilterBeam.setOnClickListener {
@@ -90,14 +99,14 @@ class LectureRoomListFragment : Fragment() {
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.GONE
     }
 
-    private fun setupAdapter() {
-        val groupedRooms = LectureRoomRepository.roomsLiveData.value
+    private fun initializeAdapter() {
+        val initialGroupedRooms = LectureRoomRepository.roomsLiveData.value
             ?.groupBy { Pair(it.buildingName, it.buildingDetail) }
             ?.map { (buildingPair, rooms) -> buildingPair to rooms }
             ?: emptyList()
-        val sectionedList = buildSectionedList(groupedRooms)
-        
-        adapter = LectureRoomAdapter(sectionedList, 
+        val initialSectionedList = buildSectionedList(initialGroupedRooms)
+
+        adapter = LectureRoomAdapter(initialSectionedList, 
             onItemClick = { room ->
                 val action = LectureRoomListFragmentDirections
                     .actionLectureRoomListFragmentToLectureRoomDetailFragment(
@@ -109,13 +118,7 @@ class LectureRoomListFragment : Fragment() {
                 findNavController().navigate(action)
             },
             onFavoriteChanged = {
-                val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-                val position = layoutManager.findFirstVisibleItemPosition()
-                val offset = recyclerView.getChildAt(0)?.top ?: 0
-
                 filterAndShow(currentQuery)
-
-                layoutManager.scrollToPositionWithOffset(position, offset)
             }
         )
         recyclerView.adapter = adapter
@@ -134,7 +137,9 @@ class LectureRoomListFragment : Fragment() {
             ?: emptyList()
             
         val sectionedList = buildSectionedList(filtered)
-        adapter.updateList(sectionedList)
+        if(::adapter.isInitialized) {
+            adapter.updateList(sectionedList)
+        }
     }
 
     private fun buildSectionedList(groupedRooms: List<Pair<Pair<String, String>, List<LectureRoom>>>): MutableList<SectionedItem> {
@@ -145,6 +150,11 @@ class LectureRoomListFragment : Fragment() {
             sectionedList.addAll(rooms.map { SectionedItem.Room(it) })
         }
         return sectionedList
+    }
+    
+    private fun hideKeyboard(view: View) {
+        val imm = view.context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(view.windowToken, 0)
     }
 
     override fun onDestroyView() {
