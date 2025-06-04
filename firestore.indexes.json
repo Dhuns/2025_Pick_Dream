@@ -9,11 +9,29 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "endTime",
+          "fieldPath": "endTimestamp",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "startTime",
+          "fieldPath": "startTimestamp",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Reservations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "roomID",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "startTimestamp",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "endTimestamp",
           "order": "ASCENDING"
         }
       ]
@@ -27,11 +45,11 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "endTime",
+          "fieldPath": "endTimestamp",
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "startTime",
+          "fieldPath": "startTimestamp",
           "order": "ASCENDING"
         }
       ]
@@ -45,7 +63,39 @@
           "order": "ASCENDING"
         },
         {
-          "fieldPath": "startTime",
+          "fieldPath": "startTimestamp",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "endTimestamp",
+          "order": "ASCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Reservations",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "userID",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "startTimestamp",
+          "order": "DESCENDING"
+        }
+      ]
+    },
+    {
+      "collectionGroup": "Reviews",
+      "queryScope": "COLLECTION",
+      "fields": [
+        {
+          "fieldPath": "roomID",
+          "order": "ASCENDING"
+        },
+        {
+          "fieldPath": "createdAt",
           "order": "DESCENDING"
         }
       ]
