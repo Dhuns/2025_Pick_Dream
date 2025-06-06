@@ -73,7 +73,14 @@
         android:id="@+id/favoriteFragment"
         android:name="com.example.pick_dream.ui.favorite.FavoriteFragment"
         android:label="찜한 강의실"
-        tools:layout="@layout/fragment_favorite" />
+        tools:layout="@layout/fragment_favorite">
+        <action
+            android:id="@+id/action_navigation_favorite_to_lectureRoomDetailFragment"
+            app:destination="@id/lectureRoomDetailFragment" />
+        <action
+            android:id="@+id/action_navigation_favorite_to_manualReservationFragment"
+            app:destination="@id/manualReservationFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/mypageFragment"
@@ -141,6 +148,9 @@
         <argument
             android:name="buildingDetail"
             app:argType="string" />
+        <action
+            android:id="@+id/action_lectureRoomDetailFragment_to_manualReservationFragment"
+            app:destination="@id/manualReservationFragment" />
     </fragment>
 
     <fragment

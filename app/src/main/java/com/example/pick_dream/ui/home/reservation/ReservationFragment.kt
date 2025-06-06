@@ -147,7 +147,7 @@ class ReservationFragment : Fragment() {
                     val doc = task.result
                     reservation.copy(
                         building = (doc?.getString("buildingName") ?: "") +
-                            (if (doc?.getString("buildingDetail")?.isNotBlank() == true) " (" + doc.getString("buildingDetail") + ")" else ""),
+                                (if (doc?.getString("buildingDetail")?.isNotBlank() == true) " (" + doc.getString("buildingDetail") + ")" else ""),
                         roomName = doc?.getString("name") ?: "",
                         equipment = doc?.get("equipment") as? List<String> ?: emptyList(),
                     )
@@ -156,7 +156,7 @@ class ReservationFragment : Fragment() {
         Tasks.whenAllSuccess<ReservationData>(tasks)
             .addOnSuccessListener { mergedListWithRoomDetails ->
                 if (_binding == null || !isAdded) return@addOnSuccessListener
-                
+
                 val now = Calendar.getInstance()
 
                 // 1. 아직 종료되지 않은 모든 예약 필터링 (대기, 확정 상태 포함)
@@ -169,16 +169,16 @@ class ReservationFragment : Fragment() {
                 val activeReservations = validReservations.filter { reservation ->
                     val startCal = parseKoreanDateToCalendar(reservation.startTime)
                     // 현재 시간이 시작 시간 이후이거나 같고, 종료 시간 이전인 경우 (위에서 endTime은 이미 필터링됨)
-                    startCal != null && !now.before(startCal) 
+                    startCal != null && !now.before(startCal)
                 }.sortedBy { parseKoreanDateToCalendar(it.startTime)?.time } // 시작 시간 오름차순
 
                 val upcomingReservations = validReservations.filter { reservation ->
                     val startCal = parseKoreanDateToCalendar(reservation.startTime)
                     startCal != null && now.before(startCal) // 시작 시간이 현재보다 미래
                 }.sortedBy { parseKoreanDateToCalendar(it.startTime)?.time } // 시작 시간 오름차순
-                
+
                 // 3. 현재 표시할 예약 결정
-                val currentReservationToDisplay: ReservationData? = 
+                val currentReservationToDisplay: ReservationData? =
                     if (activeReservations.isNotEmpty()) {
                         activeReservations.first() // 활성 예약 우선
                     } else if (upcomingReservations.isNotEmpty()) {
@@ -193,7 +193,7 @@ class ReservationFragment : Fragment() {
                 val doneList = mergedListWithRoomDetails.filter { it.status == "종료" }
                     .sortedByDescending { item -> parseKoreanDateToCalendar(item.startTime)?.time }
                 setupHistoryList(doneList)
-                
+
                 showEmptyState(doneList.isEmpty() && currentReservationToDisplay == null)
                 setupPagination() // 페이지네이션은 historyList 기준이므로 위치는 적절
                 onUiReady()
@@ -210,7 +210,7 @@ class ReservationFragment : Fragment() {
 
     private fun setupCurrentReservationCard(currentReservation: ReservationData?) {
         if (_binding == null || !isAdded) return
-        
+
         val cardView = binding.root.findViewById<View>(R.id.cardCurrentReservation)
         val layoutReservationDetails = cardView?.findViewById<LinearLayout>(R.id.layoutReservationDetails_item)
         val tvNoCurrentMessage = cardView?.findViewById<TextView>(R.id.tvNoCurrentReservationMessage_item)
@@ -233,19 +233,19 @@ class ReservationFragment : Fragment() {
 
         val building = if (currentReservation.building.isNotBlank()) currentReservation.building else "강의동 정보 없음"
         val room = if (currentReservation.roomName.isNotBlank()) currentReservation.roomName else "강의실 정보 없음"
-        
+
         var roomNameText = "$building\n$room".trim()
         // 상태가 "대기"이고 아직 시작 전이면 방 이름에 (대기중) 표시 (선택적)
         // val nowCal = Calendar.getInstance()
         // val startCalForStatus = parseKoreanDateToCalendar(currentReservation.startTime)
         // if (currentReservation.status == "대기" && startCalForStatus != null && nowCal.before(startCalForStatus)) {
-        //     roomNameText += " (대기중)" 
+        //     roomNameText += " (대기중)"
         // }
 
         val roomSpannable = SpannableString(roomNameText)
         roomSpannable.setSpan(StyleSpan(Typeface.BOLD), 0, building.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         if (building.isNotEmpty() && room.isNotEmpty()) {
-           roomSpannable.setSpan(StyleSpan(Typeface.BOLD), building.length + 1, roomSpannable.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            roomSpannable.setSpan(StyleSpan(Typeface.BOLD), building.length + 1, roomSpannable.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         tvRoomName?.text = roomSpannable
 
@@ -254,7 +254,7 @@ class ReservationFragment : Fragment() {
         if (startCal != null && endCal != null) {
             val dayOfWeek = getKoreanDayOfWeek(startCal)
             tvDate?.text = "${startCal.get(Calendar.YEAR)}년 ${startCal.get(Calendar.MONTH) + 1}월 ${startCal.get(Calendar.DAY_OF_MONTH)}일 (${dayOfWeek})"
-            
+
             var timeText = "${formatKoreanTime(startCal)} - ${formatKoreanTime(endCal)}"
             // 상태가 "대기"이고 아직 시작 전이면 시간에 (대기중) 표시
             val nowCalCheck = Calendar.getInstance()
@@ -272,7 +272,7 @@ class ReservationFragment : Fragment() {
         btnCancel?.isEnabled = true
         btnConfirm?.isEnabled = true
 
-        btnCancel?.setOnClickListener { 
+        btnCancel?.setOnClickListener {
             // ... 기존 예약 취소 로직 ...
             val dialogView = LayoutInflater.from(context).inflate(R.layout.dialog_reservation_cancel, null)
             val dialog = AlertDialog.Builder(requireContext())
@@ -302,7 +302,7 @@ class ReservationFragment : Fragment() {
                             Toast.makeText(context, "예약 취소 중 오류가 발생했습니다.", Toast.LENGTH_SHORT).show()
                         }
                 } else {
-                     // Document ID가 없는 이전 방식 (여러 필드 일치 확인 - 덜 안전)
+                    // Document ID가 없는 이전 방식 (여러 필드 일치 확인 - 덜 안전)
                     db.collection("Reservations")
                         .whereEqualTo("userID", userId) // userId는 Fragment 멤버 변수
                         .whereEqualTo("roomID", currentReservation.roomID)
@@ -322,7 +322,7 @@ class ReservationFragment : Fragment() {
                             }
                         }
                         .addOnFailureListener {
-                             Toast.makeText(context, "예약 정보 조회 중 오류 (취소 실패).", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, "예약 정보 조회 중 오류 (취소 실패).", Toast.LENGTH_SHORT).show()
                         }
                 }
             }
@@ -351,7 +351,7 @@ class ReservationFragment : Fragment() {
                         var timeDetailText = "${formatKoreanTime(startCalFormat)} - ${formatKoreanTime(endCalFormat)}"
                         // 여기서도 (대기중) 표시 추가 가능
                         if (currentReservation.status == "대기" && Calendar.getInstance().before(startCalFormat)) {
-                             timeDetailText += " (대기중)"
+                            timeDetailText += " (대기중)"
                         }
                         timeDetailText
                     } else {

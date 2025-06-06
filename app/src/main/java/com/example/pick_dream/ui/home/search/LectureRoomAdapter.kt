@@ -3,128 +3,106 @@ package com.example.pick_dream.ui.home.search
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
-import androidx.recyclerview.widget.DiffUtil
+import com.example.pick_dream.databinding.ItemLectureRoomBinding
+import com.example.pick_dream.databinding.ItemSectionHeaderBinding
+import com.example.pick_dream.model.LectureRoom
+import com.squareup.picasso.Picasso
 
-data class LectureRoom(
-    val id: String = "",
-    val name: String = "",
-    val buildingName: String = "",
-    val buildingDetail: String = "",
-    val location: String = "",
-    val equipment: List<String> = listOf(),
-    val capacity: Int = 0,
-    var isFavorite: Boolean = false,
-    val isAvailable: Boolean = true
-)
-
-sealed class SectionedItem {
-    data class Header(val buildingName: String, val buildingDetail: String) : SectionedItem()
-    data class Room(val room: LectureRoom) : SectionedItem()
-}
+private const val VIEW_TYPE_HEADER = 0
+private const val VIEW_TYPE_ROOM = 1
 
 class LectureRoomAdapter(
-    private var items: List<SectionedItem>,
+    private var items: List<ListItem>,
     private val onItemClick: (LectureRoom) -> Unit,
-    private val onFavoriteChanged: (() -> Unit)? = null
+    private val onFavoriteClick: (LectureRoom) -> Unit
 ) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    companion object {
-        private const val VIEW_TYPE_HEADER = 0
-        private const val VIEW_TYPE_ROOM = 1
-    }
-
-    fun updateList(newItems: List<SectionedItem>) {
-        val diffCallback = SectionedItemDiffCallback(items, newItems)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        items = newItems
-        diffResult.dispatchUpdatesTo(this)
-    }
-
-    inner class HeaderViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tvHeader: TextView = itemView.findViewById(R.id.tvSectionHeader)
-        fun bind(header: SectionedItem.Header) {
-            tvHeader.text = "${header.buildingName} (${header.buildingDetail})"
+    override fun getItemViewType(position: Int): Int {
+        return when (items[position]) {
+            is ListItem.HeaderItem -> VIEW_TYPE_HEADER
+            is ListItem.RoomItem -> VIEW_TYPE_ROOM
         }
-    }
-
-    inner class RoomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        private val tvName: TextView = itemView.findViewById(R.id.tvRoomName)
-        private val tvBuilding: TextView = itemView.findViewById(R.id.tvRoomInfo)
-        private val btnFavorite: android.widget.ImageButton = itemView.findViewById(R.id.btnFavorite)
-
-        fun bind(lectureRoomItem: LectureRoom) {
-            tvName.text = lectureRoomItem.name
-            tvBuilding.text = lectureRoomItem.equipment.joinToString(", ")
-            
-            btnFavorite.setImageResource(
-                if (lectureRoomItem.isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_border
-            )
-
-            itemView.setOnClickListener { onItemClick(lectureRoomItem) }
-            
-            btnFavorite.setOnClickListener {
-                lectureRoomItem.isFavorite = !lectureRoomItem.isFavorite
-                
-                if (bindingAdapterPosition != RecyclerView.NO_POSITION) {
-                    notifyItemChanged(bindingAdapterPosition)
-                }
-                
-                LectureRoomRepository.toggleFavorite(lectureRoomItem.name)
-            }
-        }
-    }
-
-    override fun getItemViewType(position: Int): Int = when (items[position]) {
-        is SectionedItem.Header -> VIEW_TYPE_HEADER
-        is SectionedItem.Room -> VIEW_TYPE_ROOM
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             VIEW_TYPE_HEADER -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_section_header, parent, false)
-                HeaderViewHolder(view)
+                val binding = ItemSectionHeaderBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                HeaderViewHolder(binding)
             }
-            else -> {
-                val view = LayoutInflater.from(parent.context).inflate(R.layout.item_lecture_room, parent, false)
-                RoomViewHolder(view)
+            VIEW_TYPE_ROOM -> {
+                val binding = ItemLectureRoomBinding.inflate(LayoutInflater.from(parent.context), parent, false)
+                LectureRoomViewHolder(binding)
             }
+            else -> throw IllegalArgumentException("Invalid view type")
         }
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        when (val item = items[position]) {
-            is SectionedItem.Header -> (holder as HeaderViewHolder).bind(item)
-            is SectionedItem.Room -> (holder as RoomViewHolder).bind(item.room)
+        when (holder) {
+            is HeaderViewHolder -> {
+                val headerItem = items[position] as ListItem.HeaderItem
+                holder.bind(headerItem.buildingName)
+            }
+            is LectureRoomViewHolder -> {
+                val roomItem = items[position] as ListItem.RoomItem
+                holder.bind(roomItem.lectureRoom, onItemClick, onFavoriteClick)
+            }
         }
     }
 
     override fun getItemCount(): Int = items.size
-}
+    
+    fun submitList(newItems: List<ListItem>) {
+        items = newItems
+        notifyDataSetChanged() // DiffUtil을 사용하면 더 효율적이지만, 단순화를 위해 notifyDataSetChanged 사용
+    }
 
-class SectionedItemDiffCallback(
-    private val oldList: List<SectionedItem>,
-    private val newList: List<SectionedItem>
-) : DiffUtil.Callback() {
-    override fun getOldListSize(): Int = oldList.size
-    override fun getNewListSize(): Int = newList.size
-
-    override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        val oldItem = oldList[oldItemPosition]
-        val newItem = newList[newItemPosition]
-        return when {
-            oldItem is SectionedItem.Header && newItem is SectionedItem.Header ->
-                oldItem.buildingName == newItem.buildingName && oldItem.buildingDetail == newItem.buildingDetail
-            oldItem is SectionedItem.Room && newItem is SectionedItem.Room ->
-                oldItem.room.name == newItem.room.name
-            else -> false
+    class HeaderViewHolder(private val binding: ItemSectionHeaderBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(buildingName: String) {
+            binding.tvSectionHeader.text = buildingName
         }
     }
 
-    override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
-        return oldList[oldItemPosition] == newList[newItemPosition]
+    class LectureRoomViewHolder(private val binding: ItemLectureRoomBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(
+            room: LectureRoom,
+            onItemClick: (LectureRoom) -> Unit,
+            onFavoriteClick: (LectureRoom) -> Unit
+        ) {
+            binding.tvRoomName.text = room.name // 헤더에 건물 이름이 있으므로 강의실 이름만 표시
+            
+            val equipmentText = room.equipment.joinToString(separator = " · ")
+            val capacityText = "최대 ${room.capacity}명"
+            binding.tvRoomInfo.text = "$capacityText · $equipmentText"
+
+            binding.tvAvailable.text = if(room.isAvailable) "대여 가능" else "대여 불가"
+            binding.tvAvailable.setTextColor(
+                ContextCompat.getColor(
+                    binding.root.context,
+                    if (room.isAvailable) R.color.primary_blue else R.color.Red
+                )
+            )
+
+            if (!room.imageUrl.isNullOrEmpty()) {
+                Picasso.get().load(room.imageUrl).into(binding.ivRoomImage)
+            } else {
+                binding.ivRoomImage.setImageResource(R.drawable.sample_room)
+            }
+
+            if (room.isFavorite) {
+                binding.btnFavorite.setImageResource(R.drawable.ic_heart_filled)
+                binding.btnFavorite.setColorFilter(ContextCompat.getColor(binding.root.context, R.color.Red))
+            } else {
+                binding.btnFavorite.setImageResource(R.drawable.ic_heart_border)
+                binding.btnFavorite.colorFilter = null
+            }
+            
+            binding.root.setOnClickListener { onItemClick(room) }
+            binding.btnFavorite.setOnClickListener { onFavoriteClick(room) }
+        }
     }
 }

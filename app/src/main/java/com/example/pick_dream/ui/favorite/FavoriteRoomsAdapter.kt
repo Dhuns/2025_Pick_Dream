@@ -3,57 +3,53 @@ package com.example.pick_dream.ui.favorite
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
+import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
-import com.example.pick_dream.model.Room
+import com.example.pick_dream.model.LectureRoom
 
 class FavoriteRoomsAdapter(
-    private var rooms: List<Room>,
-    private val onFavoriteClick: (Room) -> Unit,
-    private val onDetailClick: (Room) -> Unit,
-    private val onReserveClick: (Room) -> Unit
+    private var rooms: List<LectureRoom>,
+    private val onFavoriteClick: (LectureRoom) -> Unit,
+    private val onDetailClick: (LectureRoom) -> Unit,
+    private val onReserveClick: (LectureRoom) -> Unit
 ) : RecyclerView.Adapter<FavoriteRoomsAdapter.RoomViewHolder>() {
 
-    class RoomViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val image: ImageView = view.findViewById(R.id.imgRoom)
-        val name: TextView = view.findViewById(R.id.tvBuilding)
-        val number: TextView = view.findViewById(R.id.tvRoomNumber)
-        val features: TextView = view.findViewById(R.id.tvFacilities)
-        val reserveBtn: Button = view.findViewById(R.id.btnReserve)
-        val detailBtn: Button = view.findViewById(R.id.btnDetails)
-        val btnFavorite: View = view.findViewById(R.id.btnFavorite)
+    fun updateRooms(newRooms: List<LectureRoom>) {
+        rooms = newRooms
+        notifyDataSetChanged()
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RoomViewHolder {
-        val view = LayoutInflater.from(parent.context)
-            .inflate(R.layout.item_favorite_room, parent, false)
+        val view = LayoutInflater.from(parent.context).inflate(R.layout.item_favorite_room, parent, false)
         return RoomViewHolder(view)
     }
 
     override fun onBindViewHolder(holder: RoomViewHolder, position: Int) {
-        val room = rooms[position]
-        holder.image.setImageResource(R.drawable.sample_room)
+        holder.bind(rooms[position])
+    }
 
-        holder.name.text = "${room.buildingName} (${room.buildingDetail})"
+    override fun getItemCount(): Int = rooms.size
 
-        val roomNumber = room.name.replace(Regex("[^0-9]"), "")
-        holder.number.text = "$roomNumber 강의실"
+    inner class RoomViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
+        private val roomNumberTextView: TextView = itemView.findViewById(R.id.tvRoomNumber)
+        private val buildingTextView: TextView = itemView.findViewById(R.id.tvBuilding)
+        private val facilitiesTextView: TextView = itemView.findViewById(R.id.tvFacilities)
+        private val favoriteButton: ImageButton = itemView.findViewById(R.id.btnFavorite)
+        private val detailButton: View = itemView.findViewById(R.id.btnDetails)
+        private val reserveButton: View = itemView.findViewById(R.id.btnReserve)
 
-        holder.features.text = room.equipment.joinToString(", ")
-        holder.btnFavorite.isSelected = true
-        
-        holder.btnFavorite.setOnClickListener {
-            onFavoriteClick(room)
-        }
-        holder.detailBtn.setOnClickListener {
-            onDetailClick(room)
-        }
-        holder.reserveBtn.setOnClickListener {
-            onReserveClick(room)
+        fun bind(room: LectureRoom) {
+            roomNumberTextView.text = room.name
+            buildingTextView.text = "${room.buildingName} (${room.buildingDetail})"
+            facilitiesTextView.text = room.equipment.joinToString(", ")
+            
+            favoriteButton.setImageResource(R.drawable.ic_heart_filled)
+
+            favoriteButton.setOnClickListener { onFavoriteClick(room) }
+            detailButton.setOnClickListener { onDetailClick(room) }
+            reserveButton.setOnClickListener { onReserveClick(room) }
         }
     }
-    override fun getItemCount() = rooms.size
 }

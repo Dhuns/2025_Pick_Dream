@@ -1,11 +1,15 @@
 package com.example.pick_dream.ui.home.map
 
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.example.pick_dream.R
 import com.example.pick_dream.databinding.ItemLectureRoomSelectionBinding
+import com.example.pick_dream.model.LectureRoom
 
 class LectureRoomSelectionAdapter(
     private val onItemClick: (LectureRoom) -> Unit
@@ -28,27 +32,25 @@ class LectureRoomSelectionAdapter(
         private val binding: ItemLectureRoomSelectionBinding,
         private val onItemClick: (LectureRoom) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
-
         fun bind(lectureRoom: LectureRoom) {
-            binding.apply {
-                tvRoomName.text = lectureRoom.name
-                tvCapacity.text = "수용 인원: ${lectureRoom.capacity}명"
-                tvRoomDetail.text = "위치: ${lectureRoom.location}"
-                
-                val equipmentText = lectureRoom.equipment.joinToString(", ")
-                tvAvailability.text = if (equipmentText.isNotEmpty()) "구비: $equipmentText" else "구비된 장비 없음"
-
-                root.setOnClickListener {
-                    onItemClick(lectureRoom)
-                }
+            binding.tvRoomName.text = lectureRoom.name
+            binding.tvCapacity.text = "최대 ${lectureRoom.capacity}명"
+            
+            val equipmentText = if (lectureRoom.equipment.isNotEmpty()) {
+                lectureRoom.equipment.joinToString(", ")
+            } else {
+                "기자재 정보 없음"
             }
+            binding.tvRoomDetail.text = "${lectureRoom.location}\n${equipmentText}"
+            
+            binding.root.setOnClickListener { onItemClick(lectureRoom) }
         }
     }
 
     companion object {
         private val DiffCallback = object : DiffUtil.ItemCallback<LectureRoom>() {
             override fun areItemsTheSame(oldItem: LectureRoom, newItem: LectureRoom): Boolean {
-                return oldItem.name == newItem.name
+                return oldItem.id == newItem.id
             }
 
             override fun areContentsTheSame(oldItem: LectureRoom, newItem: LectureRoom): Boolean {

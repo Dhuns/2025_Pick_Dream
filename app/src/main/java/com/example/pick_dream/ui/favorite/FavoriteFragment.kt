@@ -10,8 +10,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.pick_dream.R
 import com.example.pick_dream.ui.home.search.LectureRoomRepository
-import com.example.pick_dream.model.Room
+import com.example.pick_dream.model.LectureRoom
 import androidx.navigation.fragment.findNavController
+import com.example.pick_dream.ui.home.search.ListItem
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class FavoriteFragment : Fragment() {
@@ -34,70 +35,62 @@ class FavoriteFragment : Fragment() {
         emptyView = view.findViewById(R.id.tvEmpty)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-        LectureRoomRepository.wishlistsLiveData.observe(viewLifecycleOwner) { wishlists ->
-            refreshFavorites()
-        }
+        adapter = FavoriteRoomsAdapter(emptyList(),
+            onFavoriteClick = { room ->
+                LectureRoomRepository.toggleFavorite(room.id)
+            },
+            onDetailClick = { room ->
+                val action = FavoriteFragmentDirections.actionNavigationFavoriteToLectureRoomDetailFragment(
+                    roomName = room.name,
+                    buildingName = room.buildingName,
+                    buildingDetail = room.buildingDetail,
+                    building = "${room.buildingName} (${room.buildingDetail})"
+                )
+                findNavController().navigate(action)
+            },
+            onReserveClick = { room ->
+                val action = FavoriteFragmentDirections.actionNavigationFavoriteToManualReservationFragment(
+                    building = "${room.buildingName} (${room.buildingDetail})",
+                    roomName = room.name
+                )
+                findNavController().navigate(action)
+            }
+        )
+        recyclerView.adapter = adapter
 
-        LectureRoomRepository.roomsLiveData.observe(viewLifecycleOwner) { rooms ->
-            refreshFavorites()
-        }
-
-        LectureRoomRepository.fetchRoomsFromFirebase()
+        observeFavoriteRooms()
     }
-
-    private fun refreshFavorites() {
-        val favoriteRooms = LectureRoomRepository.getFavorites().map { lectureRoom ->
-            Room(
-                capacity = lectureRoom.capacity,
-                equipment = lectureRoom.equipment,
-                location = lectureRoom.location,
-                id = "${lectureRoom.buildingName} (${lectureRoom.buildingDetail})",
-                name = lectureRoom.name,
-                buildingName = lectureRoom.buildingName,
-                buildingDetail = lectureRoom.buildingDetail,
-                isFavorite = true
-            )
-        }
-
-        if (favoriteRooms.isEmpty()) {
-            emptyView.visibility = View.VISIBLE
-            recyclerView.visibility = View.GONE
-        } else {
-            emptyView.visibility = View.GONE
-            recyclerView.visibility = View.VISIBLE
-
-            adapter = FavoriteRoomsAdapter(
-                favoriteRooms,
-                { room ->
-                    LectureRoomRepository.toggleFavorite(room.name)
-                },
-                { room ->
-                    val bundle = Bundle().apply {
-                        putString("roomName", room.name)
-                        putString("buildingName", room.buildingName)
-                        putString("buildingDetail", room.buildingDetail)
-                    }
-                    findNavController().navigate(R.id.lectureRoomDetailFragment, bundle)
-                },
-                { room ->
-                    val bundle = Bundle().apply {
-                        putString("building", room.id)
-                        putString("roomName", room.name)
-                    }
-                    findNavController().navigate(R.id.manualReservationFragment, bundle)
-                }
-            )
-            recyclerView.adapter = adapter
-        }
-    }
-
+    
     override fun onResume() {
         super.onResume()
+        // Repository에서 실시간으로 데이터를 관찰하므로 onResume에서 수동으로 fetch할 필요가 없습니다.
+        // LectureRoomRepository.fetchRooms()
+        // LectureRoomRepository.fetchFavoriteIds()
         val navView = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
         navView?.visibility = View.VISIBLE
         if (navView?.selectedItemId != R.id.navigation_favorite) {
             navView?.selectedItemId = R.id.navigation_favorite
         }
-        LectureRoomRepository.fetchWishlists()
+    }
+
+    private fun observeFavoriteRooms() {
+        LectureRoomRepository.lectureRoomsWithFavorites.observe(viewLifecycleOwner) { allItems ->
+            val favoriteRooms = allItems.mapNotNull { item ->
+                if (item is ListItem.RoomItem && item.lectureRoom.isFavorite) {
+                    item.lectureRoom
+                } else {
+                    null
+                }
+            }
+            adapter.updateRooms(favoriteRooms)
+
+            if (favoriteRooms.isEmpty()) {
+                emptyView.visibility = View.VISIBLE
+                recyclerView.visibility = View.GONE
+            } else {
+                emptyView.visibility = View.GONE
+                recyclerView.visibility = View.VISIBLE
+            }
+        }
     }
 }

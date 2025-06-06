@@ -16,10 +16,11 @@ import com.example.pick_dream.model.Reservation
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.ktx.toObject
+import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
-import java.util.TimeZone
+import java.util.*
+import java.util.concurrent.TimeUnit
 
 class HomeFragment : Fragment() {
 
@@ -27,70 +28,7 @@ class HomeFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val handler = Handler(Looper.getMainLooper())
-    private var endMillis: Long = 0L
-    private var currentReservationStartMillis: Long = 0L
-    private var currentReservationStatus: String = "NONE"
-
-    private val timeUpdateRunnable = object : Runnable {
-        override fun run() {
-            if (_binding == null) return
-            val now = System.currentTimeMillis()
-
-            when (currentReservationStatus) {
-                "PENDING" -> {
-                    val timeToStart = currentReservationStartMillis - now
-                    if (timeToStart > 0) {
-                        val minutes = (timeToStart / 1000 / 60) % 60
-                        val hours = (timeToStart / 1000 / 60 / 60)
-                        _binding?.tvRemainingTime?.text = when {
-                            hours > 0 -> String.format(Locale.KOREA, "%d시간 %d분 후 시작", hours, minutes)
-                            minutes > 0 -> String.format(Locale.KOREA, "%d분 후 시작", minutes)
-                            else -> "잠시 후 시작됩니다"
-                        }
-                        _binding?.pbReservationProgress?.visibility = View.INVISIBLE
-                        _binding?.tvProgressPercentage?.text = "예약대기"
-                        handler.postDelayed(this, 1000)
-                    } else {
-                        loadMyReservation()
-                    }
-                }
-                "RUNNING" -> {
-                    val remainingMillis = endMillis - now
-                    if (remainingMillis > 0) {
-                        val minutes = (remainingMillis / 1000 / 60) % 60
-                        val hours = (remainingMillis / 1000 / 60 / 60)
-                        _binding?.tvRemainingTime?.text = if (hours > 0) {
-                            String.format(Locale.KOREA, "남은 시간: %d시간 %d분", hours, minutes)
-                        } else {
-                            String.format(Locale.KOREA, "남은 시간: %d분", minutes)
-                        }
-
-                        val startMillisTag = binding.root.getTag(R.id.tag_start_millis)?.toString()?.toLongOrNull() ?: 0L
-                        if (startMillisTag > 0 && endMillis > startMillisTag) {
-                            val totalDuration = endMillis - startMillisTag
-                            val elapsedTime = now - startMillisTag
-                            if (totalDuration > 0) {
-                                val progressPercentage = (elapsedTime * 100 / totalDuration).toInt()
-                                val displayProgress = progressPercentage.coerceIn(0, 100)
-                                _binding?.pbReservationProgress?.visibility = View.VISIBLE
-                                _binding?.pbReservationProgress?.progress = displayProgress
-                                _binding?.tvProgressPercentage?.text = "$displayProgress%"
-                            } else {
-                                _binding?.pbReservationProgress?.progress = 0
-                                _binding?.tvProgressPercentage?.text = "0%"
-                            }
-                        }
-                        handler.postDelayed(this, 1000)
-                    } else {
-                        resetReservationInfo("예약 시간이 종료되었습니다.")
-                    }
-                }
-                "NONE" -> {
-                    handler.removeCallbacks(this)
-                }
-            }
-        }
-    }
+    private var timerRunnable: Runnable? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -109,9 +47,8 @@ class HomeFragment : Fragment() {
 
         initViews()
         setupClickListeners()
-        loadMyReservation()
+        // loadMyReservation() // onResume에서 호출되므로 중복 호출 방지
     }
-
 
     private fun initViews() {
     }
@@ -121,6 +58,12 @@ class HomeFragment : Fragment() {
             button.setOnClickListener {
                 onButtonClick(it)
             }
+        }
+        binding.btnNotice.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_noticeFragment)
+        }
+        binding.cardReservationInfo.setOnClickListener {
+            findNavController().navigate(R.id.action_homeFragment_to_reservationFragment)
         }
     }
 
@@ -151,139 +94,6 @@ class HomeFragment : Fragment() {
         }
     }
 
-    private fun loadMyReservation() {
-        val db = FirebaseFirestore.getInstance()
-        val currentUid = FirebaseAuth.getInstance().currentUser?.uid ?: run {
-            resetReservationInfo("로그인이 필요합니다.")
-            return
-        }
-
-        db.collection("User").document(currentUid)
-            .get()
-            .addOnSuccessListener { userDoc ->
-                if (_binding == null) {
-                    Log.w("HomeFragment", "Binding is null in userDoc successListener")
-                    return@addOnSuccessListener
-                }
-                val studentId = userDoc.getString("studentId")
-                if (studentId != null) {
-                    val now = Date()
-                    val queryPattern = "yyyy년 M월 d일 a h시 m분 s초"
-                    val queryFormatter = SimpleDateFormat(queryPattern, Locale.KOREA)
-                    queryFormatter.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-
-                    db.collection("Reservations")
-                        .whereEqualTo("userID", studentId)
-                        .whereIn("status", listOf("대기", "확정"))
-                        .orderBy("startTime")
-                        .limit(1)
-                        .get()
-                        .addOnSuccessListener { result ->
-                            if (_binding == null) {
-                                Log.w("HomeFragment", "Binding is null in reservations successListener")
-                                return@addOnSuccessListener
-                            }
-                            if (result.isEmpty) {
-                                Log.d("HomeFragment", "No upcoming or pending reservations found for studentId: $studentId")
-                                resetReservationInfo()
-                                return@addOnSuccessListener
-                            }
-
-                            val doc = result.first()
-                            val roomID = doc.getString("roomID") ?: ""
-                            val userID = doc.getString("userID") ?: ""
-                            val startTimeRaw = doc.getString("startTime") ?: ""
-                            val endTimeRaw = doc.getString("endTime") ?: ""
-                            val status = doc.getString("status") ?: "대기"
-
-                            // val cleanedStartTime = startTimeRaw.replace(Regex("\\s*UTC\\+9\\s*$"), "") // 이전 로직으로 되돌리기 위해 주석 처리
-                            // val cleanedEndTime = endTimeRaw.replace(Regex("\\s*UTC\\+9\\s*$"), "")   // 이전 로직으로 되돌리기 위해 주석 처리
-                            
-                            val dateTimeParser = SimpleDateFormat("yyyy년 M월 d일 a h시 m분 s초", Locale.KOREA)
-                            dateTimeParser.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-
-                            var startDate: Date? = null
-                            var endDate: Date? = null
-                            try {
-                                startDate = dateTimeParser.parse(startTimeRaw) // Firestore 원본 문자열 파싱
-                            } catch (e: Exception) {
-                                Log.e("HomeFragment", "startTime parse error: $startTimeRaw, ${e.message}")
-                            }
-                            try {
-                                endDate = dateTimeParser.parse(endTimeRaw) // Firestore 원본 문자열 파싱
-                            } catch (e: Exception) {
-                                Log.e("HomeFragment", "endTime parse error: $endTimeRaw, ${e.message}")
-                            }
-
-                            val nowMillis = System.currentTimeMillis()
-
-                            if (startDate == null || endDate == null || endDate.time < nowMillis) {
-                                Log.d("HomeFragment", "Fetched reservation is invalid or already ended. Start: $startDate, End: $endDate")
-                                resetReservationInfo("유효하지 않거나 이미 종료된 예약입니다.")
-                                return@addOnSuccessListener
-                            }
-                            
-                            _binding?.layoutNoReservation?.visibility = View.GONE
-                            _binding?.layoutReservationDetails?.visibility = View.VISIBLE
-                            _binding?.flReservationStatusVisual?.visibility = View.VISIBLE
-                            _binding?.ivRoomBackground?.setImageResource(R.drawable.sample_room)
-
-                            val fetchedStartMillis = startDate.time
-                            val fetchedEndMillis = endDate.time
-                            binding.root.setTag(R.id.tag_start_millis, fetchedStartMillis)
-
-                            val timeFormat = SimpleDateFormat("a h:mm", Locale.KOREA)
-                            timeFormat.timeZone = TimeZone.getTimeZone("Asia/Seoul")
-                            val startStr = timeFormat.format(startDate)
-                            val endStr = timeFormat.format(endDate)
-
-                            _binding?.tvReservationRoom?.text = "예약 장소 : $roomID"
-                            _binding?.tvReservationTime?.text = "대여 시간 : $startStr - $endStr"
-
-                            if (status == "대기" && nowMillis < fetchedStartMillis) {
-                                Log.d("HomeFragment", "Reservation is PENDING: $roomID")
-                                currentReservationStatus = "PENDING"
-                                currentReservationStartMillis = fetchedStartMillis
-                                this.endMillis = fetchedEndMillis
-                            } else if ((status == "확정" || status == "대기") && nowMillis >= fetchedStartMillis && nowMillis < fetchedEndMillis) {
-                                Log.d("HomeFragment", "Reservation is RUNNING: $roomID (Status: $status)")
-                                currentReservationStatus = "RUNNING"
-                                this.endMillis = fetchedEndMillis
-                                this.currentReservationStartMillis = fetchedStartMillis
-                            } else {
-                                Log.d("HomeFragment", "Reservation is in an unexpected state or past: $roomID, Status: $status")
-                                resetReservationInfo()
-                                return@addOnSuccessListener
-                            }
-                            
-                            handler.removeCallbacks(timeUpdateRunnable)
-                            handler.post(timeUpdateRunnable)
-
-                        }
-                        .addOnFailureListener { e ->
-                            if (_binding == null) return@addOnFailureListener
-                            Log.e("HomeFragment", "Failed to fetch reservations: ${e.message}", e)
-                            resetReservationInfo("예약 정보를 불러오지 못했습니다.")
-                        }
-                } else {
-                    if (_binding == null) return@addOnSuccessListener
-                    Log.w("HomeFragment", "studentId is null")
-                    resetReservationInfo("학번 정보가 없습니다.")
-                }
-            }
-            .addOnFailureListener { e ->
-                if (_binding == null) return@addOnFailureListener
-                Log.e("HomeFragment", "Failed to fetch user document: ${e.message}", e)
-                resetReservationInfo("사용자 정보를 불러오지 못했습니다.")
-            }
-    }
-    
-    override fun onDestroyView() {
-        super.onDestroyView()
-        handler.removeCallbacks(timeUpdateRunnable)
-        _binding = null
-    }
-
     override fun onResume() {
         super.onResume()
         val navView = requireActivity().findViewById<BottomNavigationView>(R.id.nav_view)
@@ -294,28 +104,173 @@ class HomeFragment : Fragment() {
         loadMyReservation()
     }
 
-    private fun resetReservationInfo(message: String? = null) {
-        if (_binding == null) {
-            Log.w("HomeFragment", "Binding is null in resetReservationInfo")
+    private fun loadMyReservation() {
+        handler.removeCallbacksAndMessages(null) // 이전 타이머 콜백 제거
+        val db = FirebaseFirestore.getInstance()
+        val currentUser = FirebaseAuth.getInstance().currentUser ?: return
+
+        db.collection("User").document(currentUser.uid).get().addOnSuccessListener { userDoc ->
+            if (_binding == null || !isAdded) { return@addOnSuccessListener }
+
+            val studentId = userDoc.getString("studentId") ?: userDoc.getString("userID")
+            if (studentId.isNullOrBlank()) {
+                updateReservationCard(null)
+                return@addOnSuccessListener
+            }
+
+            db.collection("Reservations")
+                .whereEqualTo("userID", studentId)
+                .get()
+                .addOnSuccessListener { reservationSnapshot ->
+                    if (_binding == null || !isAdded) { return@addOnSuccessListener }
+
+                    val now = Calendar.getInstance()
+                    val reservations = reservationSnapshot.documents.mapNotNull { doc ->
+                        doc.toObject<com.example.pick_dream.model.Reservation>()
+                    }
+
+                    Log.d("HomeFragment", "Fetched ${reservations.size} reservations for user $studentId")
+                    reservations.forEach {
+                        val startCal = it.startTime?.let { it1 -> parseKoreanDateToCalendar(it1) }
+                        Log.d("HomeFragment", "Reservation for ${it.roomID}: startTime='${it.startTime}', parsed=${startCal != null}")
+                    }
+
+                    val activeReservation = reservations.firstOrNull {
+                        val startCal = it.startTime?.let { it1 -> parseKoreanDateToCalendar(it1) }
+                        val endCal = it.endTime?.let { it1 -> parseKoreanDateToCalendar(it1) }
+                        startCal != null && endCal != null && !now.before(startCal) && now.before(endCal)
+                    }
+
+                    val upcomingReservation = if (activeReservation == null) {
+                        reservations.filter {
+                            val startCal = it.startTime?.let { it1 -> parseKoreanDateToCalendar(it1) }
+                            startCal != null && now.before(startCal)
+                        }.minByOrNull { parseKoreanDateToCalendar(it.startTime!!)!!.timeInMillis }
+                    } else {
+                        null
+                    }
+
+                    val reservationToShow = activeReservation ?: upcomingReservation
+                    updateReservationCard(reservationToShow)
+                }
+        }
+    }
+
+    private fun updateReservationCard(reservation: com.example.pick_dream.model.Reservation?) {
+        if (_binding == null || !isAdded) return
+
+        if (reservation == null) {
+            binding.layoutNoReservation.visibility = View.VISIBLE
+            binding.layoutReservationDetails.visibility = View.GONE
+            binding.flReservationStatusVisual.visibility = View.GONE
             return
         }
-        Log.d("HomeFragment", "Resetting reservation info. Message: $message")
-        currentReservationStatus = "NONE"
-        _binding?.layoutNoReservation?.visibility = View.VISIBLE
-        _binding?.layoutReservationDetails?.visibility = View.GONE
-        _binding?.flReservationStatusVisual?.visibility = View.GONE
 
-        _binding?.tvNoReservationMessage?.text = message ?: "현재 진행 중인 예약이 없네요.\n지금 바로 예약해보세요!"
-        try {
-            _binding?.ivNoReservationIcon?.setImageResource(android.R.drawable.ic_menu_today) 
-        } catch (e: Exception) {
-            Log.w("HomeFragment", "Failed to set no reservation icon: ${e.localizedMessage}")
-            _binding?.ivNoReservationIcon?.visibility = View.GONE
+        binding.layoutNoReservation.visibility = View.GONE
+        binding.layoutReservationDetails.visibility = View.VISIBLE
+        binding.flReservationStatusVisual.visibility = View.VISIBLE
+
+        val db = FirebaseFirestore.getInstance()
+        val roomIdOnly = reservation.roomID.replace(Regex("[^0-9]"), "")
+        db.collection("rooms").document(roomIdOnly).get().addOnSuccessListener { roomDoc ->
+            if (_binding == null || !isAdded) { return@addOnSuccessListener }
+
+            if(roomDoc.exists()){
+                binding.tvReservationRoom.text = "예약 장소 : ${roomDoc.getString("name")}"
+                val imageUrl = roomDoc.getString("image")
+                if (!imageUrl.isNullOrEmpty()) {
+                    Picasso.get().load(imageUrl).into(binding.ivRoomBackground)
+                } else {
+                    binding.ivRoomBackground.setImageResource(R.drawable.sample_room) // 기본 이미지
+                }
+            } else {
+                binding.tvReservationRoom.text = "예약 장소 : ${reservation.roomID}"
+                binding.ivRoomBackground.setImageResource(R.drawable.sample_room) // 기본 이미지
+            }
         }
+        
+        val startCal = reservation.startTime?.let { parseKoreanDateToCalendar(it) }
+        val endCal = reservation.endTime?.let { parseKoreanDateToCalendar(it) }
 
-        handler.removeCallbacks(timeUpdateRunnable)
-        binding.root.setTag(R.id.tag_start_millis, 0L)
-        endMillis = 0L
-        currentReservationStartMillis = 0L
+        if (startCal != null && endCal != null) {
+            binding.tvReservationTime.text = "대여 시간 : ${formatKoreanTime(startCal)} - ${formatKoreanTime(endCal)}"
+            
+            timerRunnable = object : Runnable {
+                override fun run() {
+                    val now = Calendar.getInstance()
+                    val isActive = !now.before(startCal)
+
+                    if (isActive) {
+                        val remainingMillis = endCal.timeInMillis - now.timeInMillis
+                        if (remainingMillis > 0) {
+                            val totalDuration = endCal.timeInMillis - startCal.timeInMillis
+                            val elapsedTime = now.timeInMillis - startCal.timeInMillis
+                            val progress = if (totalDuration > 0) (elapsedTime * 100 / totalDuration).toInt() else 0
+
+                            binding.pbReservationProgress.progress = progress.coerceIn(0, 100)
+                            binding.tvProgressPercentage.text = "${progress.coerceIn(0,100)}%"
+
+                            val hours = TimeUnit.MILLISECONDS.toHours(remainingMillis)
+                            val minutes = TimeUnit.MILLISECONDS.toMinutes(remainingMillis) % 60
+                            
+                            binding.tvRemainingTime.text = if (hours > 0) {
+                                String.format("%d시간 %d분 후 종료", hours, minutes)
+                            } else {
+                                String.format("%d분 후 종료", minutes)
+                            }
+                            handler.postDelayed(this, 1000 * 30) // 30초마다 업데이트
+                        } else {
+                            loadMyReservation()
+                        }
+                    } else { // Upcoming
+                        val remainingMillis = startCal.timeInMillis - now.timeInMillis
+                        if (remainingMillis > 0) {
+                            val hours = TimeUnit.MILLISECONDS.toHours(remainingMillis)
+                            val minutes = TimeUnit.MILLISECONDS.toMinutes(remainingMillis) % 60
+                            binding.pbReservationProgress.progress = 0
+                            binding.tvProgressPercentage.text = "예약대기"
+                            binding.tvRemainingTime.text = String.format("%d시간 %d분 후 시작", hours, minutes)
+                            handler.postDelayed(this, 1000 * 60) // 1분마다 업데이트
+                        } else {
+                            loadMyReservation()
+                        }
+                    }
+                }
+            }
+            handler.post(timerRunnable!!)
+        }
     }
+
+    override fun onPause() {
+        super.onPause()
+        handler.removeCallbacksAndMessages(null) // 화면 벗어나면 타이머 중지
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        handler.removeCallbacksAndMessages(null)
+        _binding = null
+    }
+}
+
+private fun parseKoreanDateToCalendar(dateStr: String): Calendar? {
+    // Firestore에 저장된 '...h시 m분 s초...' 형식 파싱 시도
+    val formatWithSeconds = SimpleDateFormat("yyyy년 M월 d일 a h시 m분 s초 'UTC+9'", Locale.KOREAN)
+    try {
+        return Calendar.getInstance().apply { time = formatWithSeconds.parse(dateStr)!! }
+    } catch (e: Exception) {
+        // AI가 반환할 수 있는 '...h시 m분' 형식 파싱 시도 (초가 없는 경우)
+        val formatWithoutSeconds = SimpleDateFormat("yyyy년 M월 d일 a h시 m분", Locale.KOREAN)
+        try {
+            return Calendar.getInstance().apply { time = formatWithoutSeconds.parse(dateStr)!! }
+        } catch (e2: Exception) {
+            Log.e("HomeFragment", "DATE_PARSE_ERROR: Could not parse date: '$dateStr'", e2)
+            return null
+        }
+    }
+}
+
+private fun formatKoreanTime(calendar: Calendar): String {
+    val format = SimpleDateFormat("a h:mm", Locale.KOREAN)
+    return format.format(calendar.time)
 }

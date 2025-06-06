@@ -10,99 +10,72 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.example.pick_dream.R
+import com.example.pick_dream.databinding.FragmentLectureRoomDetailBinding
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class LectureRoomDetailFragment : Fragment() {
     private val viewModel: LectureRoomDetailViewModel by viewModels()
+    private var _binding: FragmentLectureRoomDetailBinding? = null
+    private val binding get() = _binding!!
+    private val args: LectureRoomDetailFragmentArgs by navArgs()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_lecture_room_detail, container, false)
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentLectureRoomDetailBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.GONE
 
-        val roomName = arguments?.getString("roomName") ?: ""
-        val buildingName = arguments?.getString("buildingName") ?: ""
-        val buildingDetail = arguments?.getString("buildingDetail") ?: ""
+        viewModel.loadRoomDetail(args.roomName)
 
-        val ivLectureRoom = view.findViewById<ImageView>(R.id.ivLectureRoom)
-        val tvRoomName = view.findViewById<TextView>(R.id.tvRoomName)
-        val tvRoomDesc = view.findViewById<TextView>(R.id.tvRoomDesc)
-        val btnFavorite = view.findViewById<ImageButton>(R.id.btnFavorite)
-        val btnBack = view.findViewById<ImageButton>(R.id.btnBack)
-        val btnReserve = view.findViewById<MaterialButton>(R.id.btnReserve)
-        val infoBox = view.findViewById<ViewGroup>(R.id.infoBox)
-        val infoTextViews = listOf<TextView>(
-            infoBox.getChildAt(0) as TextView,
-            infoBox.getChildAt(1) as TextView,
-            infoBox.getChildAt(2) as TextView,
-            infoBox.getChildAt(3) as TextView,
-            infoBox.getChildAt(4) as TextView,
-            infoBox.getChildAt(5) as TextView,
-            infoBox.getChildAt(6) as TextView
-        )
+        viewModel.roomDetail.observe(viewLifecycleOwner) { room ->
+            if (room != null) {
+                binding.tvRoomName.text = room.name
+                binding.tvRoomDesc.text = """
+                    ${room.buildingName} - ${room.location}
+                    수용 인원: 최대 ${room.capacity}명
+                    기자재: ${room.equipment.joinToString(", ")}
+                """.trimIndent()
 
-        LectureRoomRepository.roomsLiveData.observe(viewLifecycleOwner) { rooms ->
-            rooms.forEach {
-            }
-            val updatedRoom = rooms.find {
-                it.name.trim() == roomName.trim() &&
-                it.buildingName.trim() == buildingName.trim() &&
-                it.buildingDetail.trim() == buildingDetail.trim()
-            } ?: rooms.find { it.name.trim() == roomName.trim() }
-            if (updatedRoom != null) {
-                tvRoomName.text = "${updatedRoom.buildingName} (${updatedRoom.buildingDetail})"
-                tvRoomDesc.text = updatedRoom.equipment.joinToString(", ").toString()
-                btnFavorite.setImageResource(
-                    if (updatedRoom.isFavorite) R.drawable.ic_heart_filled else R.drawable.ic_heart_border
-                )
-                infoTextViews[0].text = "강의실 : ${updatedRoom.name}"
-                infoTextViews[1].text = "기자재 목록 : ${updatedRoom.equipment.joinToString(", ").toString()}"
-                infoTextViews[2].text = "수용 인원 : ${updatedRoom.capacity}명"
-                infoTextViews[3].text = "위치 : ${updatedRoom.location}"
-                infoTextViews[4].text = "빔 프로젝터 : ${if (updatedRoom.equipment.contains("빔프로젝터")) "있음" else "없음"}"
-                infoTextViews[5].text = "전자 칠판 : ${if (updatedRoom.equipment.contains("전자칠판")) "있음" else "없음"}"
-                infoTextViews[6].text = "앱에서 바로 예약 가능"
-            }
-        }
-        btnFavorite.setOnClickListener {
-            LectureRoomRepository.toggleFavorite(roomName)
-        }
-
-        btnBack.setOnClickListener {
-            findNavController().popBackStack()
-        }
-
-        btnReserve.setOnClickListener {
-            LectureRoomRepository.roomsLiveData.value?.let { rooms ->
-                val matchedRoom = rooms.find {
-                    it.name.trim() == roomName.trim() &&
-                    it.buildingName.trim() == buildingName.trim() &&
-                    it.buildingDetail.trim() == buildingDetail.trim()
-                } ?: rooms.find { it.name.trim() == roomName.trim() }
-                if (matchedRoom != null) {
-                    val bundle = Bundle().apply {
-                        putString("building", "${matchedRoom.buildingName} (${matchedRoom.buildingDetail})")
-                        putString("roomName", matchedRoom.name)
-                    }
-                    findNavController().navigate(R.id.manualReservationFragment, bundle)
+                binding.btnFavorite.isSelected = room.isFavorite
+                binding.btnFavorite.setOnClickListener {
+                    LectureRoomRepository.toggleFavorite(room.name)
+                    it.isSelected = !it.isSelected
                 }
             }
         }
 
-        val roomId = arguments?.getString("roomId")
-        if (roomId != null) {
-            viewModel.loadRoomDetail(roomId)
+        binding.btnBack.setOnClickListener {
+            findNavController().popBackStack()
+        }
+
+        binding.btnReserve.setOnClickListener {
+            val room = viewModel.roomDetail.value
+            if (room != null) {
+                val action = LectureRoomDetailFragmentDirections.actionLectureRoomDetailFragmentToManualReservationFragment(
+                    building = "${room.buildingName} (${room.buildingDetail})",
+                    roomName = room.name
+                )
+                findNavController().navigate(action)
+            }
         }
     }
 
     override fun onResume() {
         super.onResume()
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.GONE
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

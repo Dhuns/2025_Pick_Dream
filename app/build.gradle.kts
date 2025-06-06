@@ -15,6 +15,7 @@ plugins {
     alias(libs.plugins.google.gms.google.services)
     alias(libs.plugins.google.android.libraries.mapsplatform.secrets.gradle.plugin)
     id("androidx.navigation.safeargs.kotlin") version "2.7.7"
+    id("kotlin-parcelize")
 }
 
 android {
@@ -56,6 +57,10 @@ android {
 
 dependencies {
 
+    // Firebase BoM(Bill of Materials) 추가
+    // BoM을 사용하면 Firebase 라이브러리의 버전을 명시하지 않아도 호환되는 버전이 자동으로 설정됩니다.
+    implementation(platform("com.google.firebase:firebase-bom:33.1.2"))
+
     implementation("com.squareup.okhttp3:okhttp:4.12.0")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -77,8 +82,17 @@ dependencies {
     implementation("com.google.android.gms:play-services-location:21.3.0")
     implementation ("androidx.viewpager2:viewpager2:1.1.0")
     implementation ("com.prolificinteractive:material-calendarview:1.4.3")
+
+    // BoM을 사용하므로 아래 Firebase 라이브러리들은 버전을 명시하지 않습니다.
+    implementation("com.google.firebase:firebase-functions-ktx")
+    implementation("com.google.firebase:firebase-storage-ktx")
+    implementation("com.google.firebase:firebase-appcheck-playintegrity")
+
+    implementation("com.squareup.picasso:picasso:2.71828")
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.junit)
     androidTestImplementation(libs.androidx.espresso.core)
+    androidTestImplementation("androidx.test.ext:junit:1.1.5")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.5.1")
 
 }
