@@ -45,6 +45,11 @@ class HomeFragment : Fragment() {
             findNavController().navigate(R.id.action_homeFragment_to_noticeFragment)
         }
 
+        // 데이터 로딩 전, 예약 정보 관련 뷰들을 미리 숨김
+        binding.layoutReservationDetails.visibility = View.INVISIBLE
+        binding.layoutNoReservation.visibility = View.INVISIBLE
+        binding.flReservationStatusVisual.visibility = View.INVISIBLE
+
         initViews()
         setupClickListeners()
         // loadMyReservation() // onResume에서 호출되므로 중복 호출 방지
