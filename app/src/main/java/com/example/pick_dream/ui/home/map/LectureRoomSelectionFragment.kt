@@ -1,6 +1,7 @@
 package com.example.pick_dream.ui.home.map
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,9 +10,10 @@ import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.pick_dream.R
 import com.example.pick_dream.databinding.FragmentLectureRoomSelectionBinding
+import com.example.pick_dream.model.LectureRoom
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.PropertyName
 
 class LectureRoomSelectionFragment : Fragment() {
     private var _binding: FragmentLectureRoomSelectionBinding? = null
@@ -55,6 +57,8 @@ class LectureRoomSelectionFragment : Fragment() {
         binding.btnBack.setOnClickListener {
             findNavController().popBackStack()
         }
+
+        loadAvailableRooms()
     }
 
     private fun loadAvailableRooms() {
@@ -62,16 +66,11 @@ class LectureRoomSelectionFragment : Fragment() {
         binding.tvEmptyMessage.visibility = View.GONE
         
         db.collection("rooms")
+            .whereEqualTo("buildingName", args.buildingName)
             .get()
             .addOnSuccessListener { documents ->
                 val rooms = documents.mapNotNull { doc ->
-                    try {
-                        val room = doc.toObject(LectureRoom::class.java)
-
-                        if (room.buildingDetail.replace(" ", "") == args.buildingDetail.replace(" ", "")) room else null
-                    } catch (e: Exception) {
-                        null
-                    }
+                    doc.toObject(LectureRoom::class.java).copy(id = doc.id)
                 }
 
                 val availableRooms = rooms.filter { it.isAvailable }
@@ -98,29 +97,4 @@ class LectureRoomSelectionFragment : Fragment() {
         super.onDestroyView()
         _binding = null
     }
-}
-
-data class LectureRoom(
-    @get:PropertyName("name") @set:PropertyName("name")
-    var name: String = "",
-
-    @get:PropertyName("buildingName") @set:PropertyName("buildingName")
-    var buildingName: String = "",
-
-    @get:PropertyName("buildingDetail") @set:PropertyName("buildingDetail")
-    var buildingDetail: String = "",
-
-    @get:PropertyName("location") @set:PropertyName("location")
-    var location: String = "",
-
-    @get:PropertyName("capacity") @set:PropertyName("capacity")
-    var capacity: Int = 0,
-
-    @get:PropertyName("equipment") @set:PropertyName("equipment")
-    var equipment: List<String> = emptyList(),
-
-    @get:PropertyName("isAvailable") @set:PropertyName("isAvailable")
-    var isAvailable: Boolean = false
-) {
-    constructor() : this("", "", "", "", 0, emptyList(), false)
 } 

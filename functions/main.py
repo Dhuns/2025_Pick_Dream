@@ -81,7 +81,19 @@ def handle_reserve(query, userID):
         query["eventName"] = "추천 예약"
         query["eventDescription"] = ""
         query["eventTarget"] = ""
-        query["eventParticipants"] = query.get("eventParticipants", "").strip()
+        
+        # 'eventParticipants' 키의 값을 가져옵니다.
+        event_participants_value = query.get("eventParticipants")
+
+        # 값이 문자열인 경우, 공백을 제거합니다.
+        if isinstance(event_participants_value, str):
+            query["eventParticipants"] = event_participants_value.strip()
+        # 값이 None이거나 다른 타입인 경우, 안전하게 문자열로 변환하고 빈 문자열로 처리할 수 있습니다.
+        # LLM이 인원수를 숫자로 반환할 수도 있으므로, 이를 고려합니다.
+        else:
+            # 값이 None이면 빈 문자열로, 아니면 문자열로 변환합니다.
+            query["eventParticipants"] = str(event_participants_value or "").strip()
+            
         query["status"] = "대기"
 
         required_fields = ["room", "startTime", "duration", "userID", "eventParticipants"]
@@ -169,20 +181,24 @@ def handle_cancel_reservation(query, userID):
         col = db.collection("Reservations").where("userID", "==", userID)
         if room_id:
             col = col.where("roomID", "==", room_id)
+        
+        # .limit(1)을 추가하여 가장 최근 예약 1건만 가져옴
+        docs_query = col.order_by("startTimestamp", direction=firestore.Query.DESCENDING).limit(1)
 
         try:
-            docs = col.order_by("startTimestamp", direction=firestore.Query.DESCENDING)
+            # 쿼리를 실행하여 문서 목록을 가져옴
+            docs = list(docs_query.stream())
         except Exception as e:
             logging.exception("[handle_cancel_reservation] 예약 조회 실패")
             return https_fn.Response("예약 조회 중 문제가 발생했어요. 로그를 확인해주세요.", status=500)
 
-
         if not docs:
             return https_fn.Response("취소할 예약이 없습니다.", status=404)
 
-        for doc in docs:
-            db.collection("Reservations").document(doc.id).delete()
-            cancelled_room = doc.to_dict().get("roomID", "해당 강의실")
+        # 첫 번째 (가장 최근) 문서만 처리
+        doc_to_delete = docs[0]
+        cancelled_room = doc_to_delete.to_dict().get("roomID", "해당 강의실")
+        db.collection("Reservations").document(doc_to_delete.id).delete()
 
         return https_fn.Response(f"{cancelled_room}호 예약이 취소되었습니다 ✅", status=200)
 
@@ -326,12 +342,16 @@ def handle_recommend_room(query, userID):
     if avg is not None:
         response += f"\n⭐ 평균 평점: {avg}점\n📊 긍정 {pos_rate}%, 부정 {neg_rate}%"
 
-    db.collection("PendingReservations").document(userID).set({
+    pending_data = {
         "room": room_id,
         "startTime": (base_time + timedelta(minutes=10)).astimezone(KST).isoformat(),
         "duration": 2,
         "eventName": "추천 예약"
-    })
+    }
+    if person_count is not None:
+        pending_data["eventParticipants"] = f"{person_count}명"
+
+    db.collection("PendingReservations").document(userID).set(pending_data)
 
     return https_fn.Response(response, status=200)
 
@@ -408,13 +428,35 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
         user_input = data.get("message", "")
 
         id_token = req.headers.get("Authorization", "").replace("Bearer ", "")
-        userID = "unknown"
+        uid = "unknown"
         if id_token:
             try:
                 decoded_token = auth.verify_id_token(id_token)
-                userID = decoded_token.get("uid", "unknown")
-            except:
+                uid = decoded_token.get("uid", "unknown")
+            except Exception as e:
+                logging.warning(f"Failed to verify token: {e}")
                 return https_fn.Response("유효하지 않은 토큰입니다.", status=401)
+        
+        if uid == "unknown":
+            logging.warning("UserID is unknown. Authentication is required.")
+            return https_fn.Response("사용자 인증이 필요합니다. 다시 로그인해주세요.", status=401)
+
+        # uid로 사용자 문서 조회하여 학번(studentId) 가져오기
+        try:
+            user_doc_ref = db.collection("User").document(uid)
+            user_doc = user_doc_ref.get()
+            if user_doc.exists:
+                user_data = user_doc.to_dict()
+                userID = user_data.get("studentId") # 학번을 userID로 사용
+                if not userID:
+                    logging.error(f"studentId not found for uid: {uid}")
+                    return https_fn.Response("사용자 정보에서 학번을 찾을 수 없습니다.", status=404)
+            else:
+                logging.error(f"User document not found for uid: {uid}")
+                return https_fn.Response("사용자 정보를 찾을 수 없습니다.", status=404)
+        except Exception as e:
+            logging.exception("Failed to fetch user data from Firestore.")
+            return https_fn.Response("사용자 정보 조회 중 오류가 발생했습니다.", status=500)
 
         # ✅ 단순 반응 처리 (GPT 호출 전)
         positive_keywords = ["응", "ㅇㅇ", "좋아", "그래", "예약해줘", "해줘", "할래"]
@@ -436,7 +478,10 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
                 return https_fn.Response("추천된 강의실이 없어요. 먼저 추천을 받아주세요 😊", status=400)
 
         # 시스템 프롬프트
+        now_kst = datetime.now(KST)
         system_prompt = f"""너는 Firestore 기반 강의실 예약 도우미야. 사용자의 한국어 문장을 먼저 자연스럽게 오타 없이 교정하고, 그 다음 아래 JSON 명령 중 하나로 변환해.
+
+오늘 날짜는 {now_kst.strftime('%Y-%m-%d')}이야. 이 정보를 바탕으로 '내일', '모레' 같은 상대적인 날짜를 정확한 ISO 8601 형식의 시간으로 변환해줘.
 
 반드시 아래 형식을 따르고, **JSON만 반환**해야 해.
 설명, 문장, 주석 등은 출력하지 마. 오직 JSON 한 개만 반환해.
@@ -461,7 +506,7 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
 {{
 "action": "reserve",
 "room": "5104",
-"startTime": "2025-06-04T13:00:00+09:00",
+"startTime": "{now_kst.isoformat()}",
 "duration": 2,
 "eventParticipants": "6명",
 "userID": "{userID}"
@@ -487,7 +532,7 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
 {{
 "action": "recommend_room",
 "keywords": ["6명", "TV", "마이크"],
-"startTime": "2025-06-04T13:00:00+09:00"
+"startTime": "{now_kst.isoformat()}"
 }}
 
 7. 강의실 평가 요청
@@ -526,7 +571,7 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
 
 ---
 
-### 🔄 응답 예약 예외 규칙
+### 추가 응답 예약 예외 규칙
 
 사용자의 입력이 긍정 반응("응", "좋아요", "ㅇㅇ", "그래", "예약해줘" 등) **단순 반응**일 경우:
 
@@ -555,7 +600,7 @@ def ai_assistant(req: https_fn.Request) -> https_fn.Response:
 
 
         gpt = client.chat.completions.create(
-            model="gpt-4",
+            model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": system_prompt},
                 {"role": "user", "content": user_input}

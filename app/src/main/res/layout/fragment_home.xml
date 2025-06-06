@@ -230,8 +230,7 @@
                         android:id="@+id/tv_no_reservation_message"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="현재 진행 중인 예약이 없네요.
-                        지금 바로 예약해보세요!"
+                        android:text="현재 진행 중인 예약이 없습니다.\n"
                         android:textSize="14sp"
                         android:textColor="#333333"
                         android:gravity="center_horizontal" />

@@ -176,4 +176,4 @@
             android:src="@drawable/ic_arrow_back"
             android:contentDescription="뒤로가기" />
     </FrameLayout>
-</FrameLayout> 
+</FrameLayout>
