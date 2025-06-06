@@ -22,64 +22,62 @@ object LectureRoomRepository {
     private val auth = FirebaseAuth.getInstance()
     private val allRooms = MutableLiveData<List<LectureRoom>>()
     private val favoriteRoomIds = MutableLiveData<List<String>>()
-    private val buildingInfoMap = MutableLiveData<Map<String, BuildingInfo>>()
-
-    data class BuildingInfo(
-        val displayName: String = "",
-        val sortOrder: Int = 999
-    )
 
     // 최종적으로 UI에 보여줄 LiveData. allRooms나 favoriteRoomIds가 변경되면 자동으로 업데이트됨
     val lectureRoomsWithFavorites = MediatorLiveData<List<ListItem>>()
 
     init {
-        // 여러 LiveData를 관찰하고, 변경이 있을 때마다 데이터를 조합하는 로직
+        // 두 LiveData를 관찰하고, 변경이 있을 때마다 데이터를 조합하는 로직
         lectureRoomsWithFavorites.addSource(allRooms) { rooms ->
-            combineData(rooms, favoriteRoomIds.value, buildingInfoMap.value)
+            combineRoomsAndFavorites(rooms, favoriteRoomIds.value)
         }
         lectureRoomsWithFavorites.addSource(favoriteRoomIds) { ids ->
-            combineData(allRooms.value, ids, buildingInfoMap.value)
-        }
-        lectureRoomsWithFavorites.addSource(buildingInfoMap) { buildingInfo ->
-            combineData(allRooms.value, favoriteRoomIds.value, buildingInfo)
+            combineRoomsAndFavorites(allRooms.value, ids)
         }
     }
 
-    private fun combineData(
-        rooms: List<LectureRoom>?,
-        ids: List<String>?,
-        buildingInfo: Map<String, BuildingInfo>?
-    ) {
-        if (rooms == null || ids == null || buildingInfo == null) {
+    private fun combineRoomsAndFavorites(rooms: List<LectureRoom>?, ids: List<String>?) {
+        if (rooms == null || ids == null) {
             return
         }
-
-        val defaultSortOrder = buildingInfo.size + 1
 
         val updatedRooms = rooms.map { room ->
             room.copy(isFavorite = ids.contains(room.id))
         }
-        
+
+        // buildingDetail에서 숫자(강의동 번호)를 추출하여 건물별로 먼저 정렬하고, 그 다음 강의실 번호로 정렬
         val sortedRooms = updatedRooms.sortedWith(
-            compareBy(
-                { buildingInfo[it.buildingName.trim()]?.sortOrder ?: defaultSortOrder }, 
-                { it.name.filter { char -> char.isDigit() }.toIntOrNull() ?: 0 }
-            )
-        )
-        
-        val groupedList = mutableListOf<ListItem>()
-        sortedRooms.groupBy { it.buildingName }.forEach { (buildingName, roomsInBuilding) ->
-            val headerText = buildingInfo[buildingName.trim()]?.displayName ?: buildingName
-            groupedList.add(ListItem.HeaderItem(headerText))
-            roomsInBuilding.forEach { room ->
-                groupedList.add(ListItem.RoomItem(room))
+            compareBy<LectureRoom> { room ->
+                // "5강의동" -> 5
+                room.buildingDetail.filter { it.isDigit() }.toIntOrNull() ?: 999
+            }.thenBy {
+                // "5104" -> 5104
+                it.name.filter { char -> char.isDigit() }.toIntOrNull() ?: 0
             }
+        )
+
+        val groupedList = mutableListOf<ListItem>()
+        var lastBuildingName = ""
+        sortedRooms.forEach { room ->
+            if (room.buildingName != lastBuildingName) {
+                // 헤더 텍스트 포맷: "덕문관 (5강의동)"
+                val headerText = "${room.buildingName} (${room.buildingDetail})"
+                groupedList.add(ListItem.HeaderItem(headerText))
+                lastBuildingName = room.buildingName
+            }
+            groupedList.add(ListItem.RoomItem(room))
         }
         
         lectureRoomsWithFavorites.postValue(groupedList)
     }
 
     fun fetchRooms() {
+        if (allRooms.value != null && allRooms.value!!.isNotEmpty()) {
+            Log.d("LectureRoomRepo", "Rooms already fetched. Skipping.")
+            return
+        }
+        
+        Log.d("LectureRoomRepo", "Fetching rooms from Firestore.")
         db.collection("rooms").get()
             .addOnSuccessListener { result ->
                 val roomList = result.mapNotNull { doc ->
@@ -91,22 +89,6 @@ object LectureRoomRepository {
             .addOnFailureListener { e ->
                 Log.e("LectureRoomRepo", "Error fetching rooms", e)
                 allRooms.postValue(emptyList()) // 실패 시 빈 리스트 전달
-            }
-    }
-
-    fun fetchBuildingInfo() {
-        db.collection("buildings").get()
-            .addOnSuccessListener { result ->
-                val infoMap = result.documents.associate { doc ->
-                    val info = doc.toObject<BuildingInfo>() ?: BuildingInfo()
-                    doc.id to info
-                }
-                buildingInfoMap.postValue(infoMap)
-                Log.d("LectureRoomRepo", "Successfully fetched ${infoMap.size} building info.")
-            }
-            .addOnFailureListener { e ->
-                Log.e("LectureRoomRepo", "Error fetching building info", e)
-                buildingInfoMap.postValue(emptyMap())
             }
     }
 

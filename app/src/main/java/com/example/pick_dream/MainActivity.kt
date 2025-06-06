@@ -4,6 +4,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pick_dream.databinding.ActivityMainBinding
 import androidx.navigation.fragment.NavHostFragment
+import com.example.pick_dream.ui.home.search.LectureRoomRepository
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -14,6 +15,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
+
+        // 앱 시작 시 강의실 및 찜 목록 데이터 미리 로드
+        LectureRoomRepository.fetchRooms()
+        LectureRoomRepository.fetchFavoriteIds()
 
         checkClassroomUsageTime()
 

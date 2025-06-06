@@ -43,9 +43,9 @@ class LectureRoomListFragment : Fragment() {
 
         requireActivity().findViewById<View>(R.id.nav_view)?.visibility = View.GONE
 
-        LectureRoomRepository.fetchBuildingInfo()
-        LectureRoomRepository.fetchRooms()
-        LectureRoomRepository.fetchFavoriteIds()
+        // 데이터는 MainActivity에서 미리 로드하므로 여기서는 호출할 필요가 없습니다.
+        // LectureRoomRepository.fetchRooms()
+        // LectureRoomRepository.fetchFavoriteIds()
     }
     
     private fun setupSearch() {
