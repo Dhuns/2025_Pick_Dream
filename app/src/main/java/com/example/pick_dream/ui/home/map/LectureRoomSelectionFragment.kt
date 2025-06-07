@@ -73,7 +73,7 @@ class LectureRoomSelectionFragment : Fragment() {
                     doc.toObject(LectureRoom::class.java).copy(id = doc.id)
                 }
 
-                val availableRooms = rooms.filter { it.isAvailable }
+                val availableRooms = rooms.filter { it.isRentalAvailable }
                 
                 adapter.submitList(availableRooms)
                 binding.progressBar.visibility = View.GONE

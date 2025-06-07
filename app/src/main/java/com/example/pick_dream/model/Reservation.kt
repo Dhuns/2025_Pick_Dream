@@ -3,7 +3,7 @@ package com.example.pick_dream.model
 import com.google.firebase.firestore.DocumentId
 
 data class Reservation(
-    @DocumentId val documentId: String? = null,
+    var documentId: String = "",
     val userID: String = "",
     val roomID: String = "",
     val eventName: String = "",
