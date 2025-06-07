@@ -21,6 +21,7 @@ import com.squareup.picasso.Picasso
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
+import android.content.Context
 
 class HomeFragment : Fragment() {
 
@@ -199,6 +200,15 @@ class HomeFragment : Fragment() {
 
         if (startCal != null && endCal != null) {
             binding.tvReservationTime.text = "대여 시간 : ${formatKoreanTime(startCal)} - ${formatKoreanTime(endCal)}"
+            
+            // 현재 예약 정보 SharedPreferences에 저장
+            val sharedPrefs = requireActivity().getSharedPreferences("ClassroomPrefs", Context.MODE_PRIVATE)
+            with(sharedPrefs.edit()) {
+                putLong("last_end_time", endCal.timeInMillis)
+                putString("last_room_id", reservation.roomID)
+                putBoolean("has_shown_review", false) // 새로운 예약이 시작되면 리뷰 창 표시 여부 초기화
+                apply()
+            }
             
             timerRunnable = object : Runnable {
                 override fun run() {

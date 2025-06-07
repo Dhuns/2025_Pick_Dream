@@ -19,6 +19,8 @@ import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import java.text.SimpleDateFormat
 import java.util.Locale
+import android.view.inputmethod.EditorInfo
+import android.widget.LinearLayout
 
 
 data class Notice(
@@ -46,7 +48,7 @@ class NoticeAdapter(
     inner class NoticeViewHolder(private val binding: ItemNoticeBinding) :
         RecyclerView.ViewHolder(binding.root) {
         fun bind(notice: Notice) {
-            binding.tvIcon.text = notice.iconEmoji
+            binding.tvIcon.text = if (notice.title.contains("[이벤트]")) "🎉" else "📢"
             binding.tvTitle.text = notice.title
             binding.tvDate.text = notice.date
             binding.root.setOnClickListener { onClick(notice) }
@@ -139,58 +141,86 @@ class NoticeFragment : Fragment() {
             }
 
         binding.btnSearch.setOnClickListener {
-            val query = binding.etSearch.text.toString().trim()
-            if (query.isNotEmpty()) {
-                val filtered = allNotices.filter {
-                    it.title.contains(query, ignoreCase = true) ||
-                            it.content.contains(query, ignoreCase = true)
+            performSearch()
+        }
+
+        binding.etSearch.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                performSearch()
+                return@setOnEditorActionListener true
+            }
+            false
+        }
+    }
+
+    private fun performSearch() {
+        val query = binding.etSearch.text.toString().trim()
+        val db = Firebase.firestore
+        val formatter = SimpleDateFormat("yy.MM.dd", Locale.getDefault())
+
+        db.collection("Notices")
+            .get()
+            .addOnSuccessListener { result ->
+                val originalNotices = result.map { doc ->
+                    val timestamp = doc.getTimestamp("createdAt")
+                    val formattedDate = timestamp?.toDate()?.let { formatter.format(it) } ?: ""
+                    Notice(
+                        id = doc.id,
+                        iconEmoji = "📢",
+                        title = doc.getString("title") ?: "",
+                        date = formattedDate,
+                        content = doc.getString("content") ?: ""
+                    )
                 }
-                allNotices = filtered
+
+                if (query.isNotEmpty()) {
+                    val filtered = originalNotices.filter {
+                        it.title.contains(query, ignoreCase = true) || it.content.contains(query, ignoreCase = true)
+                    }
+                    allNotices = filtered
+                } else {
+                    allNotices = originalNotices
+                }
+
                 totalPages = (allNotices.size + pageSize - 1) / pageSize
-                currentPage = 1
-                showPage(currentPage)
-                setupPagination()
-            } else {
-                allNotices = sampleList
-                totalPages = (allNotices.size + pageSize - 1) / pageSize
+                if (totalPages == 0) totalPages = 1
                 currentPage = 1
                 showPage(currentPage)
                 setupPagination()
             }
-        }
     }
 
     private fun setupPagination() {
-        val paginationLayout = binding.paginationLayout
-        paginationLayout.removeAllViews()
+        val pagesContainer = binding.pagesContainer
+        pagesContainer.removeAllViews()
 
-        val prevBtn = createPageButton("<", false) {
+        binding.tvPrev.setOnClickListener {
             if (currentPage > 1) {
                 currentPage--
                 showPage(currentPage)
                 setupPagination()
             }
         }
-        paginationLayout.addView(prevBtn)
 
+        // 페이지 번호 생성
         for (i in 1..totalPages) {
-            val btn = createPageButton(i.toString(), i == currentPage) {
+            val pageButton = createPageButton(i.toString(), i == currentPage) {
                 currentPage = i
                 showPage(currentPage)
                 setupPagination()
             }
-            paginationLayout.addView(btn)
+            pagesContainer.addView(pageButton)
         }
 
-        val nextBtn = createPageButton(">", false) {
+        binding.tvNext.setOnClickListener {
             if (currentPage < totalPages) {
                 currentPage++
                 showPage(currentPage)
                 setupPagination()
             }
         }
-        paginationLayout.addView(nextBtn)
     }
+
     private fun createPageButton(text: String, isSelected: Boolean = false, onClick: () -> Unit): View {
         val tv = TextView(requireContext())
         tv.text = text

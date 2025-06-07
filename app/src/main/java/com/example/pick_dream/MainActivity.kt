@@ -1,5 +1,6 @@
 package com.example.pick_dream
 
+import android.content.Context
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.example.pick_dream.databinding.ActivityMainBinding
@@ -63,19 +64,30 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkClassroomUsageTime() {
-        val sharedPrefs = getSharedPreferences("ClassroomPrefs", MODE_PRIVATE)
+        val sharedPrefs = getSharedPreferences("ClassroomPrefs", Context.MODE_PRIVATE)
         val lastEndTime = sharedPrefs.getLong("last_end_time", 0)
         val hasShownReview = sharedPrefs.getBoolean("has_shown_review", false)
+        val lastRoomId = sharedPrefs.getString("last_room_id", null)
 
         val currentTime = System.currentTimeMillis()
 
-        if (lastEndTime > 0 && !hasShownReview && currentTime > lastEndTime) {
+        if (lastRoomId != null && lastEndTime > 0 && !hasShownReview && currentTime > lastEndTime) {
             val navHostFragment = supportFragmentManager
                 .findFragmentById(R.id.nav_host_fragment_activity_main) as NavHostFragment
             val navController = navHostFragment.navController
-            navController.navigate(R.id.reviewpageFragment)
+            
+            // ReviewFragment로 roomId 전달
+            val bundle = Bundle()
+            bundle.putString("roomId", lastRoomId)
+            navController.navigate(R.id.reviewFragment, bundle)
 
-            sharedPrefs.edit().putBoolean("has_shown_review", true).apply()
+            with(sharedPrefs.edit()) {
+                putBoolean("has_shown_review", true)
+                // 선택: 리뷰 창을 보여준 후에는 last_end_time을 초기화하여 중복 실행 방지
+                // remove("last_end_time")
+                // remove("last_room_id")
+                apply()
+            }
         }
     }
 }

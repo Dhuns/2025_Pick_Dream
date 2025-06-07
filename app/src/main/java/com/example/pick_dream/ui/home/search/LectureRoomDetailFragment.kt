@@ -39,11 +39,31 @@ class LectureRoomDetailFragment : Fragment() {
         viewModel.roomDetail.observe(viewLifecycleOwner) { room ->
             if (room != null) {
                 binding.tvRoomName.text = room.name
-                binding.tvRoomDesc.text = """
-                    ${room.buildingName} - ${room.location}
-                    수용 인원: 최대 ${room.capacity}명
-                    기자재: ${room.equipment.joinToString(", ")}
-                """.trimIndent()
+                binding.tvRoomDesc.text = "${room.buildingName} - ${room.location}\n수용 인원: 최대 ${room.capacity}명\n기자재: ${room.equipment.joinToString(", ")}"
+
+                // 하드코딩된 랜덤 데이터 생성 향후 데이터 추가하면 사용 가능
+                val randomChairType = listOf("일체형 의자", "분리형 의자", "이동식 의자").random()
+                val randomProjector = Math.random() < 0.7 // 70% 확률로 사용 가능
+                val randomBlackboard = Math.random() < 0.5 // 50% 확률로 사용 가능
+
+                // 상세 정보 박스 채우기
+                binding.infoBoxRoomName.text = "강의실 : ${room.name} 강의실"
+                binding.infoBoxEquipment.text = "기자재 목록 : ${room.equipment.joinToString(", ")}"
+                binding.infoBoxChairType.text = "의자 : $randomChairType"
+                binding.infoBoxProjector.text = "빔 프로젝터 대여 여부 : ${if (randomProjector) "사용가능" else "사용불가"}"
+                binding.infoBoxBlackboard.text = "전자 칠판 대여 여부 : ${if (randomBlackboard) "사용가능" else "사용불가"}"
+                binding.infoBoxRentalAvailability.text = if (room.isRentalAvailable) "앱에서 바로 예약 가능" else "예약 불가"
+
+                // 대여 가능 여부에 따라 버튼 상태 변경
+                if (room.isRentalAvailable) {
+                    binding.btnReserve.isEnabled = true
+                    binding.btnReserve.setBackgroundColor(resources.getColor(R.color.primary_400, null))
+                    binding.btnReserve.setTextColor(resources.getColor(android.R.color.white, null))
+                } else {
+                    binding.btnReserve.isEnabled = false
+                    binding.btnReserve.setBackgroundColor(resources.getColor(R.color.neutral_200, null))
+                    binding.btnReserve.setTextColor(resources.getColor(R.color.neutral_400, null))
+                }
 
                 binding.btnFavorite.isSelected = room.isFavorite
                 binding.btnFavorite.setOnClickListener {

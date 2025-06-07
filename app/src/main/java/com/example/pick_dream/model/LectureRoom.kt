@@ -1,6 +1,7 @@
 package com.example.pick_dream.model
 
 import android.os.Parcelable
+import com.google.firebase.firestore.PropertyName
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -13,6 +14,10 @@ data class LectureRoom(
     val capacity: Int = 0,
     val equipment: List<String> = emptyList(),
     var isFavorite: Boolean = false,
-    var isAvailable: Boolean = true,
+    val chairType: String = "",
+    val isProjectorAvailable: Boolean = false,
+    val isBlackboardAvailable: Boolean = false,
+    @get:PropertyName("isAvailable") @set:PropertyName("isAvailable")
+    var isRentalAvailable: Boolean = false,
     val imageUrl: String? = null
 ) : Parcelable

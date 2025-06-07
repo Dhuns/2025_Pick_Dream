@@ -2,6 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="#F5F8FF">
@@ -10,354 +11,348 @@
     <RelativeLayout
         android:id="@+id/topBar"
         android:layout_width="0dp"
-        android:layout_height="110dp"
+        android:layout_height="80dp"
         android:background="#3C5ABD"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
         <TextView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:layout_marginTop="18dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:text="PickDream"
-            android:textSize="28sp"
+            android:textSize="22sp"
             android:textColor="@android:color/white"
             android:textStyle="bold" />
 
         <ImageButton
-        android:id="@+id/btnClose"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_close"
-        android:layout_alignParentEnd="true"
-        android:layout_centerVertical="true"
-        android:layout_marginEnd="8dp"/>
+            android:id="@+id/btnClose"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_close"
+            app:tint="@color/white"
+            android:layout_alignParentEnd="true"
+            android:layout_centerVertical="true"
+            android:layout_marginEnd="8dp"/>
     </RelativeLayout>
 
-        <!-- 안내 박스 -->
-    <LinearLayout
-        android:id="@+id/boxGuide"
-        android:layout_width="360dp"
-        android:layout_height="70dp"
-        android:layout_marginTop="35dp"
-        android:layout_marginBottom="30dp"
-        android:background="@drawable/review_box_bg"
-        android:gravity="center"
-        android:orientation="horizontal"
-        android:padding="16dp"
+    <ScrollView
+        android:layout_width="0dp"
+        android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/topBar"
+        app:layout_constraintBottom_toTopOf="@id/btnSubmit"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
 
-        <ImageView
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:src="@drawable/ic_edit"
-            android:layout_marginEnd="12dp"/>
-
-        <TextView
-            android:layout_width="wrap_content"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center_vertical"
-            android:text="강의실 이용 후기를 남겨주세요!"
-            android:textSize="20sp"
-            android:textColor="#6391EE"
-            android:textStyle="bold"/>
-    </LinearLayout>
+            android:paddingBottom="24dp">
 
-    <!--첫 번째 질문-->
-    <TextView
-        android:id="@+id/tvSatisfaction"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="강의실의 전반적인 만족도는 어땠나요?"
-        android:layout_marginTop="40dp"
-        android:layout_marginStart="45dp"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:textColor="#333333"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toBottomOf="@id/boxGuide"
-        app:layout_constraintStart_toStartOf="parent"/>
+            <!-- 안내 박스 -->
+            <LinearLayout
+                android:id="@+id/boxGuide"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
+                android:background="@drawable/review_box_bg"
+                android:gravity="center"
+                android:orientation="horizontal"
+                android:padding="16dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
 
-    <!-- 별점: 별 5개를 가로로 배치 -->
-    <ImageView
-        android:id="@+id/star1"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:layout_marginStart="45dp"
-        android:src="@drawable/ic_star_empty"
-        android:contentDescription="@string/star1"
-        app:layout_constraintTop_toBottomOf="@id/tvSatisfaction"
-        app:layout_constraintStart_toStartOf="parent"
-        android:layout_marginTop="15dp"
-        android:layout_marginEnd="4dp"/>
+                <ImageView
+                    android:layout_width="28dp"
+                    android:layout_height="28dp"
+                    android:src="@drawable/ic_edit"
+                    android:layout_marginEnd="12dp"/>
 
-    <ImageView
-        android:id="@+id/star2"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_star_empty"
-        android:contentDescription="@string/star2"
-        app:layout_constraintTop_toTopOf="@id/star1"
-        app:layout_constraintStart_toEndOf="@id/star1"
-        android:layout_marginEnd="4dp"/>
+                <TextView
+                    android:id="@+id/tvGuideText"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    android:text="강의실 이용 후기를 남겨주세요!"
+                    android:textSize="18sp"
+                    android:textColor="#6391EE"
+                    android:textStyle="bold"
+                    tools:text="7504 이용 후기를 남겨주세요!"/>
+            </LinearLayout>
 
-    <ImageView
-        android:id="@+id/star3"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_star_empty"
-        android:contentDescription="@string/star3"
-        app:layout_constraintTop_toTopOf="@id/star1"
-        app:layout_constraintStart_toEndOf="@id/star2"
-        android:layout_marginEnd="4dp"/>
+            <!--첫 번째 질문-->
+            <TextView
+                android:id="@+id/tvSatisfaction"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="강의실의 전반적인 만족도는 어땠나요?"
+                android:layout_marginTop="32dp"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="#333333"
+                app:layout_constraintTop_toBottomOf="@id/boxGuide"
+                app:layout_constraintStart_toStartOf="@id/boxGuide"/>
 
-    <ImageView
-        android:id="@+id/star4"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_star_empty"
-        android:contentDescription="@string/star4"
-        app:layout_constraintTop_toTopOf="@id/star1"
-        app:layout_constraintStart_toEndOf="@id/star3"
-        android:layout_marginEnd="4dp"/>
+            <!-- 별점: 별 5개를 가로로 배치 -->
+            <LinearLayout
+                android:id="@+id/layoutStars"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/tvSatisfaction"
+                app:layout_constraintStart_toStartOf="@id/tvSatisfaction">
+                <ImageView
+                    android:id="@+id/star1"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_star_empty"
+                    android:contentDescription="@string/star1"
+                    android:layout_marginEnd="4dp"/>
+                <ImageView
+                    android:id="@+id/star2"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_star_empty"
+                    android:contentDescription="@string/star2"
+                    android:layout_marginEnd="4dp"/>
+                <ImageView
+                    android:id="@+id/star3"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_star_empty"
+                    android:contentDescription="@string/star3"
+                    android:layout_marginEnd="4dp"/>
+                <ImageView
+                    android:id="@+id/star4"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_star_empty"
+                    android:contentDescription="@string/star4"
+                    android:layout_marginEnd="4dp"/>
+                <ImageView
+                    android:id="@+id/star5"
+                    android:layout_width="36dp"
+                    android:layout_height="36dp"
+                    android:src="@drawable/ic_star_empty"
+                    android:contentDescription="@string/star5"/>
+            </LinearLayout>
 
-    <ImageView
-        android:id="@+id/star5"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:src="@drawable/ic_star_empty"
-        android:contentDescription="@string/star5"
-        app:layout_constraintTop_toTopOf="@id/star1"
-        app:layout_constraintStart_toEndOf="@id/star4"/>
 
-        <!-- 아쉬웠던 점/좋았던 점 -->
-    <TextView
-        android:id="@+id/tvCommentTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="어떤 점이 좋았거나 아쉬웠나요?"
-        android:layout_marginTop="40dp"
-        android:layout_marginStart="45dp"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:textColor="#333333"
-        android:layout_marginBottom="8dp"
-        app:layout_constraintTop_toBottomOf="@id/star1"
-        app:layout_constraintStart_toStartOf="parent"/>
+            <!-- 아쉬웠던 점/좋았던 점 -->
+            <TextView
+                android:id="@+id/tvCommentTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="어떤 점이 좋았거나 아쉬웠나요?"
+                android:layout_marginTop="32dp"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="#333333"
+                app:layout_constraintTop_toBottomOf="@id/layoutStars"
+                app:layout_constraintStart_toStartOf="@id/layoutStars"/>
 
-    <EditText
-        android:id="@+id/etComment"
-        android:layout_width="320dp"
+            <EditText
+                android:id="@+id/etComment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:minHeight="48dp"
+                android:background="@drawable/review_edit_bg"
+                android:hint="예시) 조용하고 팀플하기 좋았어요."
+                android:padding="12dp"
+                android:layout_marginTop="16dp"
+                android:textColor="#222222"
+                android:textColorHint="#B0B0B0"
+                android:textSize="14sp"
+                app:layout_constraintTop_toBottomOf="@id/tvCommentTitle"
+                app:layout_constraintStart_toStartOf="@id/tvCommentTitle"
+                app:layout_constraintEnd_toEndOf="@id/boxGuide"/>
+
+
+            <!-- 어떤 용도로 사용했는지 질문 & 체크박스-->
+            <TextView
+                android:id="@+id/tvPurposeTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="어떤 용도로 사용했나요?"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="#333333"
+                android:layout_marginTop="32dp"
+                app:layout_constraintTop_toBottomOf="@id/etComment"
+                app:layout_constraintStart_toStartOf="@id/etComment"/>
+
+            <GridLayout
+                android:id="@+id/layoutPurpose"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/tvPurposeTitle"
+                app:layout_constraintStart_toStartOf="@id/tvPurposeTitle"
+                app:layout_constraintEnd_toEndOf="@id/etComment">
+                <!-- CheckBox items here... -->
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    app:buttonTint="@null"
+                    android:textSize="13sp"
+                    android:button="@drawable/checkbox_selector"
+                    android:drawablePadding="12dp"
+                    android:text="  조별과제"/>
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:button="@drawable/checkbox_selector"
+                    android:textSize="13sp"
+                    app:buttonTint="@null"
+                    android:drawablePadding="12dp"
+                    android:text="  개인공부"/>
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:textSize="13sp"
+                    app:buttonTint="@null"
+                    android:button="@drawable/checkbox_selector"
+                    android:drawablePadding="12dp"
+                    android:text="  영상촬영/녹화"/>
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:textSize="13sp"
+                    app:buttonTint="@null"
+                    android:button="@drawable/checkbox_selector"
+                    android:drawablePadding="12dp"
+                    android:text="  발표 리허설"/>
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:textSize="13sp"
+                    app:buttonTint="@null"
+                    android:button="@drawable/checkbox_selector"
+                    android:drawablePadding="12dp"
+                    android:text="  과제/시험준비"/>
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:button="@drawable/checkbox_selector"
+                    android:textSize="13sp"
+                    app:buttonTint="@null"
+                    android:drawablePadding="12dp"
+                    android:text="  동아리활동"/>
+            </GridLayout>
+
+            <!--사용한 기자재 체크박스-->
+            <TextView
+                android:id="@+id/tvEquipTitle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="어떤 기자재를 사용했나요?"
+                android:textStyle="bold"
+                android:textSize="15sp"
+                android:textColor="#333333"
+                android:layout_marginTop="32dp"
+                app:layout_constraintTop_toBottomOf="@id/layoutPurpose"
+                app:layout_constraintStart_toStartOf="@id/layoutPurpose"/>
+
+            <GridLayout
+                android:id="@+id/layoutEquip"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:columnCount="3"
+                android:layout_marginTop="16dp"
+                app:layout_constraintTop_toBottomOf="@id/tvEquipTitle"
+                app:layout_constraintStart_toStartOf="@id/tvEquipTitle"
+                app:layout_constraintEnd_toEndOf="@id/layoutPurpose">
+                <!-- CheckBox items here... -->
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:text="  전자칠판"
+                    android:minHeight="0dp"
+                    app:buttonTint="@null"
+                    android:button="@drawable/checkbox_selector"
+                    android:drawablePadding="12dp"
+                    android:textSize="13sp"/>
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:button="@drawable/checkbox_selector"
+                    android:text="  빔프로젝터"
+                    app:buttonTint="@null"
+                    android:drawablePadding="12dp"
+                    android:textSize="13sp"/>
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:button="@drawable/checkbox_selector"
+                    android:text="  스크린"
+                    app:buttonTint="@null"
+                    android:drawablePadding="12dp"
+                    android:textSize="13sp"/>
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:button="@drawable/checkbox_selector"
+                    android:minHeight="0dp"
+                    android:text="  콘센트"
+                    app:buttonTint="@null"
+                    android:drawablePadding="12dp"
+                    android:textSize="13sp"/>
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:button="@drawable/checkbox_selector"
+                    android:text="  마이크"
+                    app:buttonTint="@null"
+                    android:drawablePadding="12dp"
+                    android:textSize="13sp"/>
+                <androidx.appcompat.widget.AppCompatCheckBox
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_columnWeight="1"
+                    android:button="@drawable/checkbox_selector"
+                    android:text="  포인터"
+                    app:buttonTint="@null"
+                    android:drawablePadding="12dp"
+                    android:textSize="13sp"/>
+            </GridLayout>
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+
+    <!-- 제출 버튼 -->
+    <Button
+        android:id="@+id/btnSubmit"
+        android:layout_width="0dp"
         android:layout_height="48dp"
-        android:background="@drawable/review_edit_bg"
-        android:hint="예시) 조용하고 팀플하기 좋았어요."
-        android:padding="12dp"
-        android:layout_marginTop="23dp"
-        android:layout_marginStart="45dp"
-        android:textColor="#222222"
-        android:textColorHint="#B0B0B0"
-        android:textSize="14sp"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintTop_toBottomOf="@id/tvCommentTitle"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-
-    <!-- 어떤 용도로 사용했는지 질문 & 체크박스-->
-    <TextView
-        android:id="@+id/tvPurposeTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="어떤 용도로 사용했나요?"
+        android:text="제출하기"
         android:textStyle="bold"
-        android:textSize="15sp"
-        android:layout_marginStart="45dp"
-        android:textColor="#333333"
-        android:layout_marginTop="40dp"
-        android:layout_marginBottom="2dp"
-        app:layout_constraintTop_toBottomOf="@id/etComment"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <GridLayout
-        android:id="@+id/layoutPurpose"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:columnCount="3"
-        android:layout_marginStart="45dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="24dp"
-        app:layout_constraintTop_toBottomOf="@id/tvPurposeTitle"
+        android:backgroundTint="#7CA6F5"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            app:buttonTint="@null"
-            android:textSize="13sp"
-            android:button="@drawable/checkbox_selector"
-            android:drawablePadding="12dp"
-            android:text="  조별과제"/>
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:button="@drawable/checkbox_selector"
-            android:textSize="13sp"
-            app:buttonTint="@null"
-            android:drawablePadding="12dp"
-            android:text="  개인공부"/>
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:textSize="13sp"
-            app:buttonTint="@null"
-            android:button="@drawable/checkbox_selector"
-            android:drawablePadding="12dp"
-            android:text="  영상촬영/녹화"/>
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:textSize="13sp"
-            app:buttonTint="@null"
-            android:button="@drawable/checkbox_selector"
-            android:drawablePadding="12dp"
-            android:text="  발표 리허설"/>
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:textSize="13sp"
-            app:buttonTint="@null"
-            android:button="@drawable/checkbox_selector"
-            android:drawablePadding="12dp"
-            android:text="  과제/시험준비"/>
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:button="@drawable/checkbox_selector"
-            android:textSize="13sp"
-            app:buttonTint="@null"
-            android:drawablePadding="12dp"
-            android:text="  동아리활동"/>
-    </GridLayout>
-
-    <!--사용한 기자재 체크박스-->
-    <TextView
-        android:id="@+id/tvEquipTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="어떤 기자재를 사용했나요?"
-        android:textStyle="bold"
-        android:textSize="15sp"
-        android:textColor="#333333"
-        android:layout_marginTop="30dp"
-        android:layout_marginBottom="2dp"
-        android:layout_marginStart="45dp"
-        app:layout_constraintTop_toBottomOf="@id/layoutPurpose"
-        app:layout_constraintStart_toStartOf="parent"/>
-
-    <GridLayout
-        android:id="@+id/layoutEquip"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:columnCount="3"
-        android:layout_marginStart="45dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
-        android:layout_marginTop="15dp"
-        android:layout_marginBottom="32dp"
-        app:layout_constraintTop_toBottomOf="@id/tvEquipTitle"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:text="  전자칠판"
-            android:minHeight="0dp"
-            app:buttonTint="@null"
-            android:button="@drawable/checkbox_selector"
-            android:drawablePadding="12dp"
-            android:textSize="13sp"/>
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:button="@drawable/checkbox_selector"
-            android:text="  빔프로젝터"
-            app:buttonTint="@null"
-            android:drawablePadding="12dp"
-            android:textSize="13sp"/>
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:button="@drawable/checkbox_selector"
-            android:text="  스크린"
-            app:buttonTint="@null"
-            android:drawablePadding="12dp"
-            android:textSize="13sp"/>
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:button="@drawable/checkbox_selector"
-            android:minHeight="0dp"
-            android:text="  콘센트"
-            app:buttonTint="@null"
-            android:drawablePadding="12dp"
-            android:textSize="13sp"/>
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:button="@drawable/checkbox_selector"
-            android:text="  마이크"
-            app:buttonTint="@null"
-            android:textSize="13sp"/>
-
-        <androidx.appcompat.widget.AppCompatCheckBox
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_columnWeight="1"
-            android:button="@drawable/checkbox_selector"
-            android:text="  포인터"
-            app:buttonTint="@null"
-            android:drawablePadding="12dp"
-            android:textSize="13sp"/>
-    </GridLayout>
-
-        <!-- 제출 버튼 -->
-        <Button
-            android:id="@+id/btnSubmit"
-            android:layout_width="0dp"
-            android:layout_height="48dp"
-            android:text="제출하기"
-            android:textStyle="bold"
-            android:backgroundTint="#7CA6F5"
-            android:textSize="16sp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            android:layout_margin="24dp"/>
+        android:layout_marginBottom="24dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

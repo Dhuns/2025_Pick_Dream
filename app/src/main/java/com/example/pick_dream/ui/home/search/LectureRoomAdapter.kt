@@ -79,11 +79,11 @@ class LectureRoomAdapter(
             val capacityText = "최대 ${room.capacity}명"
             binding.tvRoomInfo.text = "$capacityText · $equipmentText"
 
-            binding.tvAvailable.text = if(room.isAvailable) "대여 가능" else "대여 불가"
+            binding.tvAvailable.text = if(room.isRentalAvailable) "대여 가능" else "대여 불가"
             binding.tvAvailable.setTextColor(
                 ContextCompat.getColor(
                     binding.root.context,
-                    if (room.isAvailable) R.color.primary_blue else R.color.Red
+                    if (room.isRentalAvailable) R.color.primary_blue else R.color.Red
                 )
             )
 

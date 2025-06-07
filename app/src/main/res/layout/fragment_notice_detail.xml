@@ -1,106 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#F5F8FF">
+    android:background="@color/white">
 
-    <!-- 상단 바 -->
-    <View
-        android:id="@+id/topBar"
-        android:layout_width="0dp"
-        android:layout_height="110dp"
-        android:background="#3C5ABD"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
-
-    <TextView
-        android:id="@+id/tvTopBarTitle"
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBarLayout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="공지사항"
-        android:textColor="#FFFFFF"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toTopOf="@id/topBar"
-        app:layout_constraintBottom_toBottomOf="@id/topBar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="40dp"/>
+        app:layout_constraintTop_toTopOf="parent">
 
-    <!-- 닫기 버튼 -->
-    <ImageButton
-        android:id="@+id/btnClose"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
-        android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_close"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/topBar"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="12dp" />
 
-    <!-- 타이틀 -->
-    <TextView
-        android:id="@+id/tvNoticeTitle"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:text="[공지사항] 덕문관 5001 강의실 대여 불가 안내"
-        android:textColor="#333333"
-        android:textSize="18sp"
-        android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/topBar"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="16dp"/>
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="80dp"
+            android:background="@color/primary_500"
+            app:titleCentered="true"
+            app:titleTextColor="@color/white">
 
-    <!-- 날짜 -->
-    <TextView
-        android:id="@+id/tvNoticeDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="8dp"
-        android:text="2025.04.07"
-        android:textColor="#333333"
-        android:textSize="15sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/tvNoticeTitle" />
+            <ImageButton
+                android:id="@+id/btnClose"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="end"
+                android:layout_marginEnd="16dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_close"
+                app:tint="@color/white" />
 
-    <!-- 구분선 -->
-    <View
-        android:id="@+id/divider"
-        android:layout_width="0dp"
-        android:layout_height="2dp"
-        android:background="#DDDDDD"
-        app:layout_constraintTop_toBottomOf="@id/tvNoticeDate"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"/>
+        </com.google.android.material.appbar.MaterialToolbar>
 
-    <!-- 본문 -->
+    </com.google.android.material.appbar.AppBarLayout>
+
     <ScrollView
         android:layout_width="0dp"
         android:layout_height="0dp"
-        app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintTop_toBottomOf="@id/appBarLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        android:layout_marginTop="16dp"
-        android:layout_marginHorizontal="16dp"
-        android:layout_marginBottom="16dp"
-        android:background="#F7F9FF"
-        android:fillViewport="true">
+        app:layout_constraintEnd_toEndOf="parent">
 
-        <TextView
-            android:id="@+id/tvNoticeContent"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="공지사항 본문 내용 적으면 됨"
-            android:textColor="#333333"
-            android:textSize="15sp"/>
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <TextView
+                android:id="@+id/tvNoticeTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                tools:text="[공지사항] 덕문관 5001 강의실 대여 불가 안내" />
+
+            <TextView
+                android:id="@+id/tvNoticeDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:gravity="end"
+                android:textSize="14sp"
+                android:textColor="@color/neutral_500"
+                tools:text="2025.04.07" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginTop="16dp"
+                android:background="@color/neutral_200" />
+
+            <TextView
+                android:id="@+id/tvNoticeContent"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:padding="16dp"
+                android:background="@drawable/notice_item_bg"
+                android:lineSpacingExtra="6dp"
+                android:textColor="@color/neutral_700"
+                android:textSize="16sp"
+                tools:text="덕문관 5001호실은 아래와 같은 사유로 인해 일시적으로 대여가 제한됩니다. 이용에 참고해주시기 바랍니다.\n\n🛠️ 제한 사유\n· 시설 점검 및 유지보수 작업\n· 전기 설비 및 냉난방 시스템 정기 점검 예정\n\n🕒 대여 제한 기간\n· 2025년 4월 10일(목) ~ 2025년 4월 13일(일)\n\n📢 대체 강의실 안내\n아래의 강의실을 동일 조건으로 대체하여 이용하실 수 있습니다.\n· 덕문관 5003호(최대 20명, 전자칠판O)\n· 예지관 4304호(최대 25명, 빔프로젝터O)\n\n⚠️ 유의사항\n예약 시, 덕문관 5001호는 검색 또는 예약 목록에 표시되지 않습니다. 이미 5001호를 예약한 사용자에게는 별도 안내 및 대체 강의실 배정이 이루어질 예정입니다." />
+
+        </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>
