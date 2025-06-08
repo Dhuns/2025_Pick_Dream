@@ -118,38 +118,51 @@ class ReservationFragment : Fragment() {
         }
     }
 
+    private fun parseFlexibleDate(dateString: String?): Date? {
+        if (dateString.isNullOrBlank()) return null
+
+        // Normalize AM/PM markers for Korean locale
+        val normalizedDateString = dateString
+            .replace("PM", "오후", ignoreCase = true)
+            .replace("AM", "오전", ignoreCase = true)
+
+        // List of possible date formats
+        val dateFormats = listOf(
+            SimpleDateFormat("yyyy년 M월 d일 a h시 m분 s초 'UTC+9'", Locale.KOREAN),
+            SimpleDateFormat("yyyy년 M월 d일 a h시 m분 s초", Locale.KOREAN),
+            SimpleDateFormat("yyyy년 M월 d일 a h시 m분", Locale.KOREAN)
+        )
+
+        for (format in dateFormats) {
+            try {
+                return format.parse(normalizedDateString)
+            } catch (e: java.text.ParseException) {
+                // Ignore and try the next format
+            }
+        }
+
+        Log.e("ReservationFragment", "Could not parse date: $dateString with any known format.")
+        return null
+    }
+
     private fun processAndDisplayReservations(reservations: List<Reservation>, roomImageUrls: Map<String, String?>) {
-        val now = Calendar.getInstance().time
+        val now = Date()
         val upcomingReservations = mutableListOf<Reservation>()
         val pastReservations = mutableListOf<Reservation>()
 
-        val sdf = SimpleDateFormat("yyyy년 M월 d일 a h시 m분", Locale.KOREAN)
-
         reservations.forEach { reservation ->
-            try {
-                // endTime이 null이거나 비어있으면 과거 예약으로 처리
-                val endTimeString = reservation.endTime
-                if (endTimeString.isNullOrEmpty()) {
-                    pastReservations.add(reservation)
-                    return@forEach
-                }
-                val endTime = sdf.parse(endTimeString)
-                if (endTime != null && endTime.after(now)) {
-                    upcomingReservations.add(reservation)
-                } else {
-                    pastReservations.add(reservation)
-                }
-            } catch (e: Exception) {
-                Log.e("ReservationFragment", "Date parsing error for reservation ${reservation.documentId}", e)
-                pastReservations.add(reservation) // 파싱 오류 시 과거 예약으로 간주
+            val endTime = parseFlexibleDate(reservation.endTime)
+            if (endTime != null && endTime.after(now)) {
+                upcomingReservations.add(reservation)
+            } else {
+                // Also handles cases where endTime is null or unparseable
+                pastReservations.add(reservation)
             }
         }
         
         // 다가오는 예약은 시작 시간 오름차순으로 정렬
         upcomingReservations.sortBy {
-            try {
-                it.startTime?.let { startTime -> sdf.parse(startTime)?.time }
-            } catch (e: Exception) { Long.MAX_VALUE }
+            parseFlexibleDate(it.startTime)?.time ?: Long.MAX_VALUE
         }
 
         val listItems = mutableListOf<ReservationListItem>()

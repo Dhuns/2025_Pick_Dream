@@ -47,7 +47,7 @@ class LectureRoomDetailFragment : Fragment() {
                 val randomBlackboard = Math.random() < 0.5 // 50% 확률로 사용 가능
 
                 // 상세 정보 박스 채우기
-                binding.infoBoxRoomName.text = "강의실 : ${room.name} 강의실"
+                binding.infoBoxRoomName.text = "강의실 : ${room.name} "
                 binding.infoBoxEquipment.text = "기자재 목록 : ${room.equipment.joinToString(", ")}"
                 binding.infoBoxChairType.text = "의자 : $randomChairType"
                 binding.infoBoxProjector.text = "빔 프로젝터 대여 여부 : ${if (randomProjector) "사용가능" else "사용불가"}"

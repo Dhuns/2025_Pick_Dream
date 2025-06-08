@@ -1,6 +1,5 @@
 package com.example.pick_dream.model
 
-import com.google.firebase.firestore.DocumentId
 
 data class Reservation(
     var documentId: String = "",

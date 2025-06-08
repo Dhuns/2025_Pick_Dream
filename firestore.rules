@@ -25,7 +25,7 @@ service cloud.firestore {
 
     // Reviews 컬렉션 규칙
     match /Reviews/{reviewId} {
-      allow read: if request.auth != null;
+      allow read, write: if request.auth != null;
     }
 
     // Reservations 컬렉션 규칙
