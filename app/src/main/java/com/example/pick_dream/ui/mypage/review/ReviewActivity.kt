@@ -3,7 +3,6 @@ package com.example.pick_dream.ui.mypage.review
 import android.os.Bundle
 import android.util.Log
 import android.widget.ImageButton
-import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -11,12 +10,12 @@ import com.example.pick_dream.R
 import com.example.pick_dream.model.Review
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 
 
 class ReviewActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        enableEdgeToEdge()
         setContentView(R.layout.activity_review)
 
         val backButton = findViewById<ImageButton>(R.id.backButton)
@@ -33,18 +32,18 @@ class ReviewActivity : AppCompatActivity() {
 
         db.collection("User").document(uid).get()
             .addOnSuccessListener { document ->
-                val studentId = document.getString("studentId") ?: return@addOnSuccessListener
-                val adapter = ReviewAdapter()
-                recyclerView.layoutManager = LinearLayoutManager(this)
-                recyclerView.adapter = adapter
+                val studentId = document.getString("studentId")
+                if (studentId.isNullOrBlank()) {
+                    Log.e("ReviewActivity", "Student ID not found")
+                    return@addOnSuccessListener
+                }
 
                 db.collection("Reviews")
-                    .whereEqualTo("userID", studentId)  // 🔥 여기서 학번 사용!
+                    .whereEqualTo("userID", studentId)
+                    .orderBy("createdAt", Query.Direction.DESCENDING)  // 최신순으로 정렬
                     .get()
                     .addOnSuccessListener { querySnapshot ->
-                        val reviewList = querySnapshot.documents.mapNotNull {
-                            it.toObject(Review::class.java)
-                        }
+                        val reviewList = querySnapshot.toObjects(Review::class.java)
                         adapter.submitList(reviewList)
                     }
                     .addOnFailureListener {
@@ -54,8 +53,5 @@ class ReviewActivity : AppCompatActivity() {
             .addOnFailureListener {
                 Log.e("ReviewActivity", "학번 조회 실패", it)
             }
-
-
-
     }
 }
