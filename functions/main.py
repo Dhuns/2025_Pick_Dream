@@ -141,17 +141,27 @@ def handle_reserve(query, userID):
             return https_fn.Response(f"{query['room']}호는 해당 시간에 이미 예약되어 있어요.", status=409)
 
         try:
+            # 안전하게 eventParticipants를 정수로 변환
+            participants_str = str(query.get("eventParticipants", "0")).strip()
+            # 숫자만 추출
+            numeric_part = re.search(r'\d+', participants_str)
+            event_participants_int = int(numeric_part.group()) if numeric_part else 1
+
+            # 시간 문자열 생성 후 한국어 형식으로 변환
+            start_str = start.strftime("%Y년 %-m월 %-d일 %p %-I시 %M분 %S초 UTC+9").replace("AM", "오전").replace("PM", "오후")
+            end_str = end.strftime("%Y년 %-m월 %-d일 %p %-I시 %M분 %S초 UTC+9").replace("AM", "오전").replace("PM", "오후")
+
             doc_ref = db.collection("Reservations").add({
                 "roomID": query["room"],
-                "startTime": start.strftime("%Y년 %-m월 %-d일 %p %-I시 %M분 %S초 UTC+9"),
-                "endTime": end.strftime("%Y년 %-m월 %-d일 %p %-I시 %M분 %S초 UTC+9"),
+                "startTime": start_str,
+                "endTime": end_str,
                 "startTimestamp": start,
                 "endTimestamp": end,
-                "eventName": query["eventName"],
-                "eventDescription": query["eventDescription"],
-                "eventTarget": query["eventTarget"],
-                "eventParticipants": query["eventParticipants"],
-                "status": query["status"],
+                "eventName": query.get("eventName", "AI 추천 예약"),
+                "eventDescription": query.get("eventDescription", ""),
+                "eventTarget": query.get("eventTarget", ""),
+                "eventParticipants": event_participants_int, # 정수형으로 저장
+                "status": query.get("status", "대기"),
                 "userID": userID
             })
         except Exception as e:
