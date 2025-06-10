@@ -74,12 +74,12 @@ class ReservationFragment : Fragment() {
                 return@addOnSuccessListener
             }
 
-            db.collection("Reservations")
+                        db.collection("Reservations")
                 .whereEqualTo("userID", studentId)
                 .orderBy("startTime", Query.Direction.DESCENDING)
-                .get()
+                            .get()
                 .addOnSuccessListener { reservationSnapshot ->
-                    binding.progressBar.visibility = View.GONE
+                                    binding.progressBar.visibility = View.GONE
                     if (reservationSnapshot.isEmpty) {
                         binding.tvEmptyState.visibility = View.VISIBLE
                         return@addOnSuccessListener

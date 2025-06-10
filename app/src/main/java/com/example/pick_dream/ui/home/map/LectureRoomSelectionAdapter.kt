@@ -41,7 +41,8 @@ class LectureRoomSelectionAdapter(
             } else {
                 "기자재 정보 없음"
             }
-            binding.tvRoomDetail.text = "${lectureRoom.location}\n${equipmentText}"
+            val floorNumber = lectureRoom.name.substring(0, 2).toIntOrNull()?.let { "${it/10}층" } ?: "층수 정보 없음"
+            binding.tvRoomDetail.text = "${floorNumber}\n${equipmentText}"
             
             binding.root.setOnClickListener { onItemClick(lectureRoom) }
         }
