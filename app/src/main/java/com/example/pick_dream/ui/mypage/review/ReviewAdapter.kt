@@ -38,6 +38,7 @@ class ReviewAdapter : RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
     override fun onBindViewHolder(holder: ReviewViewHolder, position: Int) {
         val review = reviews[position]
         holder.comment.text = review.comment
+        holder.rating.stepSize = 0.5f
         holder.rating.rating = review.rating
         holder.room.text = "${review.roomID} 강의실"
         
@@ -46,6 +47,9 @@ class ReviewAdapter : RecyclerView.Adapter<ReviewAdapter.ReviewViewHolder>() {
 
         val formatter = SimpleDateFormat("yyyy.MM.dd HH:mm", Locale.getDefault())
         holder.date.text = review.createdAt?.let { formatter.format(it) } ?: "날짜 없음"
+
+        val ratingScoreText = holder.itemView.findViewById<TextView>(R.id.text_rating_score)
+        ratingScoreText.text = String.format("%.1f/5.0", review.rating)
     }
 
     override fun getItemCount(): Int = reviews.size

@@ -39,7 +39,8 @@ class LectureRoomDetailFragment : Fragment() {
         viewModel.roomDetail.observe(viewLifecycleOwner) { room ->
             if (room != null) {
                 binding.tvRoomName.text = room.name
-                binding.tvRoomDesc.text = "${room.buildingName} - ${room.location}\n수용 인원: 최대 ${room.capacity}명\n기자재: ${room.equipment.joinToString(", ")}"
+                val floorNumber = room.name.substring(0, 2).toIntOrNull()?.let { "${it/10}층" } ?: "층수 정보 없음"
+                binding.tvRoomDesc.text = "${room.buildingName} ${floorNumber}\n수용 인원: 최대 ${room.capacity}명\n기자재: ${room.equipment.joinToString(", ")}"
 
                 // 하드코딩된 랜덤 데이터 생성 향후 데이터 추가하면 사용 가능
                 val randomChairType = listOf("일체형 의자", "분리형 의자", "이동식 의자").random()

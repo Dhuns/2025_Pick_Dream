@@ -154,7 +154,7 @@ class NoticeFragment : Fragment() {
     }
 
     private fun performSearch() {
-        val query = binding.etSearch.text.toString().trim()
+            val query = binding.etSearch.text.toString().trim()
         val db = Firebase.firestore
         val formatter = SimpleDateFormat("yy.MM.dd", Locale.getDefault())
 
@@ -176,9 +176,9 @@ class NoticeFragment : Fragment() {
                 if (query.isNotEmpty()) {
                     val filtered = originalNotices.filter {
                         it.title.contains(query, ignoreCase = true) || it.content.contains(query, ignoreCase = true)
-                    }
-                    allNotices = filtered
-                } else {
+                }
+                allNotices = filtered
+            } else {
                     allNotices = originalNotices
                 }
 
@@ -187,7 +187,7 @@ class NoticeFragment : Fragment() {
                 currentPage = 1
                 showPage(currentPage)
                 setupPagination()
-            }
+        }
     }
 
     private fun setupPagination() {

@@ -64,81 +64,81 @@
                 app:strokeWidth="1dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:orientation="vertical"
-                    android:padding="16dp">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            android:padding="16dp">
 
-                    <TextView
-                        android:id="@+id/tvBuildingInfo"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textColor="@color/black"
+            <TextView
+                android:id="@+id/tvBuildingInfo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
                         android:textSize="16sp"
                         tools:text="덕문관 (5강의동)" />
 
-                    <TextView
-                        android:id="@+id/tvRoomName"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="4dp"
-                        android:textColor="@color/black"
-                        android:textSize="20sp"
+            <TextView
+                android:id="@+id/tvRoomName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:textColor="@color/black"
+                android:textSize="20sp"
                         android:textStyle="bold"
                         tools:text="5201 강의실" />
-                </LinearLayout>
-            </com.google.android.material.card.MaterialCardView>
+        </LinearLayout>
+    </com.google.android.material.card.MaterialCardView>
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/input_form_card"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="2dp"
-                app:cardBackgroundColor="@android:color/white"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        app:cardCornerRadius="12dp"
+        app:cardElevation="2dp"
+        app:cardBackgroundColor="@android:color/white"
                 app:layout_constraintTop_toBottomOf="@id/card_view"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="vertical"
-                    android:padding="20dp">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="행사명"
-                        android:textColor="#222222"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="12dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="행사명"
+                android:textColor="#222222"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
 
                     <EditText
                         android:id="@+id/etEventName"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                         android:background="@drawable/edit_text_background"
                         android:hint="예시) 발표 리허설"
                         android:inputType="text"
                         android:padding="12dp"
                         android:textColorHint="@color/neutral_300"
-                        android:textSize="15sp"
+                    android:textSize="15sp"
                         android:layout_marginBottom="12dp"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="행사내용"
-                        android:textColor="#222222"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="12dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="행사내용"
+                android:textColor="#222222"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
 
                     <EditText
-                        android:id="@+id/etEventDetail"
-                        android:layout_width="match_parent"
+                    android:id="@+id/etEventDetail"
+                    android:layout_width="match_parent"
                         android:layout_height="120dp"
                         android:background="@drawable/edit_text_background"
                         android:gravity="top"
@@ -146,64 +146,64 @@
                         android:inputType="textMultiLine"
                         android:padding="12dp"
                         android:textColorHint="@color/neutral_300"
-                        android:textSize="15sp"
+                    android:textSize="15sp"
                         android:layout_marginBottom="12dp"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="참여대상"
-                        android:textColor="#222222"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="12dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="참여대상"
+                android:textColor="#222222"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
 
                     <EditText
                         android:id="@+id/etEventTarget"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                         android:background="@drawable/edit_text_background"
                         android:hint="예시) 발표 팀원 4명"
                         android:inputType="text"
                         android:padding="12dp"
                         android:textColorHint="@color/neutral_300"
-                        android:textSize="15sp"
+                    android:textSize="15sp"
                         android:layout_marginBottom="12dp"/>
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="참여인원"
-                        android:textColor="#222222"
-                        android:textSize="16sp"
-                        android:layout_marginBottom="12dp"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="참여인원"
+                android:textColor="#222222"
+                android:textSize="16sp"
+                android:layout_marginBottom="12dp"/>
 
-                    <LinearLayout
+            <LinearLayout
                         android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal"
-                        android:gravity="center_vertical">
+                android:layout_height="wrap_content"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
 
                         <EditText
                             android:id="@+id/etEventPeople"
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
                             android:background="@drawable/edit_text_background"
                             android:hint="숫자만 입력"
-                            android:inputType="number"
+                        android:inputType="number"
                             android:padding="12dp"
                             android:textColorHint="@color/neutral_300"
                             android:textSize="15sp" />
 
-                        <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
                             android:layout_marginStart="8dp"
-                            android:text="명"
+                    android:text="명"
                             android:textColor="@android:color/black"
                             android:textSize="16sp" />
-                    </LinearLayout>
-                </LinearLayout>
+            </LinearLayout>
+        </LinearLayout>
             </androidx.cardview.widget.CardView>
         </androidx.constraintlayout.widget.ConstraintLayout>
     </ScrollView>

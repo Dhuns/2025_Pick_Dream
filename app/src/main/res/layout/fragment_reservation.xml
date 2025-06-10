@@ -50,12 +50,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         tools:listitem="@layout/item_reservation" />
 
-    <TextView
+            <TextView
         android:id="@+id/tv_empty_state"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
         android:text="예약 내역이 없습니다."
-        android:textSize="16sp"
+                android:textSize="16sp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/top_bar"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -65,9 +65,9 @@
 
     <ProgressBar
         android:id="@+id/progress_bar"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/top_bar"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
